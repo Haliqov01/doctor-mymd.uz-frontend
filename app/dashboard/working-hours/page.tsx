@@ -20,16 +20,6 @@ const dayLabels = {
   SUNDAY: "Yakshanba",
 };
 
-const dayIcons = {
-  MONDAY: "📅",
-  TUESDAY: "📅",
-  WEDNESDAY: "📅",
-  THURSDAY: "📅",
-  FRIDAY: "📅",
-  SATURDAY: "📅",
-  SUNDAY: "📅",
-};
-
 export default function WorkingHoursPage() {
   const router = useRouter();
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -120,7 +110,6 @@ export default function WorkingHoursPage() {
                 key={wh.dayOfWeek}
                 workingHour={wh}
                 dayLabel={dayLabels[wh.dayOfWeek]}
-                dayIcon={dayIcons[wh.dayOfWeek]}
                 onToggle={() => toggleDay(wh.dayOfWeek)}
                 onUpdate={(updates) => updateDay(wh.dayOfWeek, updates)}
                 onCopyToAll={() => copyToAllDays(wh.dayOfWeek)}

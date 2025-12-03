@@ -10,14 +10,14 @@ export function TemplateSelector({ onSelectTemplate }: TemplateSelectorProps) {
   const templates = [
     {
       id: "standard" as const,
-      icon: "📅",
+      icon: "Calendar",
       title: "Standart",
       description: "Dush-Juma, 09:00 - 18:00",
       details: "Tushlik: 13:00 - 14:00",
     },
     {
       id: "halfday" as const,
-      icon: "🕐",
+      icon: "Clock",
       title: "Yarim kun",
       description: "09:00 - 13:00",
       details: "Tushliksiz",

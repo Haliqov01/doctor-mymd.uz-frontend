@@ -31,58 +31,30 @@ import {
   Check,
   X,
 } from "lucide-react";
-
-interface Appointment {
-  id: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  status: "PENDING" | "CONFIRMED" | "REJECTED" | "CANCELLED" | "COMPLETED" | "NO_SHOW";
-  reason: string;
-  patientNotes?: string;
-  doctorNotes?: string;
-  rejectionReason?: string;
-  patient: {
-    id: string;
-    name: string;
-    phoneNumber?: string;
-    email: string;
-  };
-  createdAt: string;
-  confirmedAt?: string;
-  cancelledAt?: string;
-}
+import { appointmentService } from "@/lib/services";
+import { clearStoredToken } from "@/lib/api-client";
+import { Appointment, AppointmentStatus } from "@/types";
 
 const statusConfig = {
-  PENDING: {
+  [AppointmentStatus.Pending]: {
     label: "Tasdiqlash kutilmoqda",
     color: "bg-yellow-100 text-yellow-800 border-yellow-300",
     icon: AlertCircle,
   },
-  CONFIRMED: {
+  [AppointmentStatus.Approved]: {
     label: "Tasdiqlandi",
     color: "bg-green-100 text-green-800 border-green-300",
     icon: CheckCircle2,
   },
-  REJECTED: {
+  [AppointmentStatus.Rejected]: {
     label: "Rad etildi",
     color: "bg-red-100 text-red-800 border-red-300",
     icon: XCircle,
   },
-  CANCELLED: {
-    label: "Bekor qilingan",
-    color: "bg-gray-100 text-gray-800 border-gray-300",
-    icon: XCircle,
-  },
-  COMPLETED: {
+  [AppointmentStatus.Completed]: {
     label: "Yakunlandi",
     color: "bg-blue-100 text-blue-800 border-blue-300",
     icon: CheckCircle2,
-  },
-  NO_SHOW: {
-    label: "Kelmadi",
-    color: "bg-orange-100 text-orange-800 border-orange-300",
-    icon: XCircle,
   },
 };
 
@@ -102,34 +74,33 @@ export default function DoctorAppointmentsPage() {
 
   const fetchAppointments = async () => {
     try {
-      const response = await fetch("/api/doctor/appointments");
-      if (!response.ok) throw new Error("Uchrashuvlar yuklanmadi. Iltimos, keyinroq urinib ko‘ring.");
-
-      const data = await response.json();
-      setAppointments(data.data.appointments || []);
-    } catch (error) {
-      console.error("Uchrashuvlar yuklanayotganda xatolik yuz berdi:", error);
+      const result = await appointmentService.getAppointments({
+        pageNumber: 1,
+        pageSize: 100,
+      });
+      setAppointments(result.data || []);
+    } catch (error: any) {
+      console.error("Uchrashuvlar yuklanayotganda xatolik:", error);
+      if (error.status === 401) {
+        clearStoredToken();
+        router.push("/login");
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const handleConfirm = async (appointmentId: string) => {
+  const handleConfirm = async (appointmentId: number) => {
     if (!confirm("Uchrashuvni tasdiqlashni xohlaysizmi?")) return;
 
     setActionLoading(true);
     try {
-      const response = await fetch(`/api/doctor/appointments/${appointmentId}/confirm`, {
-        method: "PATCH",
-      });
-
-      if (!response.ok) throw new Error("Uchrashuv tasdiqlanmadi.");
-
+      await appointmentService.confirmAppointment(appointmentId);
       alert("Uchrashuv tasdiqlandi.");
       fetchAppointments();
-    } catch (error) {
-      console.error("Uchrashuv tasdiqlanayotganda xatolik yuz berdi:", error);
-      alert("Uchrashuv tasdiqlanayotganda xatolik yuz berdi.");
+    } catch (error: any) {
+      console.error("Uchrashuv tasdiqlanayotganda xatolik:", error);
+      alert(error.message || "Uchrashuv tasdiqlanayotganda xatolik yuz berdi.");
     } finally {
       setActionLoading(false);
     }
@@ -150,20 +121,13 @@ export default function DoctorAppointmentsPage() {
 
     setActionLoading(true);
     try {
-      const response = await fetch(`/api/doctor/appointments/${selectedAppointment.id}/reject`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rejectionReason }),
-      });
-
-      if (!response.ok) throw new Error("Uchrashuvni rad etib bo‘lmadi");
-
+      await appointmentService.rejectAppointment(selectedAppointment.id, rejectionReason);
       alert("Uchrashuv muvaffaqiyatli rad etildi.");
       setRejectDialogOpen(false);
       fetchAppointments();
-    } catch (error) {
-      console.error("Uchrashuvni rad etishda xatolik yuz berdi:", error);
-      alert("Uchrashuvni rad etishda xatolik yuz berdi.");
+    } catch (error: any) {
+      console.error("Uchrashuvni rad etishda xatolik:", error);
+      alert(error.message || "Uchrashuvni rad etishda xatolik yuz berdi.");
     } finally {
       setActionLoading(false);
     }
@@ -179,15 +143,23 @@ export default function DoctorAppointmentsPage() {
     }).format(date);
   };
 
-  const filterAppointments = (status?: string) => {
-    if (status === "all" || !status) return appointments;
+  const formatTime = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString("uz-UZ", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const filterAppointments = (status?: AppointmentStatus) => {
+    if (status === undefined) return appointments;
     return appointments.filter((apt) => apt.status === status);
   };
 
   const AppointmentCard = ({ appointment }: { appointment: Appointment }) => {
-    const config = statusConfig[appointment.status];
+    const config = statusConfig[appointment.status] || statusConfig[AppointmentStatus.Pending];
     const StatusIcon = config.icon;
-    const isPending = appointment.status === "PENDING";
+    const isPending = appointment.status === AppointmentStatus.Pending;
 
     return (
       <Card className={`hover:shadow-md transition-shadow ${isPending ? "border-yellow-300 border-2" : ""}`}>
@@ -196,19 +168,15 @@ export default function DoctorAppointmentsPage() {
             <div className="flex-1">
               <CardTitle className="text-lg flex items-center gap-2">
                 <User className="h-5 w-5" />
-                {appointment.patient.name}
+                {appointment.patientName}
               </CardTitle>
               <div className="flex flex-col gap-1 mt-2 text-sm text-gray-600">
-                {appointment.patient.phoneNumber && (
+                {appointment.patientPhone && (
                   <div className="flex items-center gap-2">
                     <Phone className="h-4 w-4" />
-                    {appointment.patient.phoneNumber}
+                    {appointment.patientPhone}
                   </div>
                 )}
-                <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4" />
-                  {appointment.patient.email}
-                </div>
               </div>
             </div>
             <Badge className={`${config.color} border flex items-center gap-1`}>
@@ -221,42 +189,30 @@ export default function DoctorAppointmentsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="flex items-center gap-2 text-sm">
               <Calendar className="h-4 w-4 text-green-600" />
-              <span className="font-medium">{formatDate(appointment.date)}</span>
+              <span className="font-medium">{formatDate(appointment.scheduledDate)}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <Clock className="h-4 w-4 text-green-600" />
               <span className="font-medium">
-                {appointment.startTime} - {appointment.endTime}
+                {formatTime(appointment.scheduledDate)} ({appointment.duration} daqiqa)
               </span>
             </div>
           </div>
 
-          <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-            <div className="flex items-start gap-2">
-              <FileText className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-              <div className="flex-1">
-                <div className="text-sm font-medium text-green-900">Shikoyat / Sabab:</div>
-                <div className="text-sm text-green-700 mt-1">{appointment.reason}</div>
+          {appointment.message && (
+            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+              <div className="flex items-start gap-2">
+                <FileText className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-green-900">Shikoyat / Sabab:</div>
+                  <div className="text-sm text-green-700 mt-1">{appointment.message}</div>
+                </div>
               </div>
-            </div>
-          </div>
-
-          {appointment.patientNotes && (
-            <div className="p-3 bg-blue-50 rounded-lg">
-              <div className="text-sm font-medium text-blue-900">Bemor yozuvlari:</div>
-              <div className="text-sm text-blue-700 mt-1">{appointment.patientNotes}</div>
-            </div>
-          )}
-
-          {appointment.status === "REJECTED" && appointment.rejectionReason && (
-            <div className="p-3 bg-red-50 rounded-lg border border-red-200">
-              <div className="text-sm font-medium text-red-900">Rad etish sababi:</div>
-              <div className="text-sm text-red-700 mt-1">{appointment.rejectionReason}</div>
             </div>
           )}
 
           <div className="text-xs text-gray-500">
-          So‘rov vaqti: {new Date(appointment.createdAt).toLocaleString("tr-TR")}
+            So'rov vaqti: {new Date(appointment.createdDate).toLocaleString("uz-UZ")}
           </div>
 
           {isPending && (
@@ -295,10 +251,10 @@ export default function DoctorAppointmentsPage() {
     );
   }
 
-  const allAppointments = filterAppointments("all");
-  const pendingAppointments = filterAppointments("PENDING");
-  const confirmedAppointments = filterAppointments("CONFIRMED");
-  const completedAppointments = filterAppointments("COMPLETED");
+  const allAppointments = filterAppointments();
+  const pendingAppointments = filterAppointments(AppointmentStatus.Pending);
+  const confirmedAppointments = filterAppointments(AppointmentStatus.Approved);
+  const completedAppointments = filterAppointments(AppointmentStatus.Completed);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-4 md:p-8">
@@ -316,7 +272,7 @@ export default function DoctorAppointmentsPage() {
           <CardHeader>
             <CardTitle className="text-2xl">Uchrashuvlar</CardTitle>
             <CardDescription>
-              Bemorlarning uchrashuvlarini ko‘rish va boshqarish
+              Bemorlarning uchrashuvlarini ko'rish va boshqarish
             </CardDescription>
           </CardHeader>
         </Card>
@@ -327,7 +283,7 @@ export default function DoctorAppointmentsPage() {
               <div className="flex items-center gap-2 text-yellow-800">
                 <AlertCircle className="h-5 w-5" />
                 <span className="font-medium">
-                  {pendingAppointments.length} Sizda haligacha tasdiqlanmagan uchrashuv so‘rovi bor
+                  {pendingAppointments.length} ta tasdiqlanmagan uchrashuv so'rovi bor
                 </span>
               </div>
             </CardContent>
@@ -337,7 +293,7 @@ export default function DoctorAppointmentsPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="pending">
-              Tasdiqlash kutilmoqda ({pendingAppointments.length})
+              Kutilmoqda ({pendingAppointments.length})
             </TabsTrigger>
             <TabsTrigger value="confirmed">
               Tasdiqlandi ({confirmedAppointments.length})
@@ -355,7 +311,7 @@ export default function DoctorAppointmentsPage() {
               <Card>
                 <CardContent className="py-12 text-center">
                   <CheckCircle2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">Kutayotgan uchrashuv so‘rovi yo‘q</p>
+                  <p className="text-gray-600">Kutayotgan uchrashuv so'rovi yo'q</p>
                 </CardContent>
               </Card>
             ) : (
@@ -368,7 +324,7 @@ export default function DoctorAppointmentsPage() {
               <Card>
                 <CardContent className="py-12 text-center">
                   <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">Tasdiqlangan uchrashuvlar yo‘q</p>
+                  <p className="text-gray-600">Tasdiqlangan uchrashuvlar yo'q</p>
                 </CardContent>
               </Card>
             ) : (
@@ -381,7 +337,7 @@ export default function DoctorAppointmentsPage() {
               <Card>
                 <CardContent className="py-12 text-center">
                   <CheckCircle2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">Yakunlangan uchrashuvlar yo‘q</p>
+                  <p className="text-gray-600">Yakunlangan uchrashuvlar yo'q</p>
                 </CardContent>
               </Card>
             ) : (
@@ -394,7 +350,7 @@ export default function DoctorAppointmentsPage() {
               <Card>
                 <CardContent className="py-12 text-center">
                   <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">Hozircha uchrashuvingiz yo‘q</p>
+                  <p className="text-gray-600">Hozircha uchrashuvingiz yo'q</p>
                 </CardContent>
               </Card>
             ) : (
@@ -448,4 +404,3 @@ export default function DoctorAppointmentsPage() {
     </div>
   );
 }
-

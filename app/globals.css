@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -44,79 +43,161 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Premium Yeşil Medical Design System */
+  --radius: 0.75rem;
+  
+  /* Premium Yeşil (Medical Green) - Ana Renk */
+  --primary: 142 71% 45%;        /* #16a34a - green-600 */
+  --primary-foreground: 0 0% 100%;
+  
+  /* Backgrounds */
+  --background: 0 0% 100%;       /* Pure white */
+  --foreground: 0 0% 9%;         /* Almost black for text */
+  
+  /* Cards & Surfaces */
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 9%;
+  
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 9%;
+  
+  /* Secondary - Subtle */
+  --secondary: 0 0% 96%;         /* Light gray */
+  --secondary-foreground: 0 0% 9%;
+  
+  /* Muted - Placeholders & disabled */
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
+  
+  /* Accent - Hover states */
+  --accent: 142 76% 97%;         /* Light green tint */
+  --accent-foreground: 142 71% 45%;
+  
+  /* Borders & Inputs */
+  --border: 0 0% 90%;            /* Subtle gray border */
+  --input: 0 0% 90%;
+  --ring: 142 71% 45%;           /* Green focus ring */
+  
+  /* Destructive - Errors */
+  --destructive: 0 72% 51%;      /* Red */
+  
+  /* Charts */
+  --chart-1: 142 71% 45%;        /* Green */
+  --chart-2: 217 91% 60%;        /* Blue */
+  --chart-3: 271 81% 56%;        /* Purple */
+  --chart-4: 38 92% 50%;         /* Orange */
+  --chart-5: 339 90% 51%;        /* Pink */
+  
+  /* Sidebar */
+  --sidebar: 0 0% 100%;
+  --sidebar-foreground: 0 0% 9%;
+  --sidebar-primary: 142 71% 45%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 142 76% 97%;
+  --sidebar-accent-foreground: 142 71% 45%;
+  --sidebar-border: 0 0% 90%;
+  --sidebar-ring: 142 71% 45%;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Dark mode - Subtle adjustments */
+  --background: 0 0% 9%;
+  --foreground: 0 0% 98%;
+  --card: 0 0% 12%;
+  --card-foreground: 0 0% 98%;
+  --popover: 0 0% 12%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 142 71% 45%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 15%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 60%;
+  --accent: 142 70% 15%;
+  --accent-foreground: 142 71% 45%;
+  --destructive: 0 72% 51%;
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
+  --ring: 142 71% 45%;
+  --chart-1: 142 71% 45%;
+  --chart-2: 217 91% 60%;
+  --chart-3: 271 81% 56%;
+  --chart-4: 38 92% 50%;
+  --chart-5: 339 90% 51%;
+  --sidebar: 0 0% 12%;
+  --sidebar-foreground: 0 0% 98%;
+  --sidebar-primary: 142 71% 45%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 142 70% 15%;
+  --sidebar-accent-foreground: 142 71% 45%;
+  --sidebar-border: 0 0% 20%;
+  --sidebar-ring: 142 71% 45%;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Better font rendering */
   body {
     @apply bg-background text-foreground;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Better focus visibility */
+  *:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  
+  /* Smooth transitions */
+  button, a {
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@layer utilities {
+  /* Premium shadows */
+  .shadow-soft {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .shadow-soft-lg {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+  
+  .shadow-soft-xl {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  }
+  
+  /* Medical green gradient */
+  .bg-medical-gradient {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%);
+  }
+  
+  /* Smooth press effect for buttons */
+  .btn-press:active {
+    transform: scale(0.96);
+  }
+  
+  /* Skeleton loading */
+  .skeleton {
+    background: linear-gradient(90deg, #f5f5f5 0%, #e5e5e5 50%, #f5f5f5 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
   }
 }

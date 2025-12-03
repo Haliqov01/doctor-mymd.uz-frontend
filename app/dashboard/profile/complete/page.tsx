@@ -6,21 +6,22 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Stethoscope, Loader2, ChevronRight, ChevronLeft } from "lucide-react";
+import { ArrowLeft, Stethoscope, Loader2, ChevronRight, ChevronLeft, User, GraduationCap, Briefcase, Target, Globe, CheckCircle } from "lucide-react";
 import { useProfileForm } from "./hooks/use-profile-form";
 import { PersonalInfoTab } from "./components/PersonalInfoTab";
 import { EducationTab } from "./components/EducationTab";
+import { ExperienceTab } from "./components/ExperienceTab";
 import { SpecializationTab } from "./components/SpecializationTab";
 import { SocialMediaTab } from "./components/SocialMediaTab";
 import { ReviewTab } from "./components/ReviewTab";
 
 const tabs = [
-  { value: "personal", label: "Shaxsiy", icon: "👤", fullLabel: "Shaxsiy ma'lumotlar" },
-  { value: "education", label: "Ta'lim", icon: "🎓", fullLabel: "Ta'lim ma'lumotlari" },
-  { value: "experience", label: "Tajriba", icon: "💼", fullLabel: "Kasbiy tajriba" },
-  { value: "specialization", label: "Ixtisoslik", icon: "🎯", fullLabel: "Ixtisoslik" },
-  { value: "social", label: "Ijtimoiy", icon: "🌐", fullLabel: "Ijtimoiy tarmoqlar" },
-  { value: "review", label: "Tasdiqlash", icon: "✅", fullLabel: "Tasdiqlash" },
+  { value: "personal", label: "Shaxsiy", icon: User, iconColor: "text-blue-600", bgColor: "bg-blue-100", fullLabel: "Shaxsiy ma'lumotlar" },
+  { value: "education", label: "Ta'lim", icon: GraduationCap, iconColor: "text-purple-600", bgColor: "bg-purple-100", fullLabel: "Ta'lim ma'lumotlari" },
+  { value: "experience", label: "Tajriba", icon: Briefcase, iconColor: "text-orange-600", bgColor: "bg-orange-100", fullLabel: "Kasbiy tajriba" },
+  { value: "specialization", label: "Ixtisoslik", icon: Target, iconColor: "text-pink-600", bgColor: "bg-pink-100", fullLabel: "Ixtisoslik" },
+  { value: "social", label: "Ijtimoiy", icon: Globe, iconColor: "text-cyan-600", bgColor: "bg-cyan-100", fullLabel: "Ijtimoiy tarmoqlar" },
+  { value: "review", label: "Tasdiqlash", icon: CheckCircle, iconColor: "text-green-600", bgColor: "bg-green-100", fullLabel: "Tasdiqlash" },
 ];
 
 export default function CompleteProfilePage() {
@@ -87,10 +88,10 @@ export default function CompleteProfilePage() {
 
   // Calculate progress
   const completedSections = [
-    formData.firstName && formData.email && formData.mobilePhone,
-    formData.bachelorUniversity && bachelorDiploma && formData.masterUniversity && masterDiploma,
-    formData.yearsOfExperience,
-    formData.specialization1 && formData.keywords && formData.clinic1Name,
+    formData.firstName && formData.email && formData.mobilePhone, // Personal
+    formData.bachelorUniversity && bachelorDiploma && formData.masterUniversity && masterDiploma, // Education
+    formData.yearsOfExperience, // Experience
+    formData.specialization1 && formData.keywords && formData.clinic1Name, // Specialization
     true, // Social media is optional
     true, // Review
   ].filter(Boolean).length;
@@ -98,39 +99,41 @@ export default function CompleteProfilePage() {
   const progress = Math.round((completedSections / tabs.length) * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+    <div className="min-h-screen bg-neutral-50">
       {/* Header */}
-      <header className="bg-white border-b shadow-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-3">
-            <Stethoscope className="h-8 w-8 text-green-600" />
+      <header className="bg-white border-b border-neutral-200 shadow-soft sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-5">
+          <div className="flex items-center gap-4">
+            <div className="h-12 w-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-soft">
+              <Stethoscope className="h-6 w-6 text-white" />
+            </div>
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-neutral-900">
                 Profil ma'lumotlarini to'ldirish
               </h1>
-              <p className="text-sm text-gray-600">
+              <p className="text-base text-neutral-600">
                 Platformada faol bo'lish uchun ma'lumotlaringizni kiriting
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Link href="/dashboard">
-                <Button variant="outline" size="sm" className="bg-green-50 border-green-300 text-green-700 hover:bg-green-100">
+                <Button variant="outline" size="default" className="border-2 hover:border-green-500 hover:bg-green-50">
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Dashboardga qaytish
+                  Dashboard
                 </Button>
               </Link>
             </div>
           </div>
 
           {/* Progress Bar */}
-          <div className="mt-4">
-            <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-              <span>Jarayon:</span>
-              <span className="font-semibold">{progress}% to'ldirildi</span>
+          <div className="mt-5">
+            <div className="flex items-center justify-between text-base text-neutral-700 mb-3">
+              <span className="font-semibold">Jarayon:</span>
+              <span className="font-bold text-green-600">{progress}% to'ldirildi</span>
             </div>
-            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-3 bg-neutral-200 rounded-full overflow-hidden shadow-inner">
               <div
-                className="h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-500"
+                className="h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-500 shadow-sm"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -144,20 +147,36 @@ export default function CompleteProfilePage() {
           <form onSubmit={handleSubmit}>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               {/* Tabs List */}
-              <div className="mb-6 overflow-x-auto">
-                <TabsList className="inline-flex h-auto w-full md:w-auto bg-white border rounded-lg p-1 shadow-sm">
-                  {tabs.map((tab) => (
-                    <TabsTrigger
-                      key={tab.value}
-                      value={tab.value}
-                      className="flex-1 md:flex-initial min-w-[100px] data-[state=active]:bg-green-50 data-[state=active]:text-green-700"
-                    >
-                      <div className="flex flex-col items-center gap-1 py-2 px-2">
-                        <span className="text-xl">{tab.icon}</span>
-                        <span className="text-xs hidden md:inline">{tab.label}</span>
-                      </div>
-                    </TabsTrigger>
-                  ))}
+              <div className="mb-8 overflow-x-auto pb-2">
+                <TabsList className="inline-flex h-auto w-full md:w-auto bg-white border-2 border-neutral-200 rounded-xl p-2 shadow-soft">
+                  {tabs.map((tab) => {
+                    const IconComponent = tab.icon;
+                    const isActive = activeTab === tab.value;
+                    return (
+                      <TabsTrigger
+                        key={tab.value}
+                        value={tab.value}
+                        className={`flex-1 md:flex-initial min-w-[100px] rounded-lg transition-all duration-200 ${
+                          isActive 
+                            ? 'bg-green-50 border-2 border-green-500 shadow-sm' 
+                            : 'border-2 border-transparent hover:bg-neutral-50'
+                        }`}
+                      >
+                        <div className="flex flex-col items-center gap-2 py-3 px-3">
+                          <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${
+                            isActive ? 'bg-green-600' : tab.bgColor
+                          }`}>
+                            <IconComponent className={`h-5 w-5 ${isActive ? 'text-white' : tab.iconColor}`} />
+                          </div>
+                          <span className={`text-sm font-semibold ${
+                            isActive ? 'text-green-700' : 'text-neutral-600'
+                          }`}>
+                            {tab.label}
+                          </span>
+                        </div>
+                      </TabsTrigger>
+                    );
+                  })}
                 </TabsList>
               </div>
 
@@ -176,6 +195,22 @@ export default function CompleteProfilePage() {
                     setBachelorDiploma={setBachelorDiploma}
                     masterDiploma={masterDiploma}
                     setMasterDiploma={setMasterDiploma}
+                  />
+                </TabsContent>
+
+                <TabsContent value="experience" className="mt-0">
+                  <ExperienceTab
+                    formData={formData}
+                    handleInputChange={handleInputChange}
+                    handleSelectChange={handleSelectChange}
+                    academicDegreeCertificate={academicDegreeCertificate}
+                    setAcademicDegreeCertificate={setAcademicDegreeCertificate}
+                    categoryCertificate={categoryCertificate}
+                    setCategoryCertificate={setCategoryCertificate}
+                    internationalTraining={internationalTraining}
+                    handleTrainingChange={handleTrainingChange}
+                    addTraining={addTraining}
+                    removeTraining={removeTraining}
                   />
                 </TabsContent>
 
@@ -210,21 +245,21 @@ export default function CompleteProfilePage() {
               </div>
 
               {/* Navigation Buttons */}
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-between gap-4">
+              <Card className="border-2 border-neutral-200 shadow-soft">
+                <CardContent className="pt-6 pb-6">
+                  <div className="flex items-center justify-between gap-6">
                     <Button
                       type="button"
                       variant="outline"
                       onClick={handlePrevious}
                       disabled={isFirstTab}
-                      className="flex-1 md:flex-initial"
+                      className="h-12 flex-1 md:flex-initial border-2 text-base font-semibold disabled:opacity-50"
                     >
-                      <ChevronLeft className="h-4 w-4 mr-2" />
+                      <ChevronLeft className="h-5 w-5 mr-2" />
                       Orqaga
                     </Button>
 
-                    <div className="hidden md:block text-sm text-gray-600">
+                    <div className="hidden md:block text-base text-neutral-700 font-semibold">
                       {currentTabIndex + 1} / {tabs.length} - {tabs[currentTabIndex].fullLabel}
                     </div>
 
@@ -232,18 +267,18 @@ export default function CompleteProfilePage() {
                       <Button
                         type="button"
                         onClick={handleNext}
-                        className="flex-1 md:flex-initial bg-green-600 hover:bg-green-700"
+                        className="h-12 flex-1 md:flex-initial bg-green-600 hover:bg-green-700 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
                       >
                         Keyingisi
-                        <ChevronRight className="h-4 w-4 ml-2" />
+                        <ChevronRight className="h-5 w-5 ml-2" />
                       </Button>
                     ) : (
                       <Button
                         type="submit"
                         disabled={loading}
-                        className="flex-1 md:flex-initial bg-green-600 hover:bg-green-700"
+                        className="h-12 flex-1 md:flex-initial bg-green-600 hover:bg-green-700 text-base font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
                       >
-                        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
                         Saqlash va Tugatish
                       </Button>
                     )}

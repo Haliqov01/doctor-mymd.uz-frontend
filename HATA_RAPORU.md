@@ -250,3 +250,4 @@ npm run start
 
 Proje artık production-ready durumda!
 
+

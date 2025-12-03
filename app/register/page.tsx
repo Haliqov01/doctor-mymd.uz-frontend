@@ -249,17 +249,19 @@ export default function RegisterDoctorPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50/50 via-white to-green-100/30 p-4">
+      <Card className="w-full max-w-md shadow-soft-xl border-neutral-200">
         <CardHeader>
-          <div className="flex justify-center mb-4">
-            <div className="flex items-center gap-2">
-              <Stethoscope className="h-10 w-10 text-green-600" />
-              <span className="text-3xl font-bold text-gray-900">MyMD.uz</span>
+          <div className="flex justify-center mb-6">
+            <div className="flex items-center gap-3">
+              <div className="h-14 w-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-soft-lg">
+                <Stethoscope className="h-7 w-7 text-white" />
+              </div>
+              <span className="text-3xl font-bold text-neutral-900">MyMD<span className="text-green-600">.uz</span></span>
             </div>
           </div>
-          <CardTitle className="text-2xl">Shifokor ro'yxatdan o'tish</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl font-bold text-neutral-900">Shifokor ro'yxatdan o'tish</CardTitle>
+          <CardDescription className="text-base text-neutral-600">
             {step === 1 && "Ma'lumotlaringizni kiriting"}
             {step === 2 && "SMS kodni tasdiqlang"}
             {step === 3 && "Parolingizni belgilang"}
@@ -268,14 +270,19 @@ export default function RegisterDoctorPage() {
         <CardContent>
           {/* Progress Bar */}
           <div className="mb-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-base font-semibold text-neutral-700">
                 {step}-qadam / 3
               </span>
+              <span className="text-sm text-neutral-500">
+                {step === 1 && "Ma'lumotlar"}
+                {step === 2 && "Tasdiqlash"}
+                {step === 3 && "Xavfsizlik"}
+              </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-neutral-200 rounded-full h-2.5">
               <div
-                className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-green-500 to-green-600 h-2.5 rounded-full transition-all duration-500 shadow-sm"
                 style={{ width: `${(step / 3) * 100}%` }}
               />
             </div>
@@ -283,99 +290,104 @@ export default function RegisterDoctorPage() {
 
           {/* Xatolik xabari */}
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-sm text-red-800">{error}</p>
+            <div className="mb-4 p-4 bg-red-50 border-2 border-red-200 rounded-xl">
+              <p className="text-sm font-medium text-red-700">{error}</p>
             </div>
           )}
 
           {/* Muvaffaqiyat xabari */}
           {successMessage && (
-            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
-              <p className="text-sm text-green-800">{successMessage}</p>
+            <div className="mb-4 p-4 bg-green-50 border-2 border-green-200 rounded-xl flex items-center gap-3">
+              <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
+              <p className="text-sm font-medium text-green-800">{successMessage}</p>
             </div>
           )}
 
           {/* 1-qadam: Ma'lumot kiritish */}
           {step === 1 && (
-            <form onSubmit={handleSubmit(handleStep1Submit)} className="space-y-4">
+            <form onSubmit={handleSubmit(handleStep1Submit)} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="firstName">Ism *</Label>
+                <Label htmlFor="firstName" className="text-base font-semibold text-neutral-700">Ism *</Label>
                 <Input
                   id="firstName"
                   {...register("firstName")}
                   placeholder="Aziz"
                   disabled={loading}
+                  className="h-12 text-base border-2 border-neutral-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 rounded-lg"
                 />
                 {errors.firstName && (
-                  <p className="text-sm text-red-600">{errors.firstName.message}</p>
+                  <p className="text-sm font-medium text-red-600">{errors.firstName.message}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="lastName">Familiya *</Label>
+                <Label htmlFor="lastName" className="text-base font-semibold text-neutral-700">Familiya *</Label>
                 <Input
                   id="lastName"
                   {...register("lastName")}
                   placeholder="Karimov"
                   disabled={loading}
+                  className="h-12 text-base border-2 border-neutral-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 rounded-lg"
                 />
                 {errors.lastName && (
-                  <p className="text-sm text-red-600">{errors.lastName.message}</p>
+                  <p className="text-sm font-medium text-red-600">{errors.lastName.message}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Elektron pochta *</Label>
+                <Label htmlFor="email" className="text-base font-semibold text-neutral-700">Elektron pochta *</Label>
                 <Input
                   id="email"
                   type="email"
                   {...register("email")}
                   placeholder="misol@email.com"
                   disabled={loading}
+                  className="h-12 text-base border-2 border-neutral-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 rounded-lg"
                 />
                 {errors.email && (
-                  <p className="text-sm text-red-600">{errors.email.message}</p>
+                  <p className="text-sm font-medium text-red-600">{errors.email.message}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phoneNumber">Telefon raqami *</Label>
+                <Label htmlFor="phoneNumber" className="text-base font-semibold text-neutral-700">Telefon raqami *</Label>
                 <Input
                   id="phoneNumber"
                   type="tel"
                   {...register("phoneNumber")}
                   placeholder="+998 90 123 45 67"
                   disabled={loading}
+                  className="h-12 text-base border-2 border-neutral-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 rounded-lg"
                 />
                 {errors.phoneNumber && (
-                  <p className="text-sm text-red-600">{errors.phoneNumber.message}</p>
+                  <p className="text-sm font-medium text-red-600">{errors.phoneNumber.message}</p>
                 )}
-                <p className="text-xs text-gray-500">
+                <p className="text-sm text-neutral-500">
                   SMS tasdiqlash kodi ushbu raqamga yuboriladi
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="specialization">Mutaxassislik *</Label>
+                <Label htmlFor="specialization" className="text-base font-semibold text-neutral-700">Mutaxassislik *</Label>
                 <Input
                   id="specialization"
                   {...register("specialization")}
                   placeholder="Oftalmolog, Kardiolog, ..."
                   disabled={loading}
+                  className="h-12 text-base border-2 border-neutral-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 rounded-lg"
                 />
                 {errors.specialization && (
-                  <p className="text-sm text-red-600">{errors.specialization.message}</p>
+                  <p className="text-sm font-medium text-red-600">{errors.specialization.message}</p>
                 )}
-                <p className="text-xs text-gray-500">
-                Profilni to‘ldirish jarayonida litsenziya va hujjatlar talab qilinadi
+                <p className="text-sm text-neutral-500">
+                  Profilni to'ldirish jarayonida litsenziya va hujjatlar talab qilinadi
                 </p>
               </div>
 
-              <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={loading}>
+              <Button type="submit" className="w-full h-12 text-base bg-green-600 hover:bg-green-700 shadow-lg hover:shadow-xl active:scale-95 transition-all" disabled={loading}>
                 {loading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Yuborilmoqda...
                   </>
                 ) : (
@@ -383,12 +395,12 @@ export default function RegisterDoctorPage() {
                 )}
               </Button>
 
-              <div className="text-center pt-4 border-t">
-                <p className="text-sm text-gray-600">
+              <div className="text-center pt-6 border-t border-neutral-200">
+                <p className="text-base text-neutral-600">
                   Allaqachon ro'yxatdan o'tganmisiz?{" "}
                   <Link
                     href="/login"
-                    className="text-green-600 hover:text-green-700 font-medium"
+                    className="text-green-600 hover:text-green-700 font-semibold underline-offset-4 hover:underline"
                   >
                     Tizimga kirish
                   </Link>
@@ -398,9 +410,9 @@ export default function RegisterDoctorPage() {
               <div className="text-center pt-2">
                 <Link
                   href="/"
-                  className="text-sm text-gray-500 hover:text-gray-700"
+                  className="text-base text-neutral-600 hover:text-green-600 font-medium transition-colors"
                 >
-                  ← Bosh sahifaga qaytish
+                  ← Asosiy sahifaga qaytish
                 </Link>
               </div>
             </form>
@@ -408,16 +420,15 @@ export default function RegisterDoctorPage() {
 
           {/* 2-qadam: SMS tasdiqlash */}
           {step === 2 && (
-            <form onSubmit={handleStep2Submit} className="space-y-4">
-              <div className="text-center mb-4">
-                <p className="text-sm text-gray-600">
-                  <strong>{formData.phoneNumber}</strong> raqamiga yuborilgan 6
-                  xonali kodni kiriting
+            <form onSubmit={handleStep2Submit} className="space-y-6">
+              <div className="text-center mb-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+                <p className="text-base text-neutral-700">
+                  <strong className="text-green-700">{formData.phoneNumber}</strong> raqamiga yuborilgan 6 xonali kodni kiriting
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="smsCode">Tasdiqlash kodi</Label>
+              <div className="space-y-3">
+                <Label htmlFor="smsCode" className="text-base font-semibold text-neutral-700">Tasdiqlash kodi</Label>
                 <Input
                   id="smsCode"
                   name="smsCode"
@@ -425,14 +436,14 @@ export default function RegisterDoctorPage() {
                   maxLength={6}
                   placeholder="123456"
                   disabled={loading}
-                  className="text-center text-2xl tracking-widest"
+                  className="h-16 text-center text-3xl tracking-widest font-mono border-2 border-neutral-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 rounded-xl"
                 />
               </div>
 
-              <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={loading}>
+              <Button type="submit" className="w-full h-12 text-base bg-green-600 hover:bg-green-700 shadow-lg hover:shadow-xl active:scale-95 transition-all" disabled={loading}>
                 {loading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Tekshirilmoqda...
                   </>
                 ) : (
@@ -440,10 +451,10 @@ export default function RegisterDoctorPage() {
                 )}
               </Button>
 
-              <div className="text-center">
+              <div className="text-center pt-2">
                 {countdown > 0 ? (
-                  <p className="text-sm text-gray-500">
-                    Yangi kod yuborish uchun {countdown} soniya kuting
+                  <p className="text-base text-neutral-500">
+                    Yangi kod yuborish uchun <strong className="text-green-600">{countdown}</strong> soniya kuting
                   </p>
                 ) : (
                   <Button
@@ -451,7 +462,7 @@ export default function RegisterDoctorPage() {
                     variant="link"
                     onClick={handleResendCode}
                     disabled={loading}
-                    className="text-green-600 hover:text-green-700"
+                    className="text-base text-green-600 hover:text-green-700 font-semibold"
                   >
                     Kodni qayta yuborish
                   </Button>
@@ -461,26 +472,28 @@ export default function RegisterDoctorPage() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full"
+                className="w-full h-12 text-base border-2 hover:bg-neutral-50"
                 onClick={() => setStep(1)}
               >
-                Orqaga
+                ← Orqaga
               </Button>
             </form>
           )}
 
           {/* 3-qadam: Parol belgilash */}
           {step === 3 && (
-            <form onSubmit={handleStep3Submit} className="space-y-4">
-              <div className="text-center mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
-                <CheckCircle2 className="h-6 w-6 text-green-600 mx-auto mb-2" />
-                <p className="text-sm text-green-800 font-medium">
+            <form onSubmit={handleStep3Submit} className="space-y-5">
+              <div className="text-center mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-xl">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <CheckCircle2 className="h-8 w-8 text-green-600" />
+                </div>
+                <p className="text-base text-green-800 font-semibold">
                   Telefon raqami tasdiqlandi
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Parol *</Label>
+                <Label htmlFor="password" className="text-base font-semibold text-neutral-700">Parol *</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -488,28 +501,28 @@ export default function RegisterDoctorPage() {
                     type={showPassword ? "text" : "password"}
                     placeholder="Kamida 8 ta belgi"
                     disabled={loading}
-                    className="pr-10"
+                    className="h-12 text-base pr-12 border-2 border-neutral-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 rounded-lg"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-green-600 transition-colors p-1"
                     tabIndex={-1}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
+                      <EyeOff className="h-5 w-5" />
                     ) : (
-                      <Eye className="h-4 w-4" />
+                      <Eye className="h-5 w-5" />
                     )}
                   </button>
                 </div>
-                <p className="text-xs text-gray-500">
-                  Kamida 8 ta belgi, bitta katta harf, bitta kichik harf va bitta raqam bo'lishi kerak
+                <p className="text-sm text-neutral-500">
+                  Kamida 8 ta belgi, bitta katta harf, bitta kichik harf va bitta raqam
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="passwordConfirm">Parolni takrorlang *</Label>
+                <Label htmlFor="passwordConfirm" className="text-base font-semibold text-neutral-700">Parolni takrorlang *</Label>
                 <div className="relative">
                   <Input
                     id="passwordConfirm"
@@ -517,27 +530,27 @@ export default function RegisterDoctorPage() {
                     type={showPasswordConfirm ? "text" : "password"}
                     placeholder="Parolingizni qayta kiriting"
                     disabled={loading}
-                    className="pr-10"
+                    className="h-12 text-base pr-12 border-2 border-neutral-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 rounded-lg"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-green-600 transition-colors p-1"
                     tabIndex={-1}
                   >
                     {showPasswordConfirm ? (
-                      <EyeOff className="h-4 w-4" />
+                      <EyeOff className="h-5 w-5" />
                     ) : (
-                      <Eye className="h-4 w-4" />
+                      <Eye className="h-5 w-5" />
                     )}
                   </button>
                 </div>
               </div>
 
-              <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={loading}>
+              <Button type="submit" className="w-full h-12 text-base bg-green-600 hover:bg-green-700 shadow-lg hover:shadow-xl active:scale-95 transition-all" disabled={loading}>
                 {loading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Ro'yxatdan o'tkazilmoqda...
                   </>
                 ) : (

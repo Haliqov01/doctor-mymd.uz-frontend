@@ -1,86 +1,117 @@
 import Link from "next/link";
-import { ArrowRight, Calendar, Clock, Users, Shield } from "lucide-react";
+import { ArrowRight, Calendar, Clock, Users, Shield, Stethoscope, Heart } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-zinc-50 dark:from-zinc-950 dark:to-zinc-900">
+    <div className="min-h-screen bg-gradient-to-br from-white via-green-50/30 to-green-100/50">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16 sm:py-24">
+      <div className="container mx-auto px-4 py-20 sm:py-28">
         <div className="flex flex-col items-center text-center">
           {/* Logo/Brand */}
-          <div className="mb-8">
-            <h1 className="text-5xl sm:text-6xl font-bold text-zinc-900 dark:text-zinc-50 mb-4">
-              Doctor <span className="text-blue-600 dark:text-blue-500">MyMD</span>
+          <div className="mb-12 animate-fade-in">
+            {/* Medical Icon */}
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                <div className="absolute inset-0 bg-green-500 opacity-20 blur-3xl rounded-full"></div>
+                <div className="relative h-20 w-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-soft-lg">
+                  <Stethoscope className="h-10 w-10 text-white" />
+                </div>
+              </div>
+            </div>
+            
+            <h1 className="text-5xl sm:text-7xl font-bold text-neutral-900 mb-4">
+              Doctor <span className="text-green-600">MyMD</span>
             </h1>
-            <p className="text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl">
-              Modern ve kullanıcı dostu doktor randevu yönetim sistemi
+            <p className="text-xl sm:text-2xl text-neutral-600 max-w-2xl mx-auto leading-relaxed">
+              Zamonaviy va qulay shifokor bilan uchrashuv tizimi
             </p>
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-16">
+          <div className="flex flex-col sm:flex-row gap-4 mb-20">
             <Link
               href="/login"
-              className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center justify-center px-10 py-4 text-lg font-semibold text-white bg-green-600 rounded-xl hover:bg-green-700 shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95"
             >
-              Giriş Yap
+              Tizimga kirish
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
             <Link
               href="/register"
-              className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-zinc-900 dark:text-zinc-50 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors"
+              className="inline-flex items-center justify-center px-10 py-4 text-lg font-semibold text-green-700 bg-white border-2 border-green-300 rounded-xl hover:border-green-500 hover:bg-green-50 shadow-md hover:shadow-lg transition-all duration-200"
             >
-              Kayıt Ol
+              Ro'yxatdan o'tish
             </Link>
           </div>
 
           {/* Features Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full max-w-6xl">
-            <div className="flex flex-col items-center p-6 bg-white dark:bg-zinc-800 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-700">
-              <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg mb-4">
-                <Calendar className="h-8 w-8 text-blue-600 dark:text-blue-500" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl">
+            <div className="group flex flex-col items-center p-8 bg-white rounded-2xl shadow-soft hover:shadow-soft-lg border border-neutral-100 hover:border-green-200 transition-all duration-200">
+              <div className="p-4 bg-green-100 rounded-xl mb-5 group-hover:bg-green-200 transition-colors">
+                <Calendar className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50 mb-2">
-                Kolay Randevu
+              <h3 className="text-lg font-bold text-neutral-900 mb-2">
+                Oson Uchrashuv
               </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 text-center">
-                Hızlı ve pratik randevu oluşturma
+              <p className="text-base text-neutral-600 text-center leading-relaxed">
+                Tez va qulay uchrashuv yaratish
               </p>
             </div>
 
-            <div className="flex flex-col items-center p-6 bg-white dark:bg-zinc-800 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-700">
-              <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg mb-4">
-                <Clock className="h-8 w-8 text-green-600 dark:text-green-500" />
+            <div className="group flex flex-col items-center p-8 bg-white rounded-2xl shadow-soft hover:shadow-soft-lg border border-neutral-100 hover:border-green-200 transition-all duration-200">
+              <div className="p-4 bg-green-100 rounded-xl mb-5 group-hover:bg-green-200 transition-colors">
+                <Clock className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50 mb-2">
-                Zaman Yönetimi
+              <h3 className="text-lg font-bold text-neutral-900 mb-2">
+                Vaqt Boshqaruvi
               </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 text-center">
-                Etkin saat ve takvim yönetimi
+              <p className="text-base text-neutral-600 text-center leading-relaxed">
+                Samarali soat va taqvim boshqaruvi
               </p>
             </div>
 
-            <div className="flex flex-col items-center p-6 bg-white dark:bg-zinc-800 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-700">
-              <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg mb-4">
-                <Users className="h-8 w-8 text-purple-600 dark:text-purple-500" />
+            <div className="group flex flex-col items-center p-8 bg-white rounded-2xl shadow-soft hover:shadow-soft-lg border border-neutral-100 hover:border-green-200 transition-all duration-200">
+              <div className="p-4 bg-green-100 rounded-xl mb-5 group-hover:bg-green-200 transition-colors">
+                <Users className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50 mb-2">
-                Hasta Takibi
+              <h3 className="text-lg font-bold text-neutral-900 mb-2">
+                Bemor Kuzatuvi
               </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 text-center">
-                Detaylı hasta kayıt sistemi
+              <p className="text-base text-neutral-600 text-center leading-relaxed">
+                Batafsil bemor ro'yxati tizimi
               </p>
             </div>
 
-            <div className="flex flex-col items-center p-6 bg-white dark:bg-zinc-800 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-700">
-              <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg mb-4">
-                <Shield className="h-8 w-8 text-orange-600 dark:text-orange-500" />
+            <div className="group flex flex-col items-center p-8 bg-white rounded-2xl shadow-soft hover:shadow-soft-lg border border-neutral-100 hover:border-green-200 transition-all duration-200">
+              <div className="p-4 bg-green-100 rounded-xl mb-5 group-hover:bg-green-200 transition-colors">
+                <Shield className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50 mb-2">
-                Güvenli Sistem
+              <h3 className="text-lg font-bold text-neutral-900 mb-2">
+                Xavfsiz Tizim
               </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 text-center">
-                Verileriniz güvende
+              <p className="text-base text-neutral-600 text-center leading-relaxed">
+                Ma'lumotlaringiz xavfsizligi kafolatlangan
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Trust Badge Section */}
+      <div className="container mx-auto px-4 py-16">
+        <div className="max-w-4xl mx-auto bg-gradient-to-br from-green-50 to-white rounded-2xl border border-green-200 shadow-soft p-8 sm:p-12">
+          <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+            <div className="flex-shrink-0">
+              <div className="h-16 w-16 bg-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <Heart className="h-8 w-8 text-white" />
+              </div>
+            </div>
+            <div className="flex-1">
+              <h2 className="text-2xl font-bold text-neutral-900 mb-2">
+                Shifokorlar uchun ishonchli yechim
+              </h2>
+              <p className="text-lg text-neutral-600 leading-relaxed">
+                Bemor bilan aloqani osonlashtiring, vaqtingizni tejang va xizmat sifatini oshiring.
               </p>
             </div>
           </div>
@@ -88,11 +119,17 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-200 dark:border-zinc-800 mt-16">
+      <footer className="border-t border-neutral-200 bg-white mt-20">
         <div className="container mx-auto px-4 py-8">
-          <p className="text-center text-sm text-zinc-600 dark:text-zinc-400">
-            © 2025 Doctor MyMD. Tüm hakları saklıdır.
-          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-base text-neutral-600">
+              © 2025 Doctor MyMD. Barcha huquqlar himoyalangan.
+            </p>
+            <div className="flex items-center gap-2 text-neutral-600">
+              <Heart className="h-4 w-4 text-green-600 fill-green-600" />
+              <span className="text-sm">O'zbekiston shifokorlari uchun</span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

@@ -109,7 +109,12 @@ export function useWorkingHours() {
       const result = await response.json();
 
       if (result.success && result.data && result.data.length > 0) {
-        setWorkingHours(result.data);
+        // API'den gelen veriyi normalize et - eksik slotDuration değerlerini varsayılan değerle doldur
+        const normalizedData = result.data.map((wh: WorkingHour) => ({
+          ...wh,
+          slotDuration: wh.slotDuration || 30, // Varsayılan 30 dakika
+        }));
+        setWorkingHours(normalizedData);
       }
     } catch (error) {
       console.log("Working hours API not available yet:", error);

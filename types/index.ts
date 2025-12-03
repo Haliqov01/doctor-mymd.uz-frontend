@@ -64,24 +64,38 @@ export interface Doctor {
   experienceYears: number;
   workplace?: string;
   biography?: string;
+  certificates?: Certificate[];
   createdDate: Date;
   updatedDate: Date;
   status: EntityStatus;
 }
 
+export interface Certificate {
+  id: number;
+  fileName: string;
+  fileType: string;
+  categoryName: string;
+  uploadedAt: string;
+  fileSize: number;
+  downloadUrl: string;
+}
+
 export interface Appointment {
   id: number;
   patientId: number;
-  patient?: Patient;
+  patientName: string;
+  patientPhone: string;
   doctorId: number;
-  doctor?: Doctor;
+  doctorName: string;
+  doctorSpecialization: string;
   message?: string;
-  scheduledDate: Date;
+  scheduledDate: string;
   duration: number;
-  appointmentStatus: AppointmentStatus;
-  createdDate: Date;
-  updatedDate: Date;
-  status: EntityStatus;
+  status: AppointmentStatus;
+  statusName: string;
+  createdDate: string;
+  updatedDate: string;
+  isDeleted: number;
 }
 
 // Session Types
@@ -93,13 +107,112 @@ export interface SessionPayload {
   exp: number;
 }
 
-// API Response Types (Hospital-main Result<T> için)
-export interface ApiResponse<T = any> {
-  isSuccess: boolean;
-  data?: T;
-  errorModel?: {
-    errorType: string;
-    errorMessage: string;
+// Backend API Response Types (Hospital-main Result<T> formatı)
+export interface BackendResponse<T = any> {
+  payload: T;
+  success: boolean;
+  error?: {
+    code: string;
+    message: string;
+    details?: any;
   };
 }
 
+// Paginated Response
+export interface PaginatedResponse<T> {
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  isFirst: boolean;
+  isLast: boolean;
+  data: T[];
+}
+
+// Auth Types
+export interface SignInRequest {
+  phone: string;
+  password: string;
+}
+
+export interface SignInResponse {
+  token: string;
+  user: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    role: string;
+  };
+}
+
+export interface SignUpRequest {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  password: string;
+  email?: string;
+}
+
+// Profile Types
+export interface ProfileResponse {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  dateOfBirth?: string;
+  gender?: number;
+  address?: string;
+  profilePhotoPath?: string;
+  role: string;
+}
+
+// Working Hours (Frontend only - Backend'de henüz yok)
+export interface WorkingHour {
+  id?: number;
+  doctorId?: number;
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
+  breakStart: string | null;
+  breakEnd: string | null;
+  isActive: boolean;
+}
+
+// Appointment Request Types
+export interface GetAppointmentsRequest {
+  pageNumber: number;
+  pageSize: number;
+  patientId?: number;
+  doctorId?: number;
+  status?: AppointmentStatus;
+  fromDate?: string;
+  toDate?: string;
+}
+
+export interface UpdateAppointmentStatusRequest {
+  appointmentId: number;
+  status: AppointmentStatus;
+  notes?: string;
+  scheduledDate?: string;
+  duration?: number;
+}
+
+// Doctor Request Types
+export interface GetDoctorsRequest {
+  fullName?: string;
+  specialization?: string;
+  pageNumber: number;
+  pageSize: number;
+  experienceYears?: number;
+}
+
+// Patient Request Types
+export interface GetPatientsRequest {
+  fullName?: string;
+  gender?: string;
+  pageNumber: number;
+  pageSize: number;
+  age?: number;
+}

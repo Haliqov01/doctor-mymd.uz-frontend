@@ -78,7 +78,6 @@ export function SocialMediaTab({
             />
             <div className="ml-3">
               <div className="flex items-center gap-2">
-                <span className="text-2xl">✅</span>
                 <span className="font-semibold text-gray-900">
                   Roziman - Barcha havolalarimni ulashaman
                 </span>
@@ -107,7 +106,6 @@ export function SocialMediaTab({
             />
             <div className="ml-3">
               <div className="flex items-center gap-2">
-                <span className="text-2xl">📊</span>
                 <span className="font-semibold text-gray-900">
                   Ba'zilarini taqdim qilaman - Tanlaganlarimni ulashaman
                 </span>
@@ -136,7 +134,6 @@ export function SocialMediaTab({
             />
             <div className="ml-3">
               <div className="flex items-center gap-2">
-                <span className="text-2xl">🚫</span>
                 <span className="font-semibold text-gray-900">
                   Rozi emasman - Hech qanday havola ulashmayman
                 </span>

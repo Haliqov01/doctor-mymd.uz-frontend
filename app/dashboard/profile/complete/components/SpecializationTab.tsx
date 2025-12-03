@@ -172,7 +172,7 @@ export function SpecializationTab({
               className="flex w-full rounded-md border border-input bg-white px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
             />
             <p className="text-xs text-gray-500 flex items-center gap-1">
-              💡 Kalit so'zlarni vergul bilan ajrating
+              Kalit so'zlarni vergul bilan ajrating
             </p>
           </div>
 
