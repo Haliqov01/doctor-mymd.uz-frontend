@@ -58,26 +58,26 @@ export function LanguageSwitcher({ variant = "default", className = "" }: Langua
       <div className={`relative ${className}`} ref={dropdownRef}>
         <button
           onClick={() => setOpen(!open)}
-          className="flex items-center justify-center h-10 w-10 rounded-lg bg-white/80 hover:bg-white border border-neutral-200 hover:border-green-300 shadow-sm hover:shadow transition-all"
+          className="flex items-center justify-center h-10 w-10 rounded-xl bg-white/80 hover:bg-white border border-slate-200 hover:border-teal-300 shadow-sm hover:shadow transition-all"
           title={t("title")}
         >
           <span className="text-lg">{currentLang?.flag}</span>
         </button>
 
         {open && (
-          <div className="absolute top-full right-0 mt-2 bg-white border border-neutral-200 rounded-xl shadow-lg z-50 overflow-hidden min-w-[160px]">
+          <div className="absolute top-full right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden min-w-[160px]">
             {languages.map((lang) => (
               <button
                 key={lang.code}
                 onClick={() => switchLocale(lang.code)}
-                className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-neutral-50 transition-colors ${
-                  locale === lang.code ? "bg-green-50" : ""
+                className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors ${
+                  locale === lang.code ? "bg-teal-50" : ""
                 }`}
               >
                 <span className="text-lg">{lang.flag}</span>
-                <span className="text-sm font-medium text-neutral-700">{lang.name}</span>
+                <span className="text-sm font-medium text-slate-700">{lang.name}</span>
                 {locale === lang.code && (
-                  <Check className="h-4 w-4 text-green-600 ml-auto" />
+                  <Check className="h-4 w-4 text-teal-600 ml-auto" />
                 )}
               </button>
             ))}
@@ -93,26 +93,26 @@ export function LanguageSwitcher({ variant = "default", className = "" }: Langua
       <div className={`relative ${className}`} ref={dropdownRef}>
         <button
           onClick={() => setOpen(!open)}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white hover:bg-neutral-50 border border-neutral-200 hover:border-green-300 shadow-sm hover:shadow transition-all text-sm"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 hover:border-teal-300 shadow-sm hover:shadow transition-all text-sm"
         >
           <span>{currentLang?.flag}</span>
-          <ChevronDown className={`h-3.5 w-3.5 text-neutral-500 transition-transform ${open ? "rotate-180" : ""}`} />
+          <ChevronDown className={`h-3.5 w-3.5 text-slate-500 transition-transform ${open ? "rotate-180" : ""}`} />
         </button>
 
         {open && (
-          <div className="absolute top-full right-0 mt-2 bg-white border border-neutral-200 rounded-xl shadow-lg z-50 overflow-hidden min-w-[160px]">
+          <div className="absolute top-full right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden min-w-[160px]">
             {languages.map((lang) => (
               <button
                 key={lang.code}
                 onClick={() => switchLocale(lang.code)}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-neutral-50 transition-colors ${
-                  locale === lang.code ? "bg-green-50" : ""
+                className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 transition-colors ${
+                  locale === lang.code ? "bg-teal-50" : ""
                 }`}
               >
                 <span>{lang.flag}</span>
-                <span className="text-sm font-medium text-neutral-700">{lang.name}</span>
+                <span className="text-sm font-medium text-slate-700">{lang.name}</span>
                 {locale === lang.code && (
-                  <Check className="h-4 w-4 text-green-600 ml-auto" />
+                  <Check className="h-4 w-4 text-teal-600 ml-auto" />
                 )}
               </button>
             ))}
@@ -127,34 +127,34 @@ export function LanguageSwitcher({ variant = "default", className = "" }: Langua
     <div className={`relative ${className}`} ref={dropdownRef}>
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white hover:bg-neutral-50 border border-neutral-200 hover:border-green-300 shadow-soft hover:shadow-soft-lg transition-all"
+        className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 hover:border-teal-300 shadow-sm hover:shadow-md transition-all"
       >
-        <Globe className="h-4 w-4 text-neutral-500" />
-        <span className="text-sm font-medium text-neutral-700">
+        <Globe className="h-4 w-4 text-slate-500" />
+        <span className="text-sm font-medium text-slate-700">
           {currentLang?.flag} {currentLang?.name}
         </span>
-        <ChevronDown className={`h-4 w-4 text-neutral-500 transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`h-4 w-4 text-slate-500 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 mt-2 bg-white border border-neutral-200 rounded-xl shadow-lg z-50 overflow-hidden min-w-[180px]">
-          <div className="px-4 py-2 bg-neutral-50 border-b border-neutral-200">
-            <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">{t("title")}</p>
+        <div className="absolute top-full right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden min-w-[180px]">
+          <div className="px-4 py-2 bg-slate-50 border-b border-slate-200">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{t("title")}</p>
           </div>
           {languages.map((lang) => (
             <button
               key={lang.code}
               onClick={() => switchLocale(lang.code)}
-              className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-neutral-50 transition-colors ${
-                locale === lang.code ? "bg-green-50 border-l-2 border-green-500" : ""
+              className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors ${
+                locale === lang.code ? "bg-teal-50 border-l-2 border-teal-500" : ""
               }`}
             >
               <span className="text-lg">{lang.flag}</span>
-              <span className={`text-sm font-medium ${locale === lang.code ? "text-green-700" : "text-neutral-700"}`}>
+              <span className={`text-sm font-medium ${locale === lang.code ? "text-teal-700" : "text-slate-700"}`}>
                 {lang.name}
               </span>
               {locale === lang.code && (
-                <Check className="h-4 w-4 text-green-600 ml-auto" />
+                <Check className="h-4 w-4 text-teal-600 ml-auto" />
               )}
             </button>
           ))}

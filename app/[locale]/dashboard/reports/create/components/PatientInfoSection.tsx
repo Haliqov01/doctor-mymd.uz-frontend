@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { PatientInfo } from "@/types/report";
 import { EXAMINATION_OPTIONS } from "@/lib/examination-options";
+import { User, MapPin, Calendar, Users } from "lucide-react";
 
 interface PatientInfoSectionProps {
   patientInfo: PatientInfo;
@@ -26,38 +27,52 @@ export function PatientInfoSection({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {/* Full Name */}
         <div className="space-y-2">
-          <Label htmlFor="fullName">F.I.Sh. (bemorning)</Label>
+          <Label htmlFor="fullName" className="flex items-center gap-2">
+            <User className="h-4 w-4 text-slate-400" />
+            F.I.Sh. (bemorning)
+          </Label>
           <Input
             id="fullName"
             value={patientInfo.fullName}
             onChange={(e) => handleChange("fullName", e.target.value)}
             placeholder="To'liq ism-familiya"
+            className="bg-slate-50"
           />
         </div>
 
+        {/* Date of Birth */}
         <div className="space-y-2">
-          <Label htmlFor="dateOfBirth">Tug'ilgan sanasi</Label>
+          <Label htmlFor="dateOfBirth" className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-slate-400" />
+            Tug'ilgan sanasi
+          </Label>
           <Input
             id="dateOfBirth"
             type="date"
             value={patientInfo.dateOfBirth}
             onChange={(e) => handleChange("dateOfBirth", e.target.value)}
+            className="bg-slate-50"
           />
         </div>
 
+        {/* Address */}
         <div className="space-y-2">
-          <Label htmlFor="address">Manzil</Label>
+          <Label htmlFor="address" className="flex items-center gap-2">
+            <MapPin className="h-4 w-4 text-slate-400" />
+            Manzil
+          </Label>
           <Select
             value={patientInfo.address}
             onValueChange={(value) => handleChange("address", value)}
           >
-            <SelectTrigger className="bg-white">
+            <SelectTrigger className="bg-slate-50">
               <SelectValue placeholder="Shahar tanlang" />
             </SelectTrigger>
-            <SelectContent className="bg-white max-h-[300px]">
+            <SelectContent className="max-h-[300px]">
               {EXAMINATION_OPTIONS.cities.map((city) => (
                 <SelectItem key={city} value={city}>
                   {city}
@@ -67,18 +82,22 @@ export function PatientInfoSection({
           </Select>
         </div>
 
+        {/* Gender */}
         <div className="space-y-2">
-          <Label htmlFor="gender">Jinsi</Label>
+          <Label htmlFor="gender" className="flex items-center gap-2">
+            <Users className="h-4 w-4 text-slate-400" />
+            Jinsi
+          </Label>
           <Select
             value={patientInfo.gender}
             onValueChange={(value) =>
               handleChange("gender", value as "Erkak" | "Ayol")
             }
           >
-            <SelectTrigger className="bg-white">
+            <SelectTrigger className="bg-slate-50">
               <SelectValue placeholder="Tanlang" />
             </SelectTrigger>
-            <SelectContent className="bg-white">
+            <SelectContent>
               {EXAMINATION_OPTIONS.gender.map((g) => (
                 <SelectItem key={g} value={g.charAt(0).toUpperCase() + g.slice(1)}>
                   {g.charAt(0).toUpperCase() + g.slice(1)}
@@ -91,4 +110,3 @@ export function PatientInfoSection({
     </div>
   );
 }
-

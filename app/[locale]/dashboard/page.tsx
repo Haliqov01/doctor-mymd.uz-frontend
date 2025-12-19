@@ -145,30 +145,36 @@ export default function DoctorDashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-neutral-50">
+      <div className="min-h-screen flex items-center justify-center bg-[#FAFBFC]">
         <div className="text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-green-600 mx-auto mb-4" />
-          <p className="text-base text-neutral-600">{t('common.loading')}</p>
+          <Loader2 className="h-10 w-10 animate-spin text-teal-600 mx-auto mb-4" />
+          <p className="text-base text-slate-600">{t('common.loading')}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-[#FAFBFC]">
+      {/* Background Pattern */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/[0.02] rounded-full blur-[100px]" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/[0.02] rounded-full blur-[100px]" />
+      </div>
+      
       {/* Header */}
-      <header className="bg-white border-b border-neutral-200 shadow-soft sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-5">
+      <header className="relative z-50 border-b border-slate-200/60 bg-white/80 backdrop-blur-xl sticky top-0">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="h-12 w-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-soft">
+              <div className="h-12 w-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
                 <Stethoscope className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-neutral-900">
+                <h1 className="text-2xl font-bold text-slate-800">
                   {t('dashboard.title')}
                 </h1>
-                <p className="text-base text-neutral-600">
+                <p className="text-base text-slate-500">
                   {profile?.firstName} {profile?.lastName}
                 </p>
               </div>
@@ -176,7 +182,7 @@ export default function DoctorDashboardPage() {
             <div className="flex items-center gap-3">
               <LanguageSwitcher variant="compact" />
               <Link href="/dashboard/profile">
-                <Button variant="outline" size="default" className="border-2 hover:border-green-500 hover:bg-green-50">
+                <Button variant="outline" size="default" className="hover:border-teal-500 hover:bg-teal-50">
                   <User className="h-4 w-4 mr-2" />
                   {t('profile.title')}
                 </Button>
@@ -196,26 +202,26 @@ export default function DoctorDashboardPage() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="relative z-10 container mx-auto px-6 py-8">
         <div className="max-w-6xl mx-auto space-y-6">
           
           {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Total Patients */}
-            <Card className="border-neutral-200 hover:shadow-soft-lg transition-all duration-200 bg-white">
+            <Card className="border-slate-200 bg-white">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-neutral-600 uppercase tracking-wide">
+                  <CardTitle className="text-sm font-semibold text-slate-500 uppercase tracking-wide">
                     {t('patients.title')}
                   </CardTitle>
-                  <div className="h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center">
-                    <Users className="h-5 w-5 text-green-600" />
+                  <div className="h-10 w-10 bg-teal-100 rounded-xl flex items-center justify-center">
+                    <Users className="h-5 w-5 text-teal-600" />
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-neutral-900 mb-2">{stats.totalPatients}</div>
-                <p className="text-sm text-neutral-600">
+                <div className="text-4xl font-bold text-slate-800 mb-2">{stats.totalPatients}</div>
+                <p className="text-sm text-slate-500">
                   {stats.totalPatients === 0 ? t('patients.noPatients') : t('patients.title')}
                 </p>
               </CardContent>
@@ -223,57 +229,57 @@ export default function DoctorDashboardPage() {
 
             {/* Appointments */}
             <Link href="/dashboard/appointments">
-              <Card className="border-green-200 hover:shadow-soft-lg hover:border-green-300 transition-all duration-200 cursor-pointer bg-gradient-to-br from-white to-green-50/30">
+              <Card className="border-teal-200 hover:border-teal-300 cursor-pointer bg-gradient-to-br from-white to-teal-50/30">
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-semibold text-neutral-600 uppercase tracking-wide">
+                    <CardTitle className="text-sm font-semibold text-slate-500 uppercase tracking-wide">
                       {t('appointments.title')}
                     </CardTitle>
-                    <div className="h-10 w-10 bg-green-600 rounded-lg flex items-center justify-center shadow-sm">
+                    <div className="h-10 w-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
                       <Calendar className="h-5 w-5 text-white" />
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-4xl font-bold text-neutral-900 mb-2">{stats.pendingAppointments}</div>
-                  <p className="text-sm text-green-700 font-medium">{t('common.view')} →</p>
+                  <div className="text-4xl font-bold text-slate-800 mb-2">{stats.pendingAppointments}</div>
+                  <p className="text-sm text-teal-600 font-medium">{t('common.view')} →</p>
                 </CardContent>
               </Card>
             </Link>
 
             {/* Documents */}
-            <Card className="border-neutral-200 hover:shadow-soft-lg transition-all duration-200 bg-white">
+            <Card className="border-slate-200 bg-white">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-neutral-600 uppercase tracking-wide">
+                  <CardTitle className="text-sm font-semibold text-slate-500 uppercase tracking-wide">
                     {t('reports.title')}
                   </CardTitle>
-                  <div className="h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center">
-                    <FileText className="h-5 w-5 text-green-600" />
+                  <div className="h-10 w-10 bg-teal-100 rounded-xl flex items-center justify-center">
+                    <FileText className="h-5 w-5 text-teal-600" />
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-neutral-900 mb-2">{stats.totalDocuments}</div>
-                <p className="text-sm text-neutral-600">{t('appointments.status.pending')}</p>
+                <div className="text-4xl font-bold text-slate-800 mb-2">{stats.totalDocuments}</div>
+                <p className="text-sm text-slate-500">{t('appointments.status.pending')}</p>
               </CardContent>
             </Card>
           </div>
 
           {/* Today's Working Hours */}
-          <Card className="border-2 border-green-200 bg-gradient-to-br from-green-50 to-white shadow-soft">
+          <Card className="border-2 border-teal-200 bg-gradient-to-br from-teal-50 to-white">
             <CardHeader className="flex flex-row items-center justify-between pb-4">
               <div className="flex items-center gap-4">
-                <div className="h-14 w-14 rounded-xl bg-green-600 flex items-center justify-center shadow-soft">
+                <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
                   <Clock className="h-7 w-7 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl font-bold text-neutral-900">{t('workingHours.title')}</CardTitle>
-                  <CardDescription className="text-base text-neutral-600">{getFormattedDate()}</CardDescription>
+                  <CardTitle className="text-xl font-bold text-slate-800">{t('workingHours.title')}</CardTitle>
+                  <CardDescription className="text-base text-slate-500">{getFormattedDate()}</CardDescription>
                 </div>
               </div>
               <Link href="/dashboard/working-hours">
-                <Button variant="outline" size="default" className="gap-2 border-2 border-green-300 hover:border-green-500 hover:bg-green-50">
+                <Button variant="outline" size="default" className="gap-2 border-teal-300 hover:border-teal-500 hover:bg-teal-50">
                   <Edit2 className="h-4 w-4" />
                   {t('common.edit')}
                 </Button>
@@ -285,18 +291,18 @@ export default function DoctorDashboardPage() {
                   {todaySchedule.isActive ? (
                     <>
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center">
-                          <Clock className="h-6 w-6 text-green-600" />
+                        <div className="h-10 w-10 bg-teal-100 rounded-xl flex items-center justify-center">
+                          <Clock className="h-6 w-6 text-teal-600" />
                         </div>
-                        <span className="text-2xl font-bold text-green-700">
+                        <span className="text-2xl font-bold text-teal-700">
                           {todaySchedule.startTime} - {todaySchedule.endTime}
                         </span>
-                        <span className="ml-2 px-3 py-1.5 bg-green-600 text-white text-sm font-semibold rounded-lg shadow-sm">
+                        <span className="ml-2 px-3 py-1.5 bg-gradient-to-r from-teal-500 to-teal-600 text-white text-sm font-semibold rounded-lg shadow-sm">
                           {t('workingHours.workingDay')}
                         </span>
                       </div>
                       {todaySchedule.breakStart && todaySchedule.breakEnd && (
-                        <div className="flex items-center gap-3 text-neutral-700 bg-white p-3 rounded-lg border border-neutral-200">
+                        <div className="flex items-center gap-3 text-slate-700 bg-white p-3 rounded-xl border border-slate-200">
                           <div className="h-8 w-8 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
                             <Utensils className="h-5 w-5 text-orange-600" />
                           </div>
@@ -305,9 +311,9 @@ export default function DoctorDashboardPage() {
                       )}
                     </>
                   ) : (
-                    <div className="flex items-center gap-3 text-neutral-500 py-2">
-                      <div className="h-10 w-10 bg-neutral-100 rounded-lg flex items-center justify-center">
-                        <Ban className="h-6 w-6 text-neutral-400" />
+                    <div className="flex items-center gap-3 text-slate-500 py-2">
+                      <div className="h-10 w-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                        <Ban className="h-6 w-6 text-slate-400" />
                       </div>
                       <span className="text-xl font-semibold">{t('workingHours.dayOff')}</span>
                     </div>
@@ -315,9 +321,9 @@ export default function DoctorDashboardPage() {
                 </div>
               ) : (
                 <div className="text-center py-6">
-                  <p className="text-base text-neutral-500 mb-4">{t('workingHours.schedule')}</p>
+                  <p className="text-base text-slate-500 mb-4">{t('workingHours.schedule')}</p>
                   <Link href="/dashboard/working-hours">
-                    <Button className="bg-green-600 hover:bg-green-700 shadow-lg hover:shadow-xl transition-all text-base px-6 py-3">
+                    <Button className="shadow-lg hover:shadow-xl transition-all text-base px-6 py-3">
                       <Settings className="h-5 w-5 mr-2" />
                       {t('common.edit')}
                     </Button>
@@ -331,10 +337,10 @@ export default function DoctorDashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             {/* Weekly Schedule Summary */}
-            <Card className="border-neutral-200 shadow-soft">
+            <Card className="border-slate-200">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg font-bold text-neutral-900">
-                  <Calendar className="h-6 w-6 text-green-600" />
+                <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-800">
+                  <Calendar className="h-6 w-6 text-teal-600" />
                   {t('workingHours.schedule')}
                 </CardTitle>
               </CardHeader>
@@ -344,16 +350,16 @@ export default function DoctorDashboardPage() {
                     {workingHours.map((wh) => (
                       <div
                         key={wh.dayOfWeek}
-                        className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-neutral-50 transition-colors border-b border-neutral-100 last:border-0"
+                        className="flex items-center justify-between py-3 px-3 rounded-xl hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0"
                       >
-                        <span className="font-semibold text-base text-neutral-700">{getDayLabel(wh.dayOfWeek)}</span>
+                        <span className="font-semibold text-base text-slate-700">{getDayLabel(wh.dayOfWeek)}</span>
                         <div className="flex items-center gap-2">
                           {wh.isActive ? (
-                            <CheckCircle className="h-5 w-5 text-green-600" />
+                            <CheckCircle className="h-5 w-5 text-teal-600" />
                           ) : (
-                            <XCircle className="h-5 w-5 text-neutral-400" />
+                            <XCircle className="h-5 w-5 text-slate-400" />
                           )}
-                          <span className={`text-sm font-medium ${wh.isActive ? "text-neutral-900" : "text-neutral-400"}`}>
+                          <span className={`text-sm font-medium ${wh.isActive ? "text-slate-800" : "text-slate-400"}`}>
                             {wh.isActive ? `${wh.startTime} - ${wh.endTime}` : t('workingHours.dayOff')}
                           </span>
                         </div>
@@ -361,10 +367,10 @@ export default function DoctorDashboardPage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-base text-neutral-500 py-4">{t('workingHours.schedule')}</p>
+                  <p className="text-base text-slate-500 py-4">{t('workingHours.schedule')}</p>
                 )}
                 <Link href="/dashboard/working-hours">
-                  <Button variant="outline" className="w-full mt-4 border-2 hover:border-green-500 hover:bg-green-50 text-base">
+                  <Button variant="outline" className="w-full mt-4 hover:border-teal-500 hover:bg-teal-50 text-base">
                     {t('common.view')} →
                   </Button>
                 </Link>
@@ -372,70 +378,70 @@ export default function DoctorDashboardPage() {
             </Card>
 
             {/* Quick Actions */}
-            <Card className="border-neutral-200 shadow-soft">
+            <Card className="border-slate-200">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg font-bold text-neutral-900">
-                  <Settings className="h-6 w-6 text-green-600" />
+                <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-800">
+                  <Settings className="h-6 w-6 text-teal-600" />
                   {t('dashboard.sidebar.settings')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <Link href="/dashboard/profile/complete">
-                    <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 border-2 hover:border-green-300 hover:bg-green-50 transition-all">
-                      <div className="h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 hover:border-teal-300 hover:bg-teal-50 transition-all">
+                      <div className="h-10 w-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
                         <Edit className="h-5 w-5 text-blue-600" />
                       </div>
                       <div className="text-left">
-                        <div className="font-semibold text-base text-neutral-900">{t('profile.complete.title')}</div>
-                        <div className="text-sm text-neutral-600">{t('profile.personalInfo')}</div>
+                        <div className="font-semibold text-base text-slate-800">{t('profile.complete.title')}</div>
+                        <div className="text-sm text-slate-500">{t('profile.personalInfo')}</div>
                       </div>
                     </Button>
                   </Link>
                   
                   <Link href="/dashboard/working-hours">
-                    <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 border-2 hover:border-green-300 hover:bg-green-50 transition-all">
-                      <div className="h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Clock className="h-5 w-5 text-purple-600" />
+                    <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 hover:border-teal-300 hover:bg-teal-50 transition-all">
+                      <div className="h-10 w-10 bg-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <Clock className="h-5 w-5 text-violet-600" />
                       </div>
                       <div className="text-left">
-                        <div className="font-semibold text-base text-neutral-900">{t('workingHours.title')}</div>
-                        <div className="text-sm text-neutral-600">{t('workingHours.schedule')}</div>
+                        <div className="font-semibold text-base text-slate-800">{t('workingHours.title')}</div>
+                        <div className="text-sm text-slate-500">{t('workingHours.schedule')}</div>
                       </div>
                     </Button>
                   </Link>
                   
                   <Link href="/dashboard/appointments">
-                    <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 border-2 hover:border-green-300 hover:bg-green-50 transition-all">
-                      <div className="h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Calendar className="h-5 w-5 text-green-600" />
+                    <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 hover:border-teal-300 hover:bg-teal-50 transition-all">
+                      <div className="h-10 w-10 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <Calendar className="h-5 w-5 text-teal-600" />
                       </div>
                       <div className="text-left">
-                        <div className="font-semibold text-base text-neutral-900">{t('appointments.title')}</div>
-                        <div className="text-sm text-neutral-600">{t('common.view')}</div>
+                        <div className="font-semibold text-base text-slate-800">{t('appointments.title')}</div>
+                        <div className="text-sm text-slate-500">{t('common.view')}</div>
                       </div>
                     </Button>
                   </Link>
                   
                   <Link href="/dashboard/reports/create">
-                    <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 border-2 border-green-300 hover:border-green-500 bg-green-50/50 hover:bg-green-100 transition-all">
-                      <div className="h-10 w-10 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 border-teal-300 hover:border-teal-500 bg-teal-50/50 hover:bg-teal-100 transition-all">
+                      <div className="h-10 w-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-teal-500/20">
                         <ClipboardList className="h-5 w-5 text-white" />
                       </div>
                       <div className="text-left">
-                        <div className="font-semibold text-base text-green-800">{t('reports.newReport')}</div>
-                        <div className="text-sm text-green-700">{t('reports.create.title')}</div>
+                        <div className="font-semibold text-base text-teal-700">{t('reports.newReport')}</div>
+                        <div className="text-sm text-teal-600">{t('reports.create.title')}</div>
                       </div>
                     </Button>
                   </Link>
                   
-                  <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 border-2" disabled>
-                    <div className="h-10 w-10 bg-neutral-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <UserPlus className="h-5 w-5 text-neutral-400" />
+                  <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4" disabled>
+                    <div className="h-10 w-10 bg-slate-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <UserPlus className="h-5 w-5 text-slate-400" />
                     </div>
                     <div className="text-left">
-                      <div className="font-semibold text-base text-neutral-400">{t('patients.title')}</div>
-                      <div className="text-sm text-neutral-400">{t('common.loading')}</div>
+                      <div className="font-semibold text-base text-slate-400">{t('patients.title')}</div>
+                      <div className="text-sm text-slate-400">{t('common.loading')}</div>
                     </div>
                   </Button>
                 </div>

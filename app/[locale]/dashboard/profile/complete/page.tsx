@@ -17,11 +17,11 @@ import { ReviewTab } from "./components/ReviewTab";
 
 const tabs = [
   { value: "personal", label: "Shaxsiy", icon: User, iconColor: "text-blue-600", bgColor: "bg-blue-100", fullLabel: "Shaxsiy ma'lumotlar" },
-  { value: "education", label: "Ta'lim", icon: GraduationCap, iconColor: "text-purple-600", bgColor: "bg-purple-100", fullLabel: "Ta'lim ma'lumotlari" },
+  { value: "education", label: "Ta'lim", icon: GraduationCap, iconColor: "text-violet-600", bgColor: "bg-violet-100", fullLabel: "Ta'lim ma'lumotlari" },
   { value: "experience", label: "Tajriba", icon: Briefcase, iconColor: "text-orange-600", bgColor: "bg-orange-100", fullLabel: "Kasbiy tajriba" },
-  { value: "specialization", label: "Ixtisoslik", icon: Target, iconColor: "text-pink-600", bgColor: "bg-pink-100", fullLabel: "Ixtisoslik" },
+  { value: "specialization", label: "Ixtisoslik", icon: Target, iconColor: "text-rose-600", bgColor: "bg-rose-100", fullLabel: "Ixtisoslik" },
   { value: "social", label: "Ijtimoiy", icon: Globe, iconColor: "text-cyan-600", bgColor: "bg-cyan-100", fullLabel: "Ijtimoiy tarmoqlar" },
-  { value: "review", label: "Tasdiqlash", icon: CheckCircle, iconColor: "text-green-600", bgColor: "bg-green-100", fullLabel: "Tasdiqlash" },
+  { value: "review", label: "Tasdiqlash", icon: CheckCircle, iconColor: "text-teal-600", bgColor: "bg-teal-100", fullLabel: "Tasdiqlash" },
 ];
 
 export default function CompleteProfilePage() {
@@ -99,25 +99,31 @@ export default function CompleteProfilePage() {
   const progress = Math.round((completedSections / tabs.length) * 100);
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-[#FAFBFC]">
+      {/* Background Pattern */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/[0.02] rounded-full blur-[100px]" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/[0.02] rounded-full blur-[100px]" />
+      </div>
+      
       {/* Header */}
-      <header className="bg-white border-b border-neutral-200 shadow-soft sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-5">
+      <header className="relative z-50 border-b border-slate-200/60 bg-white/80 backdrop-blur-xl sticky top-0">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex items-center gap-4">
-            <div className="h-12 w-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-soft">
+            <div className="h-12 w-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
               <Stethoscope className="h-6 w-6 text-white" />
             </div>
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-neutral-900">
+              <h1 className="text-2xl font-bold text-slate-800">
                 Profil ma'lumotlarini to'ldirish
               </h1>
-              <p className="text-base text-neutral-600">
+              <p className="text-base text-slate-500">
                 Platformada faol bo'lish uchun ma'lumotlaringizni kiriting
               </p>
             </div>
             <div className="flex items-center gap-3">
               <Link href="/dashboard">
-                <Button variant="outline" size="default" className="border-2 hover:border-green-500 hover:bg-green-50">
+                <Button variant="outline" size="default" className="hover:border-teal-500 hover:bg-teal-50">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Dashboard
                 </Button>
@@ -127,13 +133,13 @@ export default function CompleteProfilePage() {
 
           {/* Progress Bar */}
           <div className="mt-5">
-            <div className="flex items-center justify-between text-base text-neutral-700 mb-3">
+            <div className="flex items-center justify-between text-base text-slate-700 mb-3">
               <span className="font-semibold">Jarayon:</span>
-              <span className="font-bold text-green-600">{progress}% to'ldirildi</span>
+              <span className="font-bold text-teal-600">{progress}% to'ldirildi</span>
             </div>
-            <div className="h-3 bg-neutral-200 rounded-full overflow-hidden shadow-inner">
+            <div className="h-3 bg-slate-200 rounded-full overflow-hidden shadow-inner">
               <div
-                className="h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-500 shadow-sm"
+                className="h-full bg-gradient-to-r from-teal-500 to-teal-600 transition-all duration-500 shadow-sm"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -142,13 +148,13 @@ export default function CompleteProfilePage() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="relative z-10 container mx-auto px-6 py-8">
         <div className="max-w-5xl mx-auto">
           <form onSubmit={handleSubmit}>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               {/* Tabs List */}
               <div className="mb-8 overflow-x-auto pb-2">
-                <TabsList className="inline-flex h-auto w-full md:w-auto bg-white border-2 border-neutral-200 rounded-xl p-2 shadow-soft">
+                <TabsList className="inline-flex h-auto w-full md:w-auto bg-white border border-slate-200 rounded-2xl p-2 shadow-sm">
                   {tabs.map((tab) => {
                     const IconComponent = tab.icon;
                     const isActive = activeTab === tab.value;
@@ -156,20 +162,20 @@ export default function CompleteProfilePage() {
                       <TabsTrigger
                         key={tab.value}
                         value={tab.value}
-                        className={`flex-1 md:flex-initial min-w-[100px] rounded-lg transition-all duration-200 ${
+                        className={`flex-1 md:flex-initial min-w-[100px] rounded-xl transition-all duration-200 ${
                           isActive 
-                            ? 'bg-green-50 border-2 border-green-500 shadow-sm' 
-                            : 'border-2 border-transparent hover:bg-neutral-50'
+                            ? 'bg-teal-50 border-2 border-teal-500 shadow-sm' 
+                            : 'border-2 border-transparent hover:bg-slate-50'
                         }`}
                       >
                         <div className="flex flex-col items-center gap-2 py-3 px-3">
-                          <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${
-                            isActive ? 'bg-green-600' : tab.bgColor
+                          <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${
+                            isActive ? 'bg-gradient-to-br from-teal-500 to-teal-600 shadow-lg shadow-teal-500/20' : tab.bgColor
                           }`}>
                             <IconComponent className={`h-5 w-5 ${isActive ? 'text-white' : tab.iconColor}`} />
                           </div>
                           <span className={`text-sm font-semibold ${
-                            isActive ? 'text-green-700' : 'text-neutral-600'
+                            isActive ? 'text-teal-700' : 'text-slate-600'
                           }`}>
                             {tab.label}
                           </span>
@@ -245,7 +251,7 @@ export default function CompleteProfilePage() {
               </div>
 
               {/* Navigation Buttons */}
-              <Card className="border-2 border-neutral-200 shadow-soft">
+              <Card className="border-slate-200">
                 <CardContent className="pt-6 pb-6">
                   <div className="flex items-center justify-between gap-6">
                     <Button
@@ -253,13 +259,13 @@ export default function CompleteProfilePage() {
                       variant="outline"
                       onClick={handlePrevious}
                       disabled={isFirstTab}
-                      className="h-12 flex-1 md:flex-initial border-2 text-base font-semibold disabled:opacity-50"
+                      className="flex-1 md:flex-initial text-base font-semibold disabled:opacity-50"
                     >
                       <ChevronLeft className="h-5 w-5 mr-2" />
                       Orqaga
                     </Button>
 
-                    <div className="hidden md:block text-base text-neutral-700 font-semibold">
+                    <div className="hidden md:block text-base text-slate-700 font-semibold">
                       {currentTabIndex + 1} / {tabs.length} - {tabs[currentTabIndex].fullLabel}
                     </div>
 
@@ -267,7 +273,7 @@ export default function CompleteProfilePage() {
                       <Button
                         type="button"
                         onClick={handleNext}
-                        className="h-12 flex-1 md:flex-initial bg-green-600 hover:bg-green-700 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+                        className="flex-1 md:flex-initial text-base font-semibold"
                       >
                         Keyingisi
                         <ChevronRight className="h-5 w-5 ml-2" />
@@ -276,7 +282,7 @@ export default function CompleteProfilePage() {
                       <Button
                         type="submit"
                         disabled={loading}
-                        className="h-12 flex-1 md:flex-initial bg-green-600 hover:bg-green-700 text-base font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+                        className="flex-1 md:flex-initial text-base font-semibold disabled:opacity-50"
                       >
                         {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
                         Saqlash va Tugatish

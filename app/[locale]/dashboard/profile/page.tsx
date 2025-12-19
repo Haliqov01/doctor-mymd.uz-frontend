@@ -94,36 +94,42 @@ export default function DoctorProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-neutral-50">
+      <div className="min-h-screen flex items-center justify-center bg-[#FAFBFC]">
         <div className="text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-green-600 mx-auto mb-4" />
-          <p className="text-base text-neutral-600">Yuklanmoqda...</p>
+          <Loader2 className="h-10 w-10 animate-spin text-teal-600 mx-auto mb-4" />
+          <p className="text-base text-slate-600">Yuklanmoqda...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-[#FAFBFC]">
+      {/* Background Pattern */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/[0.02] rounded-full blur-[100px]" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/[0.02] rounded-full blur-[100px]" />
+      </div>
+      
       {/* Header */}
-      <header className="bg-white border-b border-neutral-200 shadow-soft sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-5">
+      <header className="relative z-50 border-b border-slate-200/60 bg-white/80 backdrop-blur-xl sticky top-0">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="h-12 w-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-soft">
+              <div className="h-12 w-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
                 <Stethoscope className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-neutral-900">
+                <h1 className="text-2xl font-bold text-slate-800">
                   Shifokor Profili
                 </h1>
-                <p className="text-base text-neutral-600">
+                <p className="text-base text-slate-500">
                   Shaxsiy ma'lumotlaringizni ko'rish va tahrirlash
                 </p>
               </div>
             </div>
             <Link href="/dashboard">
-              <Button variant="outline" className="border-2 hover:border-green-500 hover:bg-green-50 text-base">
+              <Button variant="outline" className="hover:border-teal-500 hover:bg-teal-50 text-base">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Dashboard
               </Button>
@@ -133,19 +139,19 @@ export default function DoctorProfilePage() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="relative z-10 container mx-auto px-6 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Profile Card */}
-          <Card className="border-2 border-neutral-200 shadow-soft">
+          <Card className="border-slate-200">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl font-bold text-neutral-900">Profil Ma'lumotlari</CardTitle>
+                <CardTitle className="text-2xl font-bold text-slate-800">Profil Ma'lumotlari</CardTitle>
                 {!isEditing ? (
                   <Button
                     variant="outline"
                     size="default"
                     onClick={handleEdit}
-                    className="border-2 border-green-300 text-green-700 hover:bg-green-600 hover:text-white hover:border-green-600 transition-all font-semibold"
+                    className="border-teal-200 text-teal-700 hover:bg-teal-50 hover:border-teal-300 transition-all font-semibold"
                   >
                     <Edit2 className="h-5 w-5 mr-2" />
                     Tahrirlash
@@ -157,7 +163,7 @@ export default function DoctorProfilePage() {
                       size="default"
                       onClick={handleCancel}
                       disabled={saving}
-                      className="border-2 font-semibold"
+                      className="font-semibold"
                     >
                       <X className="h-5 w-5 mr-2" />
                       Bekor qilish
@@ -166,7 +172,7 @@ export default function DoctorProfilePage() {
                       size="default"
                       onClick={handleSave}
                       disabled={saving}
-                      className="bg-green-600 hover:bg-green-700 shadow-lg hover:shadow-xl font-semibold"
+                      className="font-semibold"
                     >
                       {saving ? (
                         <Loader2 className="h-5 w-5 mr-2 animate-spin" />
@@ -187,81 +193,76 @@ export default function DoctorProfilePage() {
                     <div className="space-y-5">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="space-y-2">
-                          <Label htmlFor="firstName" className="text-base font-semibold text-neutral-700">Ism</Label>
+                          <Label htmlFor="firstName">Ism</Label>
                           <Input
                             id="firstName"
                             value={editedProfile.firstName}
                             onChange={(e) => handleInputChange("firstName", e.target.value)}
                             placeholder="Ismingizni kiriting"
-                            className="h-12 text-base border-2 border-neutral-200 focus:border-green-500 focus:ring-4 focus:ring-green-100"
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="lastName" className="text-base font-semibold text-neutral-700">Familiya</Label>
+                          <Label htmlFor="lastName">Familiya</Label>
                           <Input
                             id="lastName"
                             value={editedProfile.lastName}
                             onChange={(e) => handleInputChange("lastName", e.target.value)}
                             placeholder="Familiyangizni kiriting"
-                            className="h-12 text-base border-2 border-neutral-200 focus:border-green-500 focus:ring-4 focus:ring-green-100"
                           />
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="email" className="text-base font-semibold text-neutral-700">Email</Label>
+                        <Label htmlFor="email">Email</Label>
                         <Input
                           id="email"
                           type="email"
                           value={editedProfile.email}
                           onChange={(e) => handleInputChange("email", e.target.value)}
                           placeholder="Email manzilingizni kiriting"
-                          className="h-12 text-base border-2 border-neutral-200 focus:border-green-500 focus:ring-4 focus:ring-green-100"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="phone" className="text-base font-semibold text-neutral-700">Telefon raqami</Label>
+                        <Label htmlFor="phone">Telefon raqami</Label>
                         <Input
                           id="phone"
                           value={editedProfile.phone}
                           onChange={(e) => handleInputChange("phone", e.target.value)}
                           placeholder="+998 XX XXX XX XX"
-                          className="h-12 text-base border-2 border-neutral-200 focus:border-green-500 focus:ring-4 focus:ring-green-100"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="address" className="text-base font-semibold text-neutral-700">Manzil</Label>
+                        <Label htmlFor="address">Manzil</Label>
                         <Input
                           id="address"
                           value={editedProfile.address || ""}
                           onChange={(e) => handleInputChange("address", e.target.value)}
                           placeholder="Manzilingizni kiriting"
-                          className="h-12 text-base border-2 border-neutral-200 focus:border-green-500 focus:ring-4 focus:ring-green-100"
                         />
                       </div>
                     </div>
                   ) : (
                     // View Mode
                     <div className="space-y-1">
-                      <div className="flex items-center py-4 border-b border-neutral-200">
-                        <span className="font-semibold text-neutral-700 text-base w-40">Ism:</span>
-                        <span className="text-neutral-900 text-base font-medium">{profile.firstName || "—"}</span>
+                      <div className="flex items-center py-4 border-b border-slate-200">
+                        <span className="font-semibold text-slate-600 text-base w-40">Ism:</span>
+                        <span className="text-slate-800 text-base font-medium">{profile.firstName || "—"}</span>
                       </div>
-                      <div className="flex items-center py-4 border-b border-neutral-200">
-                        <span className="font-semibold text-neutral-700 text-base w-40">Familiya:</span>
-                        <span className="text-neutral-900 text-base font-medium">{profile.lastName || "—"}</span>
+                      <div className="flex items-center py-4 border-b border-slate-200">
+                        <span className="font-semibold text-slate-600 text-base w-40">Familiya:</span>
+                        <span className="text-slate-800 text-base font-medium">{profile.lastName || "—"}</span>
                       </div>
-                      <div className="flex items-center py-4 border-b border-neutral-200">
-                        <span className="font-semibold text-neutral-700 text-base w-40">Email:</span>
-                        <span className="text-neutral-900 text-base font-medium">{profile.email || "—"}</span>
+                      <div className="flex items-center py-4 border-b border-slate-200">
+                        <span className="font-semibold text-slate-600 text-base w-40">Email:</span>
+                        <span className="text-slate-800 text-base font-medium">{profile.email || "—"}</span>
                       </div>
-                      <div className="flex items-center py-4 border-b border-neutral-200">
-                        <span className="font-semibold text-neutral-700 text-base w-40">Telefon:</span>
-                        <span className="text-neutral-900 text-base font-medium">{profile.phone || "—"}</span>
+                      <div className="flex items-center py-4 border-b border-slate-200">
+                        <span className="font-semibold text-slate-600 text-base w-40">Telefon:</span>
+                        <span className="text-slate-800 text-base font-medium">{profile.phone || "—"}</span>
                       </div>
                       {profile.address && (
-                        <div className="flex items-center py-4 border-b border-neutral-200">
-                          <span className="font-semibold text-neutral-700 text-base w-40">Manzil:</span>
-                          <span className="text-neutral-900 text-base font-medium">{profile.address}</span>
+                        <div className="flex items-center py-4 border-b border-slate-200">
+                          <span className="font-semibold text-slate-600 text-base w-40">Manzil:</span>
+                          <span className="text-slate-800 text-base font-medium">{profile.address}</span>
                         </div>
                       )}
                     </div>
@@ -272,16 +273,16 @@ export default function DoctorProfilePage() {
           </Card>
 
           {/* Placeholder Card */}
-          <Card className="mt-6 border-2 border-green-200 bg-gradient-to-br from-green-50 to-white shadow-soft">
+          <Card className="mt-6 border-teal-200 bg-gradient-to-br from-teal-50 to-white">
             <CardHeader>
-              <CardTitle className="text-xl font-bold text-neutral-900">Profilni to'ldirish va tasdiqlash</CardTitle>
-              <CardDescription className="text-base text-neutral-600">
+              <CardTitle className="text-xl font-bold text-slate-800">Profilni to'ldirish va tasdiqlash</CardTitle>
+              <CardDescription className="text-base text-slate-500">
                 Foydalanuvchi ro'yxatdan o'tish ma'lumotlarini to'ldirgandan so'ng, profil ma'lumotlari administrator tomonidan tekshiriladi va tasdiqlanadi
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Button 
-                className="w-full h-12 bg-green-600 hover:bg-green-700 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+                className="w-full text-base font-semibold"
                 onClick={() => router.push("/dashboard/profile/complete")}
               >
                 <FileText className="h-5 w-5 mr-2" />

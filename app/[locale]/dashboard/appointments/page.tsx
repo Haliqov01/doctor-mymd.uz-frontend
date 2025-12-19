@@ -38,22 +38,22 @@ import { Appointment, AppointmentStatus } from "@/types";
 const statusConfig = {
   [AppointmentStatus.Pending]: {
     label: "Tasdiqlash kutilmoqda",
-    color: "bg-yellow-100 text-yellow-800 border-yellow-300",
+    color: "bg-amber-50 text-amber-700 border-amber-200",
     icon: AlertCircle,
   },
   [AppointmentStatus.Approved]: {
     label: "Tasdiqlandi",
-    color: "bg-green-100 text-green-800 border-green-300",
+    color: "bg-teal-50 text-teal-700 border-teal-200",
     icon: CheckCircle2,
   },
   [AppointmentStatus.Rejected]: {
     label: "Rad etildi",
-    color: "bg-red-100 text-red-800 border-red-300",
+    color: "bg-red-50 text-red-700 border-red-200",
     icon: XCircle,
   },
   [AppointmentStatus.Completed]: {
     label: "Yakunlandi",
-    color: "bg-blue-100 text-blue-800 border-blue-300",
+    color: "bg-blue-50 text-blue-700 border-blue-200",
     icon: CheckCircle2,
   },
 };
@@ -162,15 +162,15 @@ export default function DoctorAppointmentsPage() {
     const isPending = appointment.status === AppointmentStatus.Pending;
 
     return (
-      <Card className={`hover:shadow-md transition-shadow ${isPending ? "border-yellow-300 border-2" : ""}`}>
+      <Card className={`transition-all duration-300 ${isPending ? "border-amber-200 border-2" : "border-slate-200"}`}>
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <User className="h-5 w-5" />
+              <CardTitle className="text-lg flex items-center gap-2 text-slate-800">
+                <User className="h-5 w-5 text-teal-600" />
                 {appointment.patientName}
               </CardTitle>
-              <div className="flex flex-col gap-1 mt-2 text-sm text-gray-600">
+              <div className="flex flex-col gap-1 mt-2 text-sm text-slate-500">
                 {appointment.patientPhone && (
                   <div className="flex items-center gap-2">
                     <Phone className="h-4 w-4" />
@@ -179,7 +179,7 @@ export default function DoctorAppointmentsPage() {
                 )}
               </div>
             </div>
-            <Badge className={`${config.color} border flex items-center gap-1`}>
+            <Badge className={`${config.color} border flex items-center gap-1 rounded-lg`}>
               <StatusIcon className="h-3 w-3" />
               {config.label}
             </Badge>
@@ -188,39 +188,39 @@ export default function DoctorAppointmentsPage() {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="flex items-center gap-2 text-sm">
-              <Calendar className="h-4 w-4 text-green-600" />
-              <span className="font-medium">{formatDate(appointment.scheduledDate)}</span>
+              <Calendar className="h-4 w-4 text-teal-600" />
+              <span className="font-medium text-slate-700">{formatDate(appointment.scheduledDate)}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Clock className="h-4 w-4 text-green-600" />
-              <span className="font-medium">
+              <Clock className="h-4 w-4 text-teal-600" />
+              <span className="font-medium text-slate-700">
                 {formatTime(appointment.scheduledDate)} ({appointment.duration} daqiqa)
               </span>
             </div>
           </div>
 
           {appointment.message && (
-            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+            <div className="p-4 bg-teal-50 rounded-xl border border-teal-200">
               <div className="flex items-start gap-2">
-                <FileText className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <FileText className="h-4 w-4 text-teal-600 mt-0.5 flex-shrink-0" />
                 <div className="flex-1">
-                  <div className="text-sm font-medium text-green-900">Shikoyat / Sabab:</div>
-                  <div className="text-sm text-green-700 mt-1">{appointment.message}</div>
+                  <div className="text-sm font-medium text-teal-800">Shikoyat / Sabab:</div>
+                  <div className="text-sm text-teal-700 mt-1">{appointment.message}</div>
                 </div>
               </div>
             </div>
           )}
 
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-slate-400">
             So'rov vaqti: {new Date(appointment.createdDate).toLocaleString("uz-UZ")}
           </div>
 
           {isPending && (
-            <div className="flex gap-2 pt-2 border-t">
+            <div className="flex gap-2 pt-2 border-t border-slate-200">
               <Button
                 size="sm"
                 variant="outline"
-                className="flex-1 border-red-300 text-red-700 hover:bg-red-50"
+                className="flex-1 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
                 onClick={() => handleRejectClick(appointment)}
                 disabled={actionLoading}
               >
@@ -229,7 +229,7 @@ export default function DoctorAppointmentsPage() {
               </Button>
               <Button
                 size="sm"
-                className="flex-1 bg-green-600 hover:bg-green-700"
+                className="flex-1"
                 onClick={() => handleConfirm(appointment.id)}
                 disabled={actionLoading}
               >
@@ -245,8 +245,8 @@ export default function DoctorAppointmentsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-green-600" />
+      <div className="min-h-screen flex items-center justify-center bg-[#FAFBFC]">
+        <Loader2 className="h-8 w-8 animate-spin text-teal-600" />
       </div>
     );
   }
@@ -257,8 +257,14 @@ export default function DoctorAppointmentsPage() {
   const completedAppointments = filterAppointments(AppointmentStatus.Completed);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-[#FAFBFC] p-4 md:p-8">
+      {/* Background Pattern */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/[0.02] rounded-full blur-[100px]" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/[0.02] rounded-full blur-[100px]" />
+      </div>
+      
+      <div className="relative z-10 max-w-6xl mx-auto">
         <Button
           variant="outline"
           onClick={() => router.push("/dashboard")}
@@ -268,9 +274,9 @@ export default function DoctorAppointmentsPage() {
           Bosh sahifaga qaytish
         </Button>
 
-        <Card className="mb-6">
+        <Card className="mb-6 border-slate-200">
           <CardHeader>
-            <CardTitle className="text-2xl">Uchrashuvlar</CardTitle>
+            <CardTitle className="text-2xl text-slate-800">Uchrashuvlar</CardTitle>
             <CardDescription>
               Bemorlarning uchrashuvlarini ko'rish va boshqarish
             </CardDescription>
@@ -278,9 +284,9 @@ export default function DoctorAppointmentsPage() {
         </Card>
 
         {pendingAppointments.length > 0 && (
-          <Card className="mb-6 border-yellow-300 bg-yellow-50">
+          <Card className="mb-6 border-amber-200 bg-amber-50">
             <CardContent className="py-4">
-              <div className="flex items-center gap-2 text-yellow-800">
+              <div className="flex items-center gap-2 text-amber-700">
                 <AlertCircle className="h-5 w-5" />
                 <span className="font-medium">
                   {pendingAppointments.length} ta tasdiqlanmagan uchrashuv so'rovi bor
@@ -308,10 +314,10 @@ export default function DoctorAppointmentsPage() {
 
           <TabsContent value="pending" className="space-y-4">
             {pendingAppointments.length === 0 ? (
-              <Card>
+              <Card className="border-slate-200">
                 <CardContent className="py-12 text-center">
-                  <CheckCircle2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">Kutayotgan uchrashuv so'rovi yo'q</p>
+                  <CheckCircle2 className="h-12 w-12 text-slate-300 mx-auto mb-4" />
+                  <p className="text-slate-500">Kutayotgan uchrashuv so'rovi yo'q</p>
                 </CardContent>
               </Card>
             ) : (
@@ -321,10 +327,10 @@ export default function DoctorAppointmentsPage() {
 
           <TabsContent value="confirmed" className="space-y-4">
             {confirmedAppointments.length === 0 ? (
-              <Card>
+              <Card className="border-slate-200">
                 <CardContent className="py-12 text-center">
-                  <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">Tasdiqlangan uchrashuvlar yo'q</p>
+                  <Calendar className="h-12 w-12 text-slate-300 mx-auto mb-4" />
+                  <p className="text-slate-500">Tasdiqlangan uchrashuvlar yo'q</p>
                 </CardContent>
               </Card>
             ) : (
@@ -334,10 +340,10 @@ export default function DoctorAppointmentsPage() {
 
           <TabsContent value="completed" className="space-y-4">
             {completedAppointments.length === 0 ? (
-              <Card>
+              <Card className="border-slate-200">
                 <CardContent className="py-12 text-center">
-                  <CheckCircle2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">Yakunlangan uchrashuvlar yo'q</p>
+                  <CheckCircle2 className="h-12 w-12 text-slate-300 mx-auto mb-4" />
+                  <p className="text-slate-500">Yakunlangan uchrashuvlar yo'q</p>
                 </CardContent>
               </Card>
             ) : (
@@ -347,10 +353,10 @@ export default function DoctorAppointmentsPage() {
 
           <TabsContent value="all" className="space-y-4">
             {allAppointments.length === 0 ? (
-              <Card>
+              <Card className="border-slate-200">
                 <CardContent className="py-12 text-center">
-                  <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">Hozircha uchrashuvingiz yo'q</p>
+                  <Calendar className="h-12 w-12 text-slate-300 mx-auto mb-4" />
+                  <p className="text-slate-500">Hozircha uchrashuvingiz yo'q</p>
                 </CardContent>
               </Card>
             ) : (
@@ -378,7 +384,7 @@ export default function DoctorAppointmentsPage() {
                   placeholder="Masalan: Bu kunda boshqa uchrashuv mavjud..."
                   className="w-full"
                 />
-                <p className="text-xs text-gray-500">Kamida 10 belgidan iborat</p>
+                <p className="text-xs text-slate-400">Kamida 10 belgidan iborat</p>
               </div>
             </div>
             <DialogFooter>

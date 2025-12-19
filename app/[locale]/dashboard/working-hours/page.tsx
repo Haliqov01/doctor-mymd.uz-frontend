@@ -51,29 +51,37 @@ export default function WorkingHoursPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-green-600" />
+      <div className="min-h-screen flex items-center justify-center bg-[#FAFBFC]">
+        <Loader2 className="h-8 w-8 animate-spin text-teal-600" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+    <div className="min-h-screen bg-[#FAFBFC]">
+      {/* Background Pattern */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/[0.02] rounded-full blur-[100px]" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/[0.02] rounded-full blur-[100px]" />
+      </div>
+      
       {/* Header */}
-      <header className="bg-white border-b shadow-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
+      <header className="relative z-50 border-b border-slate-200/60 bg-white/80 backdrop-blur-xl sticky top-0">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex items-center gap-3">
-            <Stethoscope className="h-8 w-8 text-green-600" />
+            <div className="h-10 w-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
+              <Stethoscope className="h-5 w-5 text-white" />
+            </div>
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-slate-800">
                 Ish Vaqtlarini Sozlash
               </h1>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-slate-500">
                 Bemorlar randevu olishi uchun ish vaqtlaringizni belgilang
               </p>
             </div>
             <Link href="/dashboard">
-              <Button variant="outline" size="sm" className="bg-green-50 border-green-300 text-green-700 hover:bg-green-100">
+              <Button variant="outline" size="sm" className="hover:border-teal-500 hover:bg-teal-50">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Dashboardga qaytish
               </Button>
@@ -83,13 +91,13 @@ export default function WorkingHoursPage() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="relative z-10 container mx-auto px-6 py-8">
         <div className="max-w-5xl mx-auto space-y-6">
           {/* Message */}
           {message && (
-            <Card className={message.type === "success" ? "border-green-300 bg-green-50" : "border-red-300 bg-red-50"}>
+            <Card className={message.type === "success" ? "border-teal-200 bg-teal-50" : "border-red-200 bg-red-50"}>
               <CardContent className="py-4">
-                <p className={message.type === "success" ? "text-green-700" : "text-red-700"}>
+                <p className={message.type === "success" ? "text-teal-700" : "text-red-700"}>
                   {message.type === "success" ? "✅ " : "❌ "}
                   {message.text}
                 </p>
@@ -102,7 +110,7 @@ export default function WorkingHoursPage() {
 
           {/* Day Cards */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold text-slate-800">
               Haftalik Jadval
             </h2>
             {workingHours.map((wh) => (
@@ -118,17 +126,17 @@ export default function WorkingHoursPage() {
           </div>
 
           {/* Save Button */}
-          <Card>
+          <Card className="border-slate-200">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between gap-4">
-                <div className="text-sm text-gray-600">
-                  <p className="font-semibold mb-1">💡 Eslatma:</p>
+                <div className="text-sm text-slate-500">
+                  <p className="font-semibold mb-1 text-slate-700">💡 Eslatma:</p>
                   <p>Ish vaqtlaringiz bemorlar uchun ko'rinadi va randevu olishda qo'llaniladi.</p>
                 </div>
                 <Button
                   onClick={handleSave}
                   disabled={saving}
-                  className="bg-green-600 hover:bg-green-700 min-w-[150px]"
+                  className="min-w-[150px]"
                 >
                   {saving ? (
                     <>

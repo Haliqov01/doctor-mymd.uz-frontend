@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -31,17 +30,17 @@ export function ExaminationField({
   const [mode, setMode] = useState<"select" | "custom">("select");
 
   return (
-    <div className="space-y-2 p-4 rounded-lg border border-gray-100 bg-gray-50/50 hover:border-gray-200 transition-colors">
+    <div className="space-y-2 p-4 rounded-xl border border-slate-100 bg-white hover:border-slate-200 hover:shadow-sm transition-all">
       <div className="flex items-center justify-between">
-        <Label className="text-sm font-medium text-gray-700">{label}</Label>
-        <div className="flex gap-1 bg-white rounded-md p-0.5 border border-gray-200">
+        <Label className="text-sm font-medium text-slate-700">{label}</Label>
+        <div className="flex gap-0.5 bg-slate-100 rounded-lg p-0.5">
           <button
             type="button"
             onClick={() => setMode("select")}
-            className={`px-2 py-1 text-xs rounded transition-colors ${
+            className={`px-2.5 py-1.5 text-xs rounded-md transition-all ${
               mode === "select"
-                ? "bg-green-600 text-white"
-                : "text-gray-600 hover:text-gray-900"
+                ? "bg-teal-500 text-white shadow-sm"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white"
             }`}
           >
             <List className="h-3 w-3 inline mr-1" />
@@ -50,10 +49,10 @@ export function ExaminationField({
           <button
             type="button"
             onClick={() => setMode("custom")}
-            className={`px-2 py-1 text-xs rounded transition-colors ${
+            className={`px-2.5 py-1.5 text-xs rounded-md transition-all ${
               mode === "custom"
-                ? "bg-green-600 text-white"
-                : "text-gray-600 hover:text-gray-900"
+                ? "bg-teal-500 text-white shadow-sm"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white"
             }`}
           >
             <Edit2 className="h-3 w-3 inline mr-1" />
@@ -64,10 +63,10 @@ export function ExaminationField({
 
       {mode === "select" ? (
         <Select value={value} onValueChange={onChange}>
-          <SelectTrigger className="w-full bg-white border-gray-200 focus:border-green-500 focus:ring-green-500">
+          <SelectTrigger className="w-full bg-slate-50">
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
-          <SelectContent className="max-h-[400px] bg-white">
+          <SelectContent className="max-h-[300px]">
             {options.map((option, idx) => (
               <SelectItem key={idx} value={option} className="cursor-pointer">
                 {option}
@@ -81,10 +80,9 @@ export function ExaminationField({
           onChange={(e) => onChange(e.target.value)}
           placeholder="O'z ta'rifingizni kiriting..."
           rows={2}
-          className="w-full resize-none bg-white border-gray-200 focus:border-green-500 focus:ring-green-500"
+          className="w-full resize-none bg-slate-50"
         />
       )}
     </div>
   );
 }
-

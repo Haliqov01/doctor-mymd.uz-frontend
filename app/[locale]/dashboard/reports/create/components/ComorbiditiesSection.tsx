@@ -27,7 +27,6 @@ export function ComorbiditiesSection({
   const [custom, setCustom] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
 
-  // Seçimleri ve custom text'i birleştirip parent'a gönder
   useEffect(() => {
     const all = [...selected];
     if (custom.trim()) {
@@ -46,35 +45,34 @@ export function ComorbiditiesSection({
     setSelected(selected.filter((c) => c !== item));
   };
 
-  // Dropdown'da gösterilmeyecek öğeleri filtrele
   const availableOptions = EXAMINATION_OPTIONS.comorbidities.filter(
     (opt) => !selected.includes(opt)
   );
 
   return (
     <div className="space-y-3">
-      <Label className="text-sm font-medium text-gray-700">Yondosh kasalliklar</Label>
+      <Label className="text-sm font-medium text-slate-700">Yondosh kasalliklar</Label>
       
       {/* Dropdown + Custom Button Row */}
       <div className="flex gap-2">
         <div className="flex-1">
           <Select onValueChange={handleSelect} value="">
-            <SelectTrigger className="w-full bg-white border-gray-200 focus:border-amber-500 focus:ring-amber-500">
+            <SelectTrigger className="w-full bg-slate-50">
               <SelectValue placeholder="Kasallik tanlang..." />
             </SelectTrigger>
-            <SelectContent className="bg-white max-h-[250px]">
+            <SelectContent className="max-h-[250px]">
               {availableOptions.length > 0 ? (
                 availableOptions.map((item) => (
                   <SelectItem 
                     key={item} 
                     value={item}
-                    className="cursor-pointer hover:bg-amber-50"
+                    className="cursor-pointer"
                   >
                     {item}
                   </SelectItem>
                 ))
               ) : (
-                <div className="px-2 py-3 text-sm text-gray-500 text-center">
+                <div className="px-2 py-3 text-sm text-slate-500 text-center">
                   Barcha kasalliklar tanlangan
                 </div>
               )}
@@ -87,16 +85,16 @@ export function ComorbiditiesSection({
           variant="outline"
           size="sm"
           onClick={() => setShowCustomInput(!showCustomInput)}
-          className={`px-3 ${showCustomInput ? 'bg-amber-50 border-amber-300 text-amber-700' : ''}`}
+          className={`px-3 ${showCustomInput ? 'bg-amber-50 border-amber-300 text-amber-700' : 'hover:border-amber-300'}`}
         >
           <Edit2 className="h-4 w-4 mr-1" />
           Yozish
         </Button>
       </div>
 
-      {/* Seçilen Kasalliklar - Tag/Chip Şeklinde */}
+      {/* Selected Items Tags */}
       {selected.length > 0 && (
-        <div className="flex flex-wrap gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="flex flex-wrap gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200">
           {selected.map((item) => (
             <span
               key={item}
@@ -115,23 +113,23 @@ export function ComorbiditiesSection({
         </div>
       )}
 
-      {/* Custom Input Alanı */}
+      {/* Custom Input */}
       {showCustomInput && (
-        <div className="space-y-2 p-3 bg-orange-50/50 rounded-lg border border-orange-100">
-          <Label className="text-xs text-gray-600">Boshqa kasalliklar (qo'shimcha)</Label>
+        <div className="space-y-2 p-3 bg-orange-50/50 rounded-xl border border-orange-100">
+          <Label className="text-xs text-slate-600">Boshqa kasalliklar (qo'shimcha)</Label>
           <Textarea
             value={custom}
             onChange={(e) => setCustom(e.target.value)}
             placeholder="Qo'shimcha kasalliklarni yozing..."
             rows={2}
-            className="resize-none bg-white border-gray-200 focus:border-orange-500 focus:ring-orange-500"
+            className="resize-none bg-white"
           />
         </div>
       )}
 
-      {/* Hızlı Önizleme */}
+      {/* Preview */}
       {(selected.length > 0 || custom) && (
-        <div className="text-xs text-gray-500 italic">
+        <div className="text-xs text-slate-500 italic">
           <span className="font-medium">Natija:</span> {comorbidities || "—"}
         </div>
       )}
