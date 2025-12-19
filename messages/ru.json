@@ -1,0 +1,227 @@
+{
+  "common": {
+    "login": "Войти",
+    "logout": "Выйти",
+    "register": "Регистрация",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "loading": "Загрузка...",
+    "back": "Назад",
+    "next": "Далее",
+    "submit": "Отправить",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "view": "Просмотр",
+    "search": "Поиск",
+    "filter": "Фильтр",
+    "all": "Все",
+    "yes": "Да",
+    "no": "Нет",
+    "confirm": "Подтвердить",
+    "close": "Закрыть",
+    "add": "Добавить",
+    "remove": "Удалить",
+    "required": "Обязательно",
+    "optional": "Необязательно",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "warning": "Предупреждение",
+    "info": "Информация"
+  },
+  "language": {
+    "title": "Язык",
+    "uz": "O'zbekcha",
+    "ru": "Русский"
+  },
+  "home": {
+    "title": "Главная страница",
+    "description": "Добро пожаловать",
+    "heroTitle": "Doctor MyMD",
+    "heroSubtitle": "Современная и удобная система записи к врачу",
+    "loginButton": "Войти в систему",
+    "registerButton": "Регистрация",
+    "features": {
+      "appointment": {
+        "title": "Простая запись",
+        "description": "Быстрое и удобное создание записи"
+      },
+      "time": {
+        "title": "Управление временем",
+        "description": "Эффективное управление расписанием"
+      },
+      "patient": {
+        "title": "Учет пациентов",
+        "description": "Детальная система учета пациентов"
+      },
+      "security": {
+        "title": "Безопасная система",
+        "description": "Гарантированная безопасность ваших данных"
+      }
+    },
+    "trustBadge": {
+      "title": "Надежное решение для врачей",
+      "description": "Упростите связь с пациентами, экономьте время и повышайте качество обслуживания."
+    },
+    "footer": {
+      "copyright": "© 2025 Doctor MyMD. Все права защищены.",
+      "madeFor": "Для врачей Узбекистана"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Вход в систему",
+      "subtitle": "Профессиональная система для врачей",
+      "description": "Введите номер телефона и пароль",
+      "phoneLabel": "Номер телефона",
+      "phonePlaceholder": "+998 90 123 45 67",
+      "passwordLabel": "Пароль",
+      "passwordPlaceholder": "••••••••",
+      "submitButton": "Войти",
+      "noAccount": "Еще не зарегистрированы?",
+      "registerLink": "Регистрация",
+      "backToHome": "Вернуться на главную",
+      "errorPhone": "Введите номер телефона",
+      "errorPassword": "Введите пароль",
+      "errorInvalid": "Неверный номер телефона или пароль"
+    },
+    "register": {
+      "title": "Регистрация",
+      "subtitle": "Создать новый аккаунт",
+      "description": "Введите ваши данные",
+      "nameLabel": "Полное имя",
+      "namePlaceholder": "Имя Фамилия",
+      "phoneLabel": "Номер телефона",
+      "phonePlaceholder": "+998 90 123 45 67",
+      "passwordLabel": "Пароль",
+      "confirmPasswordLabel": "Подтверждение пароля",
+      "submitButton": "Зарегистрироваться",
+      "hasAccount": "Уже есть аккаунт?",
+      "loginLink": "Войти",
+      "backToHome": "Вернуться на главную"
+    }
+  },
+  "dashboard": {
+    "title": "Панель управления",
+    "welcome": "Добро пожаловать",
+    "sidebar": {
+      "home": "Главная",
+      "appointments": "Записи",
+      "patients": "Пациенты",
+      "reports": "Отчеты",
+      "schedule": "Расписание",
+      "profile": "Профиль",
+      "settings": "Настройки"
+    },
+    "stats": {
+      "todayAppointments": "Записи на сегодня",
+      "totalPatients": "Всего пациентов",
+      "pendingReports": "Ожидающие отчеты",
+      "completedToday": "Завершено сегодня"
+    }
+  },
+  "appointments": {
+    "title": "Записи",
+    "newAppointment": "Новая запись",
+    "noAppointments": "Записей нет",
+    "status": {
+      "pending": "Ожидание",
+      "confirmed": "Подтверждено",
+      "completed": "Завершено",
+      "cancelled": "Отменено"
+    },
+    "filter": {
+      "all": "Все",
+      "today": "Сегодня",
+      "upcoming": "Предстоящие",
+      "past": "Прошедшие"
+    },
+    "details": {
+      "patient": "Пациент",
+      "date": "Дата",
+      "time": "Время",
+      "status": "Статус",
+      "notes": "Заметки"
+    }
+  },
+  "patients": {
+    "title": "Пациенты",
+    "newPatient": "Новый пациент",
+    "noPatients": "Список пациентов пуст",
+    "search": "Поиск пациента...",
+    "details": {
+      "name": "Имя",
+      "phone": "Телефон",
+      "birthDate": "Дата рождения",
+      "gender": "Пол",
+      "address": "Адрес",
+      "medicalHistory": "История болезни"
+    },
+    "gender": {
+      "male": "Мужской",
+      "female": "Женский"
+    }
+  },
+  "reports": {
+    "title": "Отчеты",
+    "newReport": "Новый отчет",
+    "noReports": "Отчетов нет",
+    "create": {
+      "title": "Создание отчета",
+      "patientInfo": "Данные пациента",
+      "complaints": "Жалобы",
+      "examination": "Осмотр",
+      "diagnosis": "Диагноз",
+      "treatment": "Лечение",
+      "recommendations": "Рекомендации"
+    }
+  },
+  "profile": {
+    "title": "Профиль",
+    "personalInfo": "Личная информация",
+    "education": "Образование",
+    "experience": "Опыт",
+    "specialization": "Специализация",
+    "documents": "Документы",
+    "socialMedia": "Социальные сети",
+    "complete": {
+      "title": "Заполнение профиля",
+      "progress": "Прогресс",
+      "step": "Шаг"
+    }
+  },
+  "workingHours": {
+    "title": "Рабочее время",
+    "schedule": "Расписание",
+    "dayOff": "Выходной",
+    "workingDay": "Рабочий день",
+    "startTime": "Время начала",
+    "endTime": "Время окончания",
+    "breakTime": "Перерыв",
+    "days": {
+      "monday": "Понедельник",
+      "tuesday": "Вторник",
+      "wednesday": "Среда",
+      "thursday": "Четверг",
+      "friday": "Пятница",
+      "saturday": "Суббота",
+      "sunday": "Воскресенье"
+    }
+  },
+  "validation": {
+    "required": "Это поле обязательно",
+    "invalidPhone": "Неверный номер телефона",
+    "invalidEmail": "Неверный email",
+    "passwordMin": "Пароль должен содержать минимум 6 символов",
+    "passwordMatch": "Пароли не совпадают"
+  },
+  "errors": {
+    "general": "Произошла ошибка",
+    "network": "Ошибка сети. Пожалуйста, попробуйте снова",
+    "unauthorized": "Требуется авторизация",
+    "notFound": "Не найдено",
+    "serverError": "Ошибка сервера"
+  }
+}
+
+
+

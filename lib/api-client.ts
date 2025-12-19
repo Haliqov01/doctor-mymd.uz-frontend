@@ -1,7 +1,7 @@
 import { BackendResponse } from "@/types";
 
 // Backend API URL - .env.local'dan alınır
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mymd.uz";
 const API_VERSION = "/api/v1";
 
 export class ApiError extends Error {
@@ -234,19 +234,20 @@ export const apiClient = {
   },
 };
 
-// API Endpoints - Backend ile uyumlu
+// API Endpoints - Backend ile uyumlu (Swagger'a göre düzeltilmiş)
 export const API_ENDPOINTS = {
-  // Auth
+  // Auth - SMS tabanlı authentication
   AUTH: {
-    SIGN_IN: "/Authorization/SignIn",
-    SIGN_UP: "/Authorization/SignUp",
-    GET_PROFILE: "/Authorization/GetProfile/profile",
-    UPDATE_PROFILE: "/Authorization/UpdateProfile/profile",
-    UPLOAD_PHOTO: "/Authorization/UploadProfilePhoto/profile-photo",
-    DELETE_PHOTO: "/Authorization/DeleteProfilePhoto/profile-photo",
-    CHANGE_PASSWORD: "/Authorization/ChangePassword/change-password",
-    DEACTIVATE: "/Authorization/DeactivateAccount/deactivate",
-    DELETE_ACCOUNT: "/Authorization/DeleteAccount/account",
+    CREATE_SESSION: "/Authorization/CreateSession",
+    VERIFY_SESSION: "/Authorization/VerifySession",
+    REFRESH_TOKEN: "/Authorization/RefreshToken",
+    GET_PROFILE: "/Authorization/GetProfile",
+    UPDATE_PROFILE: "/Authorization/UpdateProfile",
+    UPLOAD_PHOTO: "/Authorization/UploadProfilePhoto",
+    DELETE_PHOTO: "/Authorization/DeleteProfilePhoto",
+    CHANGE_PASSWORD: "/Authorization/ChangePassword",
+    DEACTIVATE: "/Authorization/DeactivateAccount",
+    DELETE_ACCOUNT: "/Authorization/DeleteAccount",
   },
   
   // Appointment
@@ -274,6 +275,8 @@ export const API_ENDPOINTS = {
     TOGGLE_ACTIVATION: "/Doctor/ToggleActivation",
     UPLOAD_CERTIFICATE: "/Doctor/UploadCertificate/upload-certificate",
     GET_CERTIFICATES: "/Doctor/GetCertificates/certificates",
+    DOWNLOAD_CERTIFICATE: "/Doctor/DownloadCertificate/download-certificate",
+    DELETE_CERTIFICATE: "/Doctor/DeleteCertificate/certificate",
   },
   
   // Patient
@@ -282,6 +285,10 @@ export const API_ENDPOINTS = {
     GET_BY_ID: "/Patient/GetPatientById",
     GET_LIST: "/Patient/GetPatients",
     TOGGLE_ACTIVATION: "/Patient/ToggleActivation",
+    UPLOAD_DOCUMENT: "/Patient/UploadDocument/upload-document",
+    GET_DOCUMENTS: "/Patient/GetDocuments/documents",
+    DOWNLOAD_DOCUMENT: "/Patient/DownloadDocument/download-document",
+    DELETE_DOCUMENT: "/Patient/DeleteDocument/document",
   },
   
   // Certificate Type
@@ -290,5 +297,13 @@ export const API_ENDPOINTS = {
     GET_BY_ID: "/CertificateType/GetCertificateType",
     GET_LIST: "/CertificateType/GetCertificateTypes",
     TOGGLE_ACTIVATION: "/CertificateType/ToggleActivation",
+  },
+
+  // Document Category
+  DOCUMENT_CATEGORY: {
+    UPSERT: "/DocumentCategory/UpsertDocumentCategory",
+    GET_BY_ID: "/DocumentCategory/GetDocumentCategory",
+    GET_LIST: "/DocumentCategory/GetDocumentCategories",
+    TOGGLE_ACTIVATION: "/DocumentCategory/ToggleActivation",
   },
 };

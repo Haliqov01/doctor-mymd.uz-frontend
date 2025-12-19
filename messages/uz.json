@@ -1,0 +1,227 @@
+{
+  "common": {
+    "login": "Kirish",
+    "logout": "Chiqish",
+    "register": "Ro'yxatdan o'tish",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "loading": "Yuklanmoqda...",
+    "back": "Orqaga",
+    "next": "Keyingi",
+    "submit": "Yuborish",
+    "delete": "O'chirish",
+    "edit": "Tahrirlash",
+    "view": "Ko'rish",
+    "search": "Qidirish",
+    "filter": "Saralash",
+    "all": "Barchasi",
+    "yes": "Ha",
+    "no": "Yo'q",
+    "confirm": "Tasdiqlash",
+    "close": "Yopish",
+    "add": "Qo'shish",
+    "remove": "Olib tashlash",
+    "required": "Majburiy",
+    "optional": "Ixtiyoriy",
+    "error": "Xato",
+    "success": "Muvaffaqiyat",
+    "warning": "Ogohlantirish",
+    "info": "Ma'lumot"
+  },
+  "language": {
+    "title": "Til",
+    "uz": "O'zbekcha",
+    "ru": "Русский"
+  },
+  "home": {
+    "title": "Bosh sahifa",
+    "description": "Xush kelibsiz",
+    "heroTitle": "Doctor MyMD",
+    "heroSubtitle": "Zamonaviy va qulay shifokor bilan uchrashuv tizimi",
+    "loginButton": "Tizimga kirish",
+    "registerButton": "Ro'yxatdan o'tish",
+    "features": {
+      "appointment": {
+        "title": "Oson Uchrashuv",
+        "description": "Tez va qulay uchrashuv yaratish"
+      },
+      "time": {
+        "title": "Vaqt Boshqaruvi",
+        "description": "Samarali soat va taqvim boshqaruvi"
+      },
+      "patient": {
+        "title": "Bemor Kuzatuvi",
+        "description": "Batafsil bemor ro'yxati tizimi"
+      },
+      "security": {
+        "title": "Xavfsiz Tizim",
+        "description": "Ma'lumotlaringiz xavfsizligi kafolatlangan"
+      }
+    },
+    "trustBadge": {
+      "title": "Shifokorlar uchun ishonchli yechim",
+      "description": "Bemor bilan aloqani osonlashtiring, vaqtingizni tejang va xizmat sifatini oshiring."
+    },
+    "footer": {
+      "copyright": "© 2025 Doctor MyMD. Barcha huquqlar himoyalangan.",
+      "madeFor": "O'zbekiston shifokorlari uchun"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Tizimga kirish",
+      "subtitle": "Shifokorlar uchun professional tizim",
+      "description": "Telefon raqamingiz va parolingizni kiriting",
+      "phoneLabel": "Telefon raqami",
+      "phonePlaceholder": "+998 90 123 45 67",
+      "passwordLabel": "Parol",
+      "passwordPlaceholder": "••••••••",
+      "submitButton": "Kirish",
+      "noAccount": "Hali ro'yxatdan o'tmaganmisiz?",
+      "registerLink": "Ro'yxatdan o'tish",
+      "backToHome": "Asosiy sahifaga qaytish",
+      "errorPhone": "Telefon raqamini kiriting",
+      "errorPassword": "Parolni kiriting",
+      "errorInvalid": "Telefon raqam yoki parol xato"
+    },
+    "register": {
+      "title": "Ro'yxatdan o'tish",
+      "subtitle": "Yangi hisob yaratish",
+      "description": "Ma'lumotlaringizni kiriting",
+      "nameLabel": "To'liq ism",
+      "namePlaceholder": "Ismingiz Familiyangiz",
+      "phoneLabel": "Telefon raqami",
+      "phonePlaceholder": "+998 90 123 45 67",
+      "passwordLabel": "Parol",
+      "confirmPasswordLabel": "Parolni tasdiqlash",
+      "submitButton": "Ro'yxatdan o'tish",
+      "hasAccount": "Hisobingiz bormi?",
+      "loginLink": "Kirish",
+      "backToHome": "Asosiy sahifaga qaytish"
+    }
+  },
+  "dashboard": {
+    "title": "Boshqaruv paneli",
+    "welcome": "Xush kelibsiz",
+    "sidebar": {
+      "home": "Bosh sahifa",
+      "appointments": "Uchrashuvlar",
+      "patients": "Bemorlar",
+      "reports": "Hisobotlar",
+      "schedule": "Ish vaqti",
+      "profile": "Profil",
+      "settings": "Sozlamalar"
+    },
+    "stats": {
+      "todayAppointments": "Bugungi uchrashuvlar",
+      "totalPatients": "Jami bemorlar",
+      "pendingReports": "Kutilayotgan hisobotlar",
+      "completedToday": "Bugun tugatilgan"
+    }
+  },
+  "appointments": {
+    "title": "Uchrashuvlar",
+    "newAppointment": "Yangi uchrashuv",
+    "noAppointments": "Uchrashuvlar yo'q",
+    "status": {
+      "pending": "Kutilmoqda",
+      "confirmed": "Tasdiqlangan",
+      "completed": "Tugatilgan",
+      "cancelled": "Bekor qilingan"
+    },
+    "filter": {
+      "all": "Barchasi",
+      "today": "Bugun",
+      "upcoming": "Kelasi",
+      "past": "O'tgan"
+    },
+    "details": {
+      "patient": "Bemor",
+      "date": "Sana",
+      "time": "Vaqt",
+      "status": "Holat",
+      "notes": "Izohlar"
+    }
+  },
+  "patients": {
+    "title": "Bemorlar",
+    "newPatient": "Yangi bemor",
+    "noPatients": "Bemorlar ro'yxati bo'sh",
+    "search": "Bemor qidirish...",
+    "details": {
+      "name": "Ism",
+      "phone": "Telefon",
+      "birthDate": "Tug'ilgan sana",
+      "gender": "Jinsi",
+      "address": "Manzil",
+      "medicalHistory": "Tibbiy tarix"
+    },
+    "gender": {
+      "male": "Erkak",
+      "female": "Ayol"
+    }
+  },
+  "reports": {
+    "title": "Hisobotlar",
+    "newReport": "Yangi hisobot",
+    "noReports": "Hisobotlar yo'q",
+    "create": {
+      "title": "Hisobot yaratish",
+      "patientInfo": "Bemor ma'lumotlari",
+      "complaints": "Shikoyatlar",
+      "examination": "Tekshiruv",
+      "diagnosis": "Tashxis",
+      "treatment": "Davolash",
+      "recommendations": "Tavsiyalar"
+    }
+  },
+  "profile": {
+    "title": "Profil",
+    "personalInfo": "Shaxsiy ma'lumotlar",
+    "education": "Ta'lim",
+    "experience": "Tajriba",
+    "specialization": "Mutaxassislik",
+    "documents": "Hujjatlar",
+    "socialMedia": "Ijtimoiy tarmoqlar",
+    "complete": {
+      "title": "Profilni to'ldirish",
+      "progress": "Jarayon",
+      "step": "Qadam"
+    }
+  },
+  "workingHours": {
+    "title": "Ish vaqti",
+    "schedule": "Jadval",
+    "dayOff": "Dam olish kuni",
+    "workingDay": "Ish kuni",
+    "startTime": "Boshlanish vaqti",
+    "endTime": "Tugash vaqti",
+    "breakTime": "Tanaffus",
+    "days": {
+      "monday": "Dushanba",
+      "tuesday": "Seshanba",
+      "wednesday": "Chorshanba",
+      "thursday": "Payshanba",
+      "friday": "Juma",
+      "saturday": "Shanba",
+      "sunday": "Yakshanba"
+    }
+  },
+  "validation": {
+    "required": "Bu maydon majburiy",
+    "invalidPhone": "Telefon raqam noto'g'ri",
+    "invalidEmail": "Email noto'g'ri",
+    "passwordMin": "Parol kamida 6 ta belgidan iborat bo'lishi kerak",
+    "passwordMatch": "Parollar mos kelmaydi"
+  },
+  "errors": {
+    "general": "Xatolik yuz berdi",
+    "network": "Tarmoq xatosi. Iltimos, qayta urinib ko'ring",
+    "unauthorized": "Avtorizatsiya talab qilinadi",
+    "notFound": "Topilmadi",
+    "serverError": "Server xatosi"
+  }
+}
+
+
+

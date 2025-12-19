@@ -1,5 +1,5 @@
 import { apiClient, API_ENDPOINTS } from "../api-client";
-import { Doctor, Certificate, PaginatedResponse, GetDoctorsRequest } from "@/types";
+import { Certificate, PaginatedResponse, GetDoctorsRequest } from "@/types";
 
 interface DoctorListItem {
   id: number;
@@ -9,8 +9,12 @@ interface DoctorListItem {
   status: number;
 }
 
-interface DoctorDetail extends Doctor {
+interface DoctorDetail {
+  id: number;
   userId: number;
+  fullName: string;
+  specialization: string;
+  experienceYears: number;
   workplace?: string;
   biography?: string;
   certificates?: {
@@ -19,6 +23,24 @@ interface DoctorDetail extends Doctor {
     size: number;
     extension: string;
   }[];
+}
+
+interface UpsertDoctorRequest {
+  id?: number;
+  userId?: number;
+  fullName: string;
+  specialization: string;
+  experienceYears: number;
+  workplace?: string;
+  biography?: string;
+}
+
+interface UploadCertificateRequest {
+  doctorId: number;
+  categoryId: number;
+  file: File;
+  fileType: string;
+  description?: string;
 }
 
 export const doctorService = {
@@ -40,15 +62,7 @@ export const doctorService = {
   },
 
   // Doktor oluştur/güncelle
-  async upsertDoctor(data: {
-    id?: number;
-    userId?: number;
-    fullName: string;
-    specialization: string;
-    experienceYears: number;
-    workplace?: string;
-    biography?: string;
-  }): Promise<DoctorListItem> {
+  async upsertDoctor(data: UpsertDoctorRequest): Promise<DoctorListItem> {
     return apiClient.post<DoctorListItem>(API_ENDPOINTS.DOCTOR.UPSERT, data);
   },
 
@@ -60,18 +74,12 @@ export const doctorService = {
   },
 
   // Sertifika yükle
-  async uploadCertificate(data: {
-    doctorId: number;
-    categoryId: number;
-    file: File;
-    fileType?: string;
-    description?: string;
-  }): Promise<Certificate> {
+  async uploadCertificate(data: UploadCertificateRequest): Promise<Certificate> {
     const formData = new FormData();
     formData.append("DoctorId", data.doctorId.toString());
     formData.append("CategoryId", data.categoryId.toString());
     formData.append("File", data.file);
-    if (data.fileType) formData.append("FileType", data.fileType);
+    formData.append("FileType", data.fileType);
     if (data.description) formData.append("Description", data.description);
 
     return apiClient.uploadFile<Certificate>(
@@ -86,5 +94,29 @@ export const doctorService = {
       `${API_ENDPOINTS.DOCTOR.GET_CERTIFICATES}?doctorId=${doctorId}`
     );
   },
-};
 
+  // Sertifika indir
+  async downloadCertificate(certificateId: number): Promise<Blob> {
+    const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+    
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/v1${API_ENDPOINTS.DOCTOR.DOWNLOAD_CERTIFICATE}?certificateId=${certificateId}`,
+      {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Sertifika indirilemedi");
+    }
+
+    return response.blob();
+  },
+
+  // Sertifika sil
+  async deleteCertificate(certificateId: number): Promise<boolean> {
+    return apiClient.delete<boolean>(
+      `${API_ENDPOINTS.DOCTOR.DELETE_CERTIFICATE}?certificateId=${certificateId}`
+    );
+  },
+};

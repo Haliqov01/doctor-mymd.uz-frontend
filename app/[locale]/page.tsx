@@ -1,9 +1,18 @@
-import Link from "next/link";
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
 import { ArrowRight, Calendar, Clock, Users, Shield, Stethoscope, Heart } from "lucide-react";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export default function Home() {
+  const t = useTranslations();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-green-50/30 to-green-100/50">
+      {/* Language Switcher - Sağ üstte sabit */}
+      <div className="absolute top-4 right-4 z-50">
+        <LanguageSwitcher variant="default" />
+      </div>
+
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-20 sm:py-28">
         <div className="flex flex-col items-center text-center">
@@ -20,10 +29,10 @@ export default function Home() {
             </div>
             
             <h1 className="text-5xl sm:text-7xl font-bold text-neutral-900 mb-4">
-              Doctor <span className="text-green-600">MyMD</span>
+              {t('home.heroTitle').split(' ')[0]} <span className="text-green-600">{t('home.heroTitle').split(' ')[1]}</span>
             </h1>
             <p className="text-xl sm:text-2xl text-neutral-600 max-w-2xl mx-auto leading-relaxed">
-              Zamonaviy va qulay shifokor bilan uchrashuv tizimi
+              {t('home.heroSubtitle')}
             </p>
           </div>
 
@@ -33,14 +42,14 @@ export default function Home() {
               href="/login"
               className="inline-flex items-center justify-center px-10 py-4 text-lg font-semibold text-white bg-green-600 rounded-xl hover:bg-green-700 shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95"
             >
-              Tizimga kirish
+              {t('home.loginButton')}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
             <Link
               href="/register"
               className="inline-flex items-center justify-center px-10 py-4 text-lg font-semibold text-green-700 bg-white border-2 border-green-300 rounded-xl hover:border-green-500 hover:bg-green-50 shadow-md hover:shadow-lg transition-all duration-200"
             >
-              Ro'yxatdan o'tish
+              {t('home.registerButton')}
             </Link>
           </div>
 
@@ -51,10 +60,10 @@ export default function Home() {
                 <Calendar className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-lg font-bold text-neutral-900 mb-2">
-                Oson Uchrashuv
+                {t('home.features.appointment.title')}
               </h3>
               <p className="text-base text-neutral-600 text-center leading-relaxed">
-                Tez va qulay uchrashuv yaratish
+                {t('home.features.appointment.description')}
               </p>
             </div>
 
@@ -63,10 +72,10 @@ export default function Home() {
                 <Clock className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-lg font-bold text-neutral-900 mb-2">
-                Vaqt Boshqaruvi
+                {t('home.features.time.title')}
               </h3>
               <p className="text-base text-neutral-600 text-center leading-relaxed">
-                Samarali soat va taqvim boshqaruvi
+                {t('home.features.time.description')}
               </p>
             </div>
 
@@ -75,10 +84,10 @@ export default function Home() {
                 <Users className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-lg font-bold text-neutral-900 mb-2">
-                Bemor Kuzatuvi
+                {t('home.features.patient.title')}
               </h3>
               <p className="text-base text-neutral-600 text-center leading-relaxed">
-                Batafsil bemor ro'yxati tizimi
+                {t('home.features.patient.description')}
               </p>
             </div>
 
@@ -87,10 +96,10 @@ export default function Home() {
                 <Shield className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-lg font-bold text-neutral-900 mb-2">
-                Xavfsiz Tizim
+                {t('home.features.security.title')}
               </h3>
               <p className="text-base text-neutral-600 text-center leading-relaxed">
-                Ma'lumotlaringiz xavfsizligi kafolatlangan
+                {t('home.features.security.description')}
               </p>
             </div>
           </div>
@@ -108,10 +117,10 @@ export default function Home() {
             </div>
             <div className="flex-1">
               <h2 className="text-2xl font-bold text-neutral-900 mb-2">
-                Shifokorlar uchun ishonchli yechim
+                {t('home.trustBadge.title')}
               </h2>
               <p className="text-lg text-neutral-600 leading-relaxed">
-                Bemor bilan aloqani osonlashtiring, vaqtingizni tejang va xizmat sifatini oshiring.
+                {t('home.trustBadge.description')}
               </p>
             </div>
           </div>
@@ -123,11 +132,11 @@ export default function Home() {
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-base text-neutral-600">
-              © 2025 Doctor MyMD. Barcha huquqlar himoyalangan.
+              {t('home.footer.copyright')}
             </p>
             <div className="flex items-center gap-2 text-neutral-600">
               <Heart className="h-4 w-4 text-green-600 fill-green-600" />
-              <span className="text-sm">O'zbekiston shifokorlari uchun</span>
+              <span className="text-sm">{t('home.footer.madeFor')}</span>
             </div>
           </div>
         </div>

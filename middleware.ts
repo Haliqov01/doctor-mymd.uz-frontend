@@ -1,51 +1,87 @@
+import createMiddleware from "next-intl/middleware";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { routing } from "./i18n/routing";
 
-/**
- * Next.js Middleware
- * Authenticates and protects routes
- */
-export function middleware(request: NextRequest) {
-  const token = request.cookies.get("token")?.value;
+// next-intl middleware'i
+const intlMiddleware = createMiddleware(routing);
+
+// Public route'lar (auth gerektirmeyen)
+// DEV BYPASS: dashboard'a direkt erişim için eklendi
+const publicRoutes = ["/", "/login", "/register", "/dashboard"];
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Public rotalar
-  const publicPaths = ["/login", "/register"];
-  const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
+  // Static dosyaları atla
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api") ||
+    pathname.includes(".")
+  ) {
+    return NextResponse.next();
+  }
 
-  // Ana sayfa
-  if (pathname === "/") {
+  // Önce i18n middleware'i çalıştır (dil algılama + yönlendirme)
+  const response = intlMiddleware(request);
+
+  // === AUTH KONTROLÜ ===
+  // Locale prefix'ini pathname'den çıkar
+  const localeMatch = pathname.match(/^\/(uz|ru)/);
+  const locale = localeMatch?.[1] || routing.defaultLocale;
+  const pathWithoutLocale = localeMatch
+    ? pathname.replace(/^\/(uz|ru)/, "") || "/"
+    : pathname;
+
+  // Public route kontrolü
+  const isPublicRoute = publicRoutes.some((route) => {
+    if (route === "/") return pathWithoutLocale === "/";
+    return pathWithoutLocale.startsWith(route);
+  });
+
+  // Ana sayfa - login'e yönlendir (token yoksa)
+  if (pathWithoutLocale === "/") {
+    const token = request.cookies.get("token")?.value;
     if (token) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      const dashboardUrl = new URL(
+        locale === routing.defaultLocale ? "/dashboard" : `/${locale}/dashboard`,
+        request.url
+      );
+      return NextResponse.redirect(dashboardUrl);
     }
-    return NextResponse.redirect(new URL("/login", request.url));
+    const loginUrl = new URL(
+      locale === routing.defaultLocale ? "/login" : `/${locale}/login`,
+      request.url
+    );
+    return NextResponse.redirect(loginUrl);
   }
 
-  // Token varsa ve public path'e gidiyorsa, dashboard'a yönlendir
-  if (token && isPublicPath) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  if (isPublicRoute) {
+    // Token varsa ve public path'e gidiyorsa, dashboard'a yönlendir
+    const token = request.cookies.get("token")?.value;
+    if (token) {
+      const dashboardUrl = new URL(
+        locale === routing.defaultLocale ? "/dashboard" : `/${locale}/dashboard`,
+        request.url
+      );
+      return NextResponse.redirect(dashboardUrl);
+    }
+    return response;
   }
 
-  // Token yoksa ve protected path'e gidiyorsa, login'e yönlendir
-  if (!token && !isPublicPath) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  // Auth token kontrolü - protected routes için
+  const token = request.cookies.get("token")?.value;
+  if (!token) {
+    const loginUrl = new URL(
+      locale === routing.defaultLocale ? "/login" : `/${locale}/login`,
+      request.url
+    );
+    return NextResponse.redirect(loginUrl);
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\..*|public).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*|api).*)"],
 };
-
-
