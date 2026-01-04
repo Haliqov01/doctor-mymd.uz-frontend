@@ -24,6 +24,8 @@ import {
   Loader2
 } from "lucide-react";
 import { reportService } from "@/lib/services/report.service";
+import { doctorService, appointmentService } from "@/lib/services";
+import { doctorResolver } from "@/lib/services/doctorResolver";
 import { PatientInfoSection } from "./components/PatientInfoSection";
 import { ExaminationField } from "./components/ExaminationField";
 import { ReportPrintTemplate } from "./components/ReportPrintTemplate";
@@ -116,6 +118,12 @@ export default function CreateReportPage() {
 
   const [recommendations, setRecommendations] = useState("");
 
+  const [doctorInfo, setDoctorInfo] = useState({
+    fullName: "Yuklanmoqda...",
+    specialization: "Ko'z shifokori",
+    licenseNumber: "",
+  });
+
   const updateRightEye = (field: keyof EyeExamination, value: any) => {
     setRightEye({ ...rightEye, [field]: value });
   };
@@ -135,11 +143,7 @@ export default function CreateReportPage() {
     iopMethod,
     diagnosis,
     recommendations,
-    doctorInfo: {
-      fullName: "Dr. [Ism Familiya]",
-      specialization: "Ko'z shifokori",
-      licenseNumber: "",
-    },
+    doctorInfo,
   };
 
   // URL parametrelerini oku
@@ -154,6 +158,33 @@ export default function CreateReportPage() {
     if (ptName) setPatientInfo(prev => ({ ...prev, fullName: decodeURIComponent(ptName) }));
     if (complaint) setComplaints(decodeURIComponent(complaint));
   }, [searchParams]);
+
+  // Doktor bilgilerini yukla
+  useEffect(() => {
+    const loadDoctorInfo = async () => {
+      try {
+        const doctorId = await doctorResolver.resolve();
+        if (doctorId) {
+          const doctor = await doctorService.getDoctorById(doctorId);
+          if (doctor) {
+            setDoctorInfo({
+              fullName: doctor.fullName || "Shifokor",
+              specialization: doctor.specialization || "Ko'z shifokori",
+              licenseNumber: "",
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Shifokor ma'lumotlarini yuklashda xato:", error);
+        setDoctorInfo({
+          fullName: "Shifokor",
+          specialization: "Ko'z shifokori",
+          licenseNumber: "",
+        });
+      }
+    };
+    loadDoctorInfo();
+  }, []);
 
   // Rapor metnini oluştur
   const generateReportText = () => {
@@ -239,12 +270,23 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
       const result = await reportService.createReport({
         patientId: patientId,
         doctorId: doctorId,
-        reportText: generateReportText(),
+        reportText: JSON.stringify(report),
         appointmentId: appointmentId || undefined,
         notes: `Ko'z muoyenasi - ${new Date().toLocaleDateString('uz-UZ')}`,
       });
 
       console.log("Report saved:", result);
+      
+      // Randevuni tamamlangan holatiga o'tkazish
+      if (appointmentId) {
+        try {
+          await appointmentService.completeAppointment(appointmentId);
+          console.log("Appointment completed:", appointmentId);
+        } catch (completeError) {
+          console.warn("Randevuni tamamlashda xato (hisobot saqlandi):", completeError);
+        }
+      }
+      
       setSaveSuccess(true);
       
       // 2 saniye sonra dashboard'a git

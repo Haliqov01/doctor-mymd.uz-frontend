@@ -159,6 +159,22 @@ export default function DoctorAppointmentsPage() {
     }
   };
 
+  const handleComplete = async (appointmentId: number) => {
+    if (!confirm("Uchrashuvni yakunlashni xohlaysizmi?")) return;
+
+    setActionLoading(true);
+    try {
+      await appointmentService.completeAppointment(appointmentId);
+      alert("Uchrashuv yakunlandi.");
+      fetchAppointments();
+    } catch (error: any) {
+      dashboardLogger.error("Appointments", "Error completing appointment:", error);
+      alert(error.message || "Uchrashuvni yakunlashda xatolik yuz berdi.");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return new Intl.DateTimeFormat("uz-UZ", {
@@ -265,7 +281,7 @@ export default function DoctorAppointmentsPage() {
             </div>
           )}
 
-          {/* Tasdiqlangan randevular uchun hisobot yozish */}
+          {/* Tasdiqlangan randevular uchun hisobot yozish va yakunlash */}
           {appointment.status === AppointmentStatus.Approved && (
             <div className="flex gap-2 pt-2 border-t border-slate-200">
               <Button
@@ -283,6 +299,16 @@ export default function DoctorAppointmentsPage() {
               >
                 <FileText className="mr-2 h-4 w-4" />
                 Hisobot yozish
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300"
+                onClick={() => handleComplete(appointment.id)}
+                disabled={actionLoading}
+              >
+                <CheckCircle2 className="mr-2 h-4 w-4" />
+                Yakunlash
               </Button>
             </div>
           )}

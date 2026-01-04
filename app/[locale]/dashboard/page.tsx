@@ -15,6 +15,7 @@ import {
 import { Stethoscope, User, LogOut, Loader2, Clock, Calendar, Users, FileText, Settings, Edit2, Utensils, Ban, Lightbulb, CheckCircle, XCircle, Edit, ClipboardList, UserPlus } from "lucide-react";
 import { authService, appointmentService } from "@/lib/services";
 import { doctorService } from "@/lib/services/doctor.service";
+import { doctorResolver } from "@/lib/services/doctorResolver";
 import { clearStoredToken } from "@/lib/api-client";
 import { ProfileResponse, WorkingHour, AppointmentStatus } from "@/types";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -34,6 +35,7 @@ export default function DoctorDashboardPage() {
   });
   const [errorDetails, setErrorDetails] = useState<string>("");
   const [logs, setLogs] = useState<string[]>([]);
+  const [doctorProfile, setDoctorProfile] = useState<{ fullName: string; specialization: string } | null>(null);
 
   const addLog = (msg: string) => {
     setLogs(prev => [...prev.slice(-10), `${new Date().toLocaleTimeString()} ${msg}`]);
@@ -87,11 +89,23 @@ export default function DoctorDashboardPage() {
       // Use DoctorResolver to get doctor ID
       let doctorId: number | null = null;
       try {
-        const { doctorResolver } = await import("@/lib/services/doctorResolver");
         doctorId = await doctorResolver.resolve();
 
         if (doctorId) {
           dashboardLogger.info("Init", "Doctor ID resolved:", doctorId);
+          
+          // Doktor profilini yukla
+          try {
+            const doctor = await doctorService.getDoctorById(doctorId);
+            if (doctor) {
+              setDoctorProfile({
+                fullName: doctor.fullName || `${profileData?.firstName || ''} ${profileData?.lastName || ''}`.trim(),
+                specialization: doctor.specialization || "Shifokor",
+              });
+            }
+          } catch (docError) {
+            dashboardLogger.warn("Init", "Could not load doctor profile:", docError);
+          }
         } else {
           dashboardLogger.error("Init", "Could not resolve doctor ID - cannot load appointments");
           // 🔴 CRITICAL: Don't proceed without doctorId to prevent data leakage
@@ -297,10 +311,10 @@ export default function DoctorDashboardPage() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-slate-800">
-                  {t('dashboard.title')}
+                  {doctorProfile?.fullName || `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim() || t('dashboard.title')}
                 </h1>
                 <p className="text-base text-slate-500">
-                  {profile?.firstName} {profile?.lastName}
+                  {doctorProfile?.specialization || "Shifokor"}
                 </p>
               </div>
             </div>
