@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     }
 
     // Mock SMS yuborish
-    console.log(`📱 Mock SMS sent to ${phoneNumber}: Code is 123456`);
+    console.log(`Mock SMS sent to ${phoneNumber}: Code is 123456`);
 
     return NextResponse.json({
       success: true,

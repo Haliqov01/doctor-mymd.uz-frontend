@@ -15,8 +15,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // Mock verification - har qanday kod qabul qilinadi (yoki faqat 123456)
-    const isValidCode = code === "123456" || code.length === 6;
+    // Mock verification - har qanday kod qabul qilinadi (yoki faqat 1234567)
+    const isValidCode = code === "1234567" || code.length === 7;
 
     if (!isValidCode) {
       return NextResponse.json(

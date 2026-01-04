@@ -1,98 +1,98 @@
-# 🧪 TEST KULLANICILARI
+# TEST FOYDALANUVCHILARI
 
-## 🔐 Login Bilgileri (KOLAY)
+## Login Ma'lumotlari (OSON)
 
-Mock API'de **herhangi bir telefon + şifre** kabul edilir. 
-Ama kolaylık için aşağıdaki test kullanıcılarını kullanabilirsiniz:
+Mock API'da **har qanday telefon + parol** qabul qilinadi. 
+Lekin qulaylik uchun quyidagi test foydalanuvchilaridan foydalanishingiz mumkin:
 
 ---
 
-### ✅ TEST KULLANICI 1 (Önerilen)
+### TEST FOYDALANUVCHI 1 (Tavsiya qilingan)
 
 ```
 Telefon: doctor
-Şifre:   123
+Parol:   123
 ```
 
-**veya**
+**yoki**
 
 ```
 Telefon: test
-Şifre:   test
+Parol:   test
 ```
 
-**veya**
+**yoki**
 
 ```
 Telefon: admin
-Şifre:   admin
+Parol:   admin
 ```
 
 ---
 
-### ✅ TEST KULLANICI 2 (Uzbekça)
+### TEST FOYDALANUVCHI 2 (O'zbekcha)
 
 ```
 Telefon: doktor
-Şifre:   12345
+Parol:   12345
 ```
 
 ---
 
-### ✅ TEST KULLANICI 3 (Gerçekçi)
+### TEST FOYDALANUVCHI 3 (Haqiqiy)
 
 ```
 Telefon: +998901234567
-Şifre:   Test1234
+Parol:   Test1234
 ```
 
 ---
 
-## 📋 HIZLI GİRİŞ ADIMLARI
+## TEZKOR KIRISH QADAMLARI
 
-1. **http://localhost:3002/login** adresine gidin
+1. **http://localhost:3002/login** manziliga o'ting
 2. Telefon: `doctor`
-3. Şifre: `123`
-4. "Kirish" butonuna tıklayın
-5. ✅ Otomatik olarak `/dashboard` sayfasına yönlendirileceksiniz
+3. Parol: `123`
+4. "Kirish" tugmasini bosing
+5. Avtomatik ravishda `/dashboard` sahifasiga yo'naltirilasiz
 
 ---
 
-## 👤 GİRİŞ YAPINCA GÖRECEKLER
+## KIRGANINGIZDAN KEYIN KO'RASIZ
 
-Giriş yapınca mock kullanıcı bilgileri:
+Kirganingizdan keyin mock foydalanuvchi ma'lumotlari:
 
-- **İsim:** Aziz Karimov
-- **Rol:** DOCTOR (Doktor)
-- **Uzmanlık:** Kardiolog
-- **Lisans:** MD-123456 ✅ (Doğrulanmış)
+- **Ism:** Aziz Karimov
+- **Rol:** DOCTOR (Shifokor)
+- **Mutaxassislik:** Kardiolog
+- **Litsenziya:** MD-123456 (Tasdiqlangan)
 - **Email:** doctor@mymd.uz
 - **Telefon:** +998901234567
 
 ---
 
-## 📱 KAYIT (REGISTER) İÇİN
+## RO'YXATDAN O'TISH (REGISTER) UCHUN
 
-**SMS Kodu:** `123456` (Her zaman bu)
+**SMS Kodi:** `123456` (Har doim shu)
 
-Kayıt formunda:
-1. Herhangi bir telefon numarası girin
-2. "SMS kod yuborish" tıklayın
-3. Kod olarak: **123456** girin
-4. Devam edin
+Ro'yxatdan o'tish formasida:
+1. Har qanday telefon raqamini kiriting
+2. "SMS kod yuborish" tugmasini bosing
+3. Kod sifatida: **123456** kiriting
+4. Davom eting
 
 ---
 
-## 🎯 SORUN ÇÖZME
+## MUAMMO YECHISH
 
-Eğer hala giriş yapamazsanız:
+Agar hali ham kirish imkoni bo'lmasa:
 
-1. Console'u açın (F12)
-2. Network tab'ına bakın
-3. `/api/auth/login` isteğine tıklayın
-4. Response'u kontrol edin
+1. Console'ni oching (F12)
+2. Network tab'iga qarang
+3. `/api/auth/login` so'roviga bosing
+4. Response'ni tekshiring
 
-Console'da görmek isterseniz:
+Console'da ko'rish uchun:
 ```javascript
 fetch('http://localhost:3002/api/auth/login', {
   method: 'POST',
@@ -103,11 +103,9 @@ fetch('http://localhost:3002/api/auth/login', {
 
 ---
 
-## ✅ EN KOLAY YÖNTEMİ
+## ENG OSON USULI
 
 **Telefon:** `test`  
-**Şifre:** `test`
+**Parol:** `test`
 
-Sadece bu kadar! 🎉
-
-
+Shunchaki shu!

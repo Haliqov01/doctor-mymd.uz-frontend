@@ -7,8 +7,7 @@ import { routing } from "./i18n/routing";
 const intlMiddleware = createMiddleware(routing);
 
 // Public route'lar (auth gerektirmeyen)
-// DEV BYPASS: dashboard'a direkt erişim için eklendi
-const publicRoutes = ["/", "/login", "/register", "/dashboard"];
+const publicRoutes = ["/", "/login", "/register"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -60,6 +59,11 @@ export async function middleware(request: NextRequest) {
     // Token varsa ve public path'e gidiyorsa, dashboard'a yönlendir
     const token = request.cookies.get("token")?.value;
     if (token) {
+      // Eger allaqachon dashboardda bo'lsa, redirect qilmaslik kerak (loop oldini olish)
+      if (pathWithoutLocale.startsWith("/dashboard")) {
+        return response;
+      }
+
       const dashboardUrl = new URL(
         locale === routing.defaultLocale ? "/dashboard" : `/${locale}/dashboard`,
         request.url

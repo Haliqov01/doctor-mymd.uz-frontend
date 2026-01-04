@@ -16,15 +16,15 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Loader2, Stethoscope, FileText, Edit2, Save, X } from "lucide-react";
 import { authService } from "@/lib/services";
 import { clearStoredToken } from "@/lib/api-client";
-import { ProfileResponse } from "@/types";
+import { UserProfileViewModel } from "@/types";
 
 export default function DoctorProfilePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [profile, setProfile] = useState<ProfileResponse | null>(null);
+  const [profile, setProfile] = useState<UserProfileViewModel | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedProfile, setEditedProfile] = useState<ProfileResponse | null>(null);
+  const [editedProfile, setEditedProfile] = useState<UserProfileViewModel | null>(null);
 
   useEffect(() => {
     fetchProfile();
@@ -64,17 +64,18 @@ export default function DoctorProfilePage() {
 
   const handleSave = async () => {
     if (!editedProfile) return;
-    
+
     setSaving(true);
     try {
       const updatedProfile = await authService.updateProfile({
+        userId: editedProfile.id,  // Required field
         firstName: editedProfile.firstName,
         lastName: editedProfile.lastName,
         email: editedProfile.email,
         phone: editedProfile.phone,
         address: editedProfile.address,
       });
-      
+
       setProfile(updatedProfile);
       setIsEditing(false);
       alert("Profil muvaffaqiyatli yangilandi!");
@@ -86,7 +87,7 @@ export default function DoctorProfilePage() {
     }
   };
 
-  const handleInputChange = (field: keyof ProfileResponse, value: string) => {
+  const handleInputChange = (field: keyof UserProfileViewModel, value: string) => {
     if (editedProfile) {
       setEditedProfile({ ...editedProfile, [field]: value });
     }
@@ -110,7 +111,7 @@ export default function DoctorProfilePage() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/[0.02] rounded-full blur-[100px]" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/[0.02] rounded-full blur-[100px]" />
       </div>
-      
+
       {/* Header */}
       <header className="relative z-50 border-b border-slate-200/60 bg-white/80 backdrop-blur-xl sticky top-0">
         <div className="container mx-auto px-6 py-4">
@@ -281,7 +282,7 @@ export default function DoctorProfilePage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button 
+              <Button
                 className="w-full text-base font-semibold"
                 onClick={() => router.push("/dashboard/profile/complete")}
               >

@@ -376,13 +376,13 @@ export const ReportPrintTemplate = forwardRef<
       <div className="print-container">
         {/* Header */}
         <div className="report-header">
-          <h1>🏥 KO'Z MUOYENASI HISOBOTI</h1>
+          <h1>KO'Z MUOYENASI HISOBOTI</h1>
           <div className="date">Sana: {formatDate(report.reportDate)}</div>
         </div>
 
         {/* Patient Info Section */}
         <div className="section">
-          <div className="section-title">👤 BEMOR MA'LUMOTLARI</div>
+          <div className="section-title">BEMOR MA'LUMOTLARI</div>
           <div className="info-grid">
             <div className="info-item full-width">
               <span className="info-label">F.I.Sh.:</span>
@@ -405,7 +405,7 @@ export const ReportPrintTemplate = forwardRef<
 
         {/* Complaints Section */}
         <div className="section">
-          <div className="section-title">📋 SHIKOYATLARI VA ANAMNEZ</div>
+          <div className="section-title">SHIKOYATLARI VA ANAMNEZ</div>
           <div className="info-grid">
             <div className="info-item full-width">
               <span className="info-label">Shikoyat:</span>
@@ -426,7 +426,7 @@ export const ReportPrintTemplate = forwardRef<
 
         {/* Examination Table */}
         <div className="section">
-          <div className="section-title">🔬 OBYEKTIV HOLATI</div>
+          <div className="section-title">OBYEKTIV HOLATI</div>
           <table className="exam-table">
             <thead>
               <tr>
@@ -461,7 +461,7 @@ export const ReportPrintTemplate = forwardRef<
 
         {/* Measurements Section */}
         <div className="section">
-          <div className="section-title">📊 O'LCHOVLAR</div>
+          <div className="section-title">O'LCHOVLAR</div>
           <div className="measurements-grid">
             {/* Right Eye Card */}
             <div className="eye-card right">
@@ -564,7 +564,7 @@ export const ReportPrintTemplate = forwardRef<
         {/* Diagnosis */}
         <div className="section">
           <div className="diagnosis-box">
-            <h3>🩺 TASHHIS</h3>
+            <h3>TASHHIS</h3>
             <div className="diagnosis-content">
               {report.diagnosis.bothEyes && <div><strong>OU:</strong> {report.diagnosis.bothEyes}</div>}
               {report.diagnosis.rightEye && <div><strong>OD:</strong> {report.diagnosis.rightEye}</div>}
@@ -577,7 +577,7 @@ export const ReportPrintTemplate = forwardRef<
         {report.recommendations && (
           <div className="section">
             <div className="recommendations-box">
-              <h3>💊 TAVSIYA VA DAVOLASH REJASI</h3>
+              <h3>TAVSIYA VA DAVOLASH REJASI</h3>
               <div className="recommendations-content">
                 {report.recommendations}
               </div>

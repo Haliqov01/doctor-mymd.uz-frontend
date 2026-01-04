@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,6 +34,7 @@ import {
 import { appointmentService } from "@/lib/services";
 import { clearStoredToken } from "@/lib/api-client";
 import { Appointment, AppointmentStatus } from "@/types";
+import { dashboardLogger } from "@/lib/utils/logger";
 
 const statusConfig = {
   [AppointmentStatus.Pending]: {
@@ -67,20 +68,41 @@ export default function DoctorAppointmentsPage() {
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [currentPage, setCurrentPage] = useState(1); // Added for pagination
+  const [pageSize, setPageSize] = useState(100); // Added for pagination
+  const [totalCount, setTotalCount] = useState(0); // Added for pagination
+  const [statusFilter, setStatusFilter] = useState<AppointmentStatus | "All">("All"); // Added for status filter
 
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
-
-  const fetchAppointments = async () => {
+  const fetchAppointments = useCallback(async () => {
     try {
-      const result = await appointmentService.getAppointments({
-        pageNumber: 1,
-        pageSize: 100,
-      });
+      setLoading(true);
+
+      // Use DoctorResolver to get doctor ID
+      const { doctorResolver } = await import("@/lib/services/doctorResolver");
+      const doctorId = await doctorResolver.resolve();
+
+      if (!doctorId) {
+        // 🔴 CRITICAL: Prevent data leak by not fetching without doctorId
+        dashboardLogger.error("Appointments", "No doctor ID found - cannot fetch appointments");
+        throw new Error("Doctor ID not found. Please complete your profile.");
+      }
+
+      dashboardLogger.info("Appointments", "Fetching appointments for doctorId:", doctorId);
+
+      // SECURITY: ALWAYS include doctorId
+      const payload = {
+        pageNumber: currentPage,
+        pageSize: pageSize,
+        status: statusFilter !== "All" ? statusFilter : undefined,
+        doctorId: doctorId, // MANDATORY - prevents showing all appointments
+      };
+
+      const result = await appointmentService.getAppointments(payload);
+
       setAppointments(result.data || []);
+      setTotalCount(result.totalCount || 0);
     } catch (error: any) {
-      console.error("Uchrashuvlar yuklanayotganda xatolik:", error);
+      dashboardLogger.error("Appointments", "Error loading appointments:", error);
       if (error.status === 401) {
         clearStoredToken();
         router.push("/login");
@@ -88,7 +110,11 @@ export default function DoctorAppointmentsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, pageSize, statusFilter, router]);
+
+  useEffect(() => {
+    fetchAppointments();
+  }, [fetchAppointments]);
 
   const handleConfirm = async (appointmentId: number) => {
     if (!confirm("Uchrashuvni tasdiqlashni xohlaysizmi?")) return;
@@ -99,7 +125,7 @@ export default function DoctorAppointmentsPage() {
       alert("Uchrashuv tasdiqlandi.");
       fetchAppointments();
     } catch (error: any) {
-      console.error("Uchrashuv tasdiqlanayotganda xatolik:", error);
+      dashboardLogger.error("Appointments", "Error confirming appointment:", error);
       alert(error.message || "Uchrashuv tasdiqlanayotganda xatolik yuz berdi.");
     } finally {
       setActionLoading(false);
@@ -126,7 +152,7 @@ export default function DoctorAppointmentsPage() {
       setRejectDialogOpen(false);
       fetchAppointments();
     } catch (error: any) {
-      console.error("Uchrashuvni rad etishda xatolik:", error);
+      dashboardLogger.error("Appointments", "Error rejecting appointment:", error);
       alert(error.message || "Uchrashuvni rad etishda xatolik yuz berdi.");
     } finally {
       setActionLoading(false);
@@ -238,6 +264,28 @@ export default function DoctorAppointmentsPage() {
               </Button>
             </div>
           )}
+
+          {/* Tasdiqlangan randevular uchun hisobot yozish */}
+          {appointment.status === AppointmentStatus.Approved && (
+            <div className="flex gap-2 pt-2 border-t border-slate-200">
+              <Button
+                size="sm"
+                className="flex-1 bg-teal-600 hover:bg-teal-700"
+                onClick={() => {
+                  const params = new URLSearchParams({
+                    appointmentId: appointment.id.toString(),
+                    patientId: appointment.patientId?.toString() || '',
+                    patientName: appointment.patientName || '',
+                    complaint: appointment.message || '',
+                  });
+                  router.push(`/dashboard/reports/create?${params.toString()}`);
+                }}
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                Hisobot yozish
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     );
@@ -263,7 +311,7 @@ export default function DoctorAppointmentsPage() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/[0.02] rounded-full blur-[100px]" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/[0.02] rounded-full blur-[100px]" />
       </div>
-      
+
       <div className="relative z-10 max-w-6xl mx-auto">
         <Button
           variant="outline"

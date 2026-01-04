@@ -14,12 +14,12 @@ import {
 import { Stethoscope, User, LogOut, Loader2, Clock, Calendar, Users, FileText, Settings, Edit2, Utensils, Ban, Lightbulb, CheckCircle, XCircle, Edit, ClipboardList, UserPlus } from "lucide-react";
 import { authService, appointmentService, patientService } from "@/lib/services";
 import { clearStoredToken } from "@/lib/api-client";
-import { ProfileResponse, WorkingHour, AppointmentStatus } from "@/types";
+import { UserProfileViewModel, WorkingHour, AppointmentStatus } from "@/types";
 
 export default function DoctorDashboardPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<ProfileResponse | null>(null);
+  const [profile, setProfile] = useState<UserProfileViewModel | null>(null);
   const [workingHours, setWorkingHours] = useState<WorkingHour[]>([]);
   const [todaySchedule, setTodaySchedule] = useState<WorkingHour | null>(null);
   const [stats, setStats] = useState({
@@ -36,7 +36,7 @@ export default function DoctorDashboardPage() {
     try {
       // Profil bilgilerini al
       const profileData = await authService.getProfile();
-      
+
       if (profileData.role !== "Doctor") {
         router.push("/");
         return;
@@ -185,7 +185,7 @@ export default function DoctorDashboardPage() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto space-y-6">
-          
+
           {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Total Patients */}
@@ -324,7 +324,7 @@ export default function DoctorDashboardPage() {
 
           {/* Two Column Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+
             {/* Weekly Schedule Summary */}
             <Card className="border-neutral-200 shadow-soft">
               <CardHeader>
@@ -387,7 +387,7 @@ export default function DoctorDashboardPage() {
                       </div>
                     </Button>
                   </Link>
-                  
+
                   <Link href="/dashboard/working-hours">
                     <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 border-2 hover:border-green-300 hover:bg-green-50 transition-all">
                       <div className="h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -399,7 +399,7 @@ export default function DoctorDashboardPage() {
                       </div>
                     </Button>
                   </Link>
-                  
+
                   <Link href="/dashboard/appointments">
                     <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 border-2 hover:border-green-300 hover:bg-green-50 transition-all">
                       <div className="h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -411,7 +411,7 @@ export default function DoctorDashboardPage() {
                       </div>
                     </Button>
                   </Link>
-                  
+
                   <Link href="/dashboard/reports/create">
                     <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 border-2 border-green-300 hover:border-green-500 bg-green-50/50 hover:bg-green-100 transition-all">
                       <div className="h-10 w-10 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
@@ -423,7 +423,7 @@ export default function DoctorDashboardPage() {
                       </div>
                     </Button>
                   </Link>
-                  
+
                   <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 border-2" disabled>
                     <div className="h-10 w-10 bg-neutral-100 rounded-lg flex items-center justify-center flex-shrink-0">
                       <UserPlus className="h-5 w-5 text-neutral-400" />

@@ -9,11 +9,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_API_URL || "https://api.mymd.uz"}/api/:path*`,
       },
     ]
   },
-  
+
   images: {
     remotePatterns: [
       {
@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
     ],
     formats: ["image/webp", "image/avif"],
   },
-  
+
   headers: async () => [
     {
       source: "/:path*",
@@ -51,7 +51,7 @@ const nextConfig: NextConfig = {
       ],
     },
   ],
-  
+
   experimental: {
     optimizePackageImports: ["lucide-react", "@radix-ui/react-icons"],
   },

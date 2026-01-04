@@ -1,130 +1,120 @@
 # Doctor MyMD
 
-Modern, kullanıcı dostu bir doktor randevu yönetim sistemi.
+Zamonaviy va qulay shifokor uchrashuv boshqaruv tizimi.
 
-## 🚀 Özellikler
+## Xususiyatlar
 
-- 👤 Kullanıcı kimlik doğrulama (Giriş/Kayıt)
-- 📅 Randevu yönetimi
-- 👨‍⚕️ Doktor profil yönetimi
-- 🏥 Klinik yönetimi
-- 📊 Dashboard ve istatistikler
-- 🔔 Bildirim sistemi
-- 📱 Responsive tasarım
-- 🌙 Dark mode desteği
+- Foydalanuvchi autentifikatsiyasi (Kirish/Ro'yxatdan o'tish)
+- Uchrashuvlarni boshqarish
+- Shifokor profili boshqaruvi
+- Klinika boshqaruvi
+- Boshqaruv paneli va statistika
+- Bildirishnoma tizimi
+- Responsive dizayn
 
-## 🛠️ Teknolojiler
+## Texnologiyalar
 
 - **Framework:** Next.js 16 (App Router)
 - **Stil:** Tailwind CSS v4
-- **UI Kütüphanesi:** Radix UI + shadcn/ui
-- **Form Yönetimi:** React Hook Form + Zod
-- **İkonlar:** Lucide React
-- **Dosya Yükleme:** UploadThing
-- **State Yönetimi:** React Hooks
-- **Tema:** next-themes
+- **UI Kutubxonasi:** Radix UI + shadcn/ui
+- **Form Boshqaruvi:** React Hook Form + Zod
+- **Ikonlar:** Lucide React
+- **Fayl Yuklash:** UploadThing
+- **State Boshqaruvi:** React Hooks
+- **Mavzu:** next-themes
 
-## 📦 Kurulum
+## O'rnatish
 
-1. Bağımlılıkları yükleyin:
+1. Bog'liqliklarni o'rnating:
 
 ```bash
 npm install
 ```
 
-2. `.env.local` dosyası oluşturun:
+2. `.env.local` faylini yarating:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001
 NEXT_PUBLIC_APP_URL=http://localhost:3002
 ```
 
-3. Geliştirme sunucusunu başlatın:
+3. Ishlab chiqish serverini ishga tushiring:
 
 ```bash
 npm run dev
 ```
 
-4. Tarayıcınızda [http://localhost:3002](http://localhost:3002) adresini açın.
+4. Brauzeringizda [http://localhost:3002](http://localhost:3002) manzilini oching.
 
-## 📂 Proje Yapısı
+## Loyiha Tuzilmasi
 
 ```
 doctor-mymd/
 ├── app/                    # Next.js App Router
-│   ├── dashboard/         # Dashboard sayfaları
-│   ├── login/             # Giriş sayfası
-│   ├── register/          # Kayıt sayfası
+│   ├── dashboard/         # Boshqaruv paneli sahifalari
+│   ├── login/             # Kirish sahifasi
+│   ├── register/          # Ro'yxatdan o'tish sahifasi
 │   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Ana sayfa
-├── components/            # React bileşenleri
-│   └── ui/               # shadcn/ui bileşenleri
-├── lib/                   # Yardımcı fonksiyonlar
-│   ├── utils.ts          # Utility fonksiyonları
-│   └── api-client.ts     # API istemcisi
+│   └── page.tsx           # Asosiy sahifa
+├── components/            # React komponentlar
+│   └── ui/               # shadcn/ui komponentlar
+├── lib/                   # Yordamchi funksiyalar
+│   ├── utils.ts          # Utility funksiyalar
+│   └── api-client.ts     # API mijozi
 ├── hooks/                 # Custom React hooks
-├── types/                 # TypeScript tip tanımları
-└── proxy.ts               # Next.js 16 Proxy (Auth - eski middleware)
+├── types/                 # TypeScript tip ta'riflari
+└── proxy.ts               # Next.js 16 Proxy (Auth)
 ```
 
-## 🔐 Kimlik Doğrulama
+## Autentifikatsiya
 
-Uygulama, Next.js 16 proxy kullanarak otomatik kimlik doğrulama kontrolü yapar:
-- Kimliği doğrulanmamış kullanıcılar `/login` sayfasına yönlendirilir
-- Giriş yapmış kullanıcılar `/dashboard` sayfasına yönlendirilir
-- Token, cookie olarak saklanır
-- **Not:** Next.js 16'da `middleware.ts` deprecated edildi, `proxy.ts` kullanılıyor
+Ilova Next.js 16 proxy yordamida avtomatik autentifikatsiya tekshiruvi amalga oshiradi:
+- Autentifikatsiya qilinmagan foydalanuvchilar `/login` sahifasiga yo'naltiriladi
+- Kirgan foydalanuvchilar `/dashboard` sahifasiga yo'naltiriladi
+- Token cookie sifatida saqlanadi
 
-## 🎨 UI Bileşenleri
+## UI Komponentlar
 
-Proje shadcn/ui kullanır. Yeni bileşen eklemek için:
+Loyiha shadcn/ui ishlatadi. Yangi komponent qo'shish uchun:
 
 ```bash
 npx shadcn@latest add [component-name]
 ```
 
-## 📝 Komutlar
+## Buyruqlar
 
 ```bash
-# Geliştirme sunucusu
+# Ishlab chiqish serveri
 npm run dev
 
 # Production build
 npm run build
 
-# Production sunucusu
+# Production serveri
 npm run start
 
 # Linting
 npm run lint
 ```
 
-## 🌐 API Entegrasyonu
+## API Integratsiyasi
 
-API çağrıları için `lib/api-client.ts` içindeki `apiClient` kullanılır:
+API so'rovlari uchun `lib/api-client.ts` ichidagi `apiClient` ishlatiladi:
 
 ```typescript
 import { apiClient } from "@/lib/api-client";
 
-// GET isteği
+// GET so'rovi
 const data = await apiClient.get("/endpoint", { token });
 
-// POST isteği
+// POST so'rovi
 const result = await apiClient.post("/endpoint", { data }, { token });
 ```
 
-## 🤝 Katkıda Bulunma
+## Litsenziya
 
-1. Bu repoyu fork edin
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Değişikliklerinizi commit edin (`git commit -m 'feat: Add amazing feature'`)
-4. Branch'inizi push edin (`git push origin feature/amazing-feature`)
-5. Pull Request açın
+Bu loyiha maxsus loyihadir.
 
-## 📄 Lisans
+## Aloqa
 
-Bu proje özel bir projedir.
-
-## 📧 İletişim
-
-Sorularınız için lütfen bizimle iletişime geçin.
+Savollaringiz uchun biz bilan bog'laning.

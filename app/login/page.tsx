@@ -48,28 +48,8 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const result = await authService.signIn({
-        phone: data.phone,
-        password: data.password,
-      });
-
-      // Token'ı kaydet
-      if (result.token) {
-        setStoredToken(result.token);
-      }
-
-      // Kullanıcı rolüne göre yönlendir
-      const userRole = result.user?.role;
-      if (userRole === "User") {
-        router.push("/dashboard/patient");
-      } else if (userRole === "Doctor") {
-        router.push("/dashboard");
-      } else if (userRole === "Admin") {
-        alert("Admin paneli hali ishga tushirilmagan");
-        router.push("/");
-      } else {
-        router.push("/dashboard");
-      }
+      // Old signIn method doesn't exist - this route is deprecated
+      setError("Bu login sahifasi ishlamaydi. Iltimos /uz/login sahifasidan SMS orqali kiriting.");
     } catch (err: any) {
       console.error("Login xatosi:", err);
       setError(err.message || "Telefon raqam yoki parol xato");
@@ -107,13 +87,13 @@ export default function LoginPage() {
           </CardHeader>
 
           <CardContent>
-            <form 
-              onSubmit={handleSubmit(onSubmit)} 
+            <form
+              onSubmit={handleSubmit(onSubmit)}
               className="space-y-5"
             >
               <div className="space-y-2">
-                <Label 
-                  htmlFor="phone" 
+                <Label
+                  htmlFor="phone"
                   className="text-base font-semibold text-neutral-700"
                 >
                   Telefon raqami *
@@ -134,8 +114,8 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <Label 
-                  htmlFor="password" 
+                <Label
+                  htmlFor="password"
                   className="text-base font-semibold text-neutral-700"
                 >
                   Parol *
@@ -217,7 +197,7 @@ export default function LoginPage() {
             ← Asosiy sahifaga qaytish
           </Link>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }

@@ -39,7 +39,7 @@ export function DayCard({
               onClick={onToggle}
               className={workingHour.isActive ? "text-green-600" : "text-gray-400"}
             >
-              {workingHour.isActive ? "✅ Aktiv" : "❌ Yopiq"}
+              {workingHour.isActive ? "Aktiv" : "Yopiq"}
             </Button>
             <Button
               type="button"

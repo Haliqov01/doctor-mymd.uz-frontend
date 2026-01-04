@@ -1,0 +1,3693 @@
+{
+    "openapi": "3.0.4",
+    "info": {
+        "title": "Administration API",
+        "description": "API documentation for Administration service",
+        "version": "v1"
+    },
+    "paths": {
+        "/api/v1/Appointment/UpsertAppointment": {
+            "post": {
+                "tags": [
+                    "Appointment"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAppointmentRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAppointmentRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAppointmentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Appointment/GetAppointmentById": {
+            "get": {
+                "tags": [
+                    "Appointment"
+                ],
+                "parameters": [
+                    {
+                        "name": "appointmentId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Appointment/GetAppointments": {
+            "post": {
+                "tags": [
+                    "Appointment"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FilterAppointmentRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FilterAppointmentRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FilterAppointmentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentViewModelPagedResultResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentViewModelPagedResultResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentViewModelPagedResultResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Appointment/ToggleActivation": {
+            "post": {
+                "tags": [
+                    "Appointment"
+                ],
+                "parameters": [
+                    {
+                        "name": "appointmentId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Appointment/UpdateAppointmentStatus": {
+            "post": {
+                "tags": [
+                    "Appointment"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAppointmentStatusRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAppointmentStatusRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAppointmentStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Appointment/CancelAppointment": {
+            "post": {
+                "tags": [
+                    "Appointment"
+                ],
+                "parameters": [
+                    {
+                        "name": "appointmentId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Appointment/CreateReport": {
+            "post": {
+                "tags": [
+                    "Appointment"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "DoctorId",
+                                    "PatientId",
+                                    "ReportText"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "PatientId": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "DoctorId": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "ReportText": {
+                                        "type": "string"
+                                    },
+                                    "AppointmentId": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "ReportFile": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "Notes": {
+                                        "maxLength": 500,
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "encoding": {
+                                "PatientId": {
+                                    "style": "form"
+                                },
+                                "DoctorId": {
+                                    "style": "form"
+                                },
+                                "ReportText": {
+                                    "style": "form"
+                                },
+                                "AppointmentId": {
+                                    "style": "form"
+                                },
+                                "ReportFile": {
+                                    "style": "form"
+                                },
+                                "Notes": {
+                                    "style": "form"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Appointment/GetReport": {
+            "get": {
+                "tags": [
+                    "Appointment"
+                ],
+                "parameters": [
+                    {
+                        "name": "reportId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Appointment/GetReports": {
+            "get": {
+                "tags": [
+                    "Appointment"
+                ],
+                "parameters": [
+                    {
+                        "name": "PatientId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "DoctorId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "FromDate",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "ToDate",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "SearchText",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "PageNumber",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "PageSize",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "All",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportViewModelPagedResultResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportViewModelPagedResultResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportViewModelPagedResultResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Appointment/UploadReportFile": {
+            "post": {
+                "tags": [
+                    "Appointment"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "File",
+                                    "ReportId"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "ReportId": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "File": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "Description": {
+                                        "maxLength": 500,
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "encoding": {
+                                "ReportId": {
+                                    "style": "form"
+                                },
+                                "File": {
+                                    "style": "form"
+                                },
+                                "Description": {
+                                    "style": "form"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Appointment/DownloadReport": {
+            "get": {
+                "tags": [
+                    "Appointment"
+                ],
+                "parameters": [
+                    {
+                        "name": "reportId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/Appointment/DeleteReport": {
+            "delete": {
+                "tags": [
+                    "Appointment"
+                ],
+                "parameters": [
+                    {
+                        "name": "reportId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Authorization/CreateSession": {
+            "post": {
+                "tags": [
+                    "Authorization"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateSessionRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateSessionRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateSessionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateSessionResultResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateSessionResultResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateSessionResultResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Authorization/VerifySession": {
+            "post": {
+                "tags": [
+                    "Authorization"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VerifySessionRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VerifySessionRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VerifySessionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VerifySessionResultResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VerifySessionResultResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VerifySessionResultResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Authorization/RefreshToken": {
+            "post": {
+                "tags": [
+                    "Authorization"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RefreshTokenRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RefreshTokenRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RefreshTokenRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RefreshTokenResultResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RefreshTokenResultResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RefreshTokenResultResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Authorization/GetProfile": {
+            "get": {
+                "tags": [
+                    "Authorization"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserProfileViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserProfileViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserProfileViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Authorization/UpdateProfile": {
+            "put": {
+                "tags": [
+                    "Authorization"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateProfileRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateProfileRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateProfileRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserProfileViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserProfileViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserProfileViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Authorization/UploadProfilePhoto": {
+            "post": {
+                "tags": [
+                    "Authorization"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "Photo",
+                                    "UserId"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "UserId": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "Photo": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            },
+                            "encoding": {
+                                "UserId": {
+                                    "style": "form"
+                                },
+                                "Photo": {
+                                    "style": "form"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserProfileViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserProfileViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserProfileViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Authorization/DeleteProfilePhoto": {
+            "delete": {
+                "tags": [
+                    "Authorization"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Authorization/ChangePassword": {
+            "post": {
+                "tags": [
+                    "Authorization"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangePasswordRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangePasswordRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangePasswordRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Authorization/DeactivateAccount": {
+            "post": {
+                "tags": [
+                    "Authorization"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Authorization/DeleteAccount": {
+            "delete": {
+                "tags": [
+                    "Authorization"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/CertificateType/UpsertCertificateType": {
+            "post": {
+                "tags": [
+                    "CertificateType"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertCertificateTypeRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertCertificateTypeRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertCertificateTypeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateTypeViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateTypeViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateTypeViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/CertificateType/GetCertificateType": {
+            "get": {
+                "tags": [
+                    "CertificateType"
+                ],
+                "parameters": [
+                    {
+                        "name": "certificateTypeId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateTypeViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateTypeViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateTypeViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/CertificateType/GetCertificateTypes": {
+            "post": {
+                "tags": [
+                    "CertificateType"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PagedRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PagedRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PagedRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateTypeViewModelPagedResultResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateTypeViewModelPagedResultResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateTypeViewModelPagedResultResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/CertificateType/ToggleActivation": {
+            "post": {
+                "tags": [
+                    "CertificateType"
+                ],
+                "parameters": [
+                    {
+                        "name": "certificateTypeId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateTypeViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateTypeViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateTypeViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Doctor/UpsertDoctor": {
+            "post": {
+                "tags": [
+                    "Doctor"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertDoctorRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertDoctorRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertDoctorRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Doctor/GetDoctorById": {
+            "get": {
+                "tags": [
+                    "Doctor"
+                ],
+                "parameters": [
+                    {
+                        "name": "doctorId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorSingleViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorSingleViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorSingleViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Doctor/GetDoctors": {
+            "post": {
+                "tags": [
+                    "Doctor"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FilterDoctorRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FilterDoctorRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FilterDoctorRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorViewModelPagedResultResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorViewModelPagedResultResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorViewModelPagedResultResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Doctor/ToggleActivation": {
+            "post": {
+                "tags": [
+                    "Doctor"
+                ],
+                "parameters": [
+                    {
+                        "name": "doctorId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Doctor/UploadCertificate/upload-certificate": {
+            "post": {
+                "tags": [
+                    "Doctor"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "CategoryId",
+                                    "DoctorId",
+                                    "File",
+                                    "FileType"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "DoctorId": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "File": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "FileType": {
+                                        "maxLength": 32,
+                                        "type": "string"
+                                    },
+                                    "CategoryId": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "Description": {
+                                        "maxLength": 500,
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "encoding": {
+                                "DoctorId": {
+                                    "style": "form"
+                                },
+                                "File": {
+                                    "style": "form"
+                                },
+                                "FileType": {
+                                    "style": "form"
+                                },
+                                "CategoryId": {
+                                    "style": "form"
+                                },
+                                "Description": {
+                                    "style": "form"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Doctor/GetCertificates/certificates": {
+            "get": {
+                "tags": [
+                    "Doctor"
+                ],
+                "parameters": [
+                    {
+                        "name": "doctorId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateViewModelListResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateViewModelListResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificateViewModelListResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Doctor/DownloadCertificate/download-certificate": {
+            "get": {
+                "tags": [
+                    "Doctor"
+                ],
+                "parameters": [
+                    {
+                        "name": "certificateId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/Doctor/DeleteCertificate/certificate": {
+            "delete": {
+                "tags": [
+                    "Doctor"
+                ],
+                "parameters": [
+                    {
+                        "name": "certificateId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/DocumentCategory/UpsertDocumentCategory": {
+            "post": {
+                "tags": [
+                    "DocumentCategory"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertDocumentCategoryRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertDocumentCategoryRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertDocumentCategoryRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentCategoryViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentCategoryViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentCategoryViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/DocumentCategory/GetDocumentCategory": {
+            "get": {
+                "tags": [
+                    "DocumentCategory"
+                ],
+                "parameters": [
+                    {
+                        "name": "documentCategoryId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentCategoryViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentCategoryViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentCategoryViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/DocumentCategory/GetDocumentCategories": {
+            "post": {
+                "tags": [
+                    "DocumentCategory"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PagedRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PagedRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PagedRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentCategoryViewModelPagedResultResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentCategoryViewModelPagedResultResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentCategoryViewModelPagedResultResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/DocumentCategory/ToggleActivation": {
+            "post": {
+                "tags": [
+                    "DocumentCategory"
+                ],
+                "parameters": [
+                    {
+                        "name": "documentCategoryId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentCategoryViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentCategoryViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentCategoryViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Patient/UpsertPatient": {
+            "post": {
+                "tags": [
+                    "Patient"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertPatientRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertPatientRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertPatientRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PatientViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PatientViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PatientViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Patient/GetPatientById": {
+            "get": {
+                "tags": [
+                    "Patient"
+                ],
+                "parameters": [
+                    {
+                        "name": "patientId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PatientSingleViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PatientSingleViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PatientSingleViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Patient/GetPatients": {
+            "post": {
+                "tags": [
+                    "Patient"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FilterPatientRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FilterPatientRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FilterPatientRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PatientViewModelPagedResultResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PatientViewModelPagedResultResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PatientViewModelPagedResultResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Patient/ToggleActivation": {
+            "post": {
+                "tags": [
+                    "Patient"
+                ],
+                "parameters": [
+                    {
+                        "name": "patientId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PatientViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PatientViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PatientViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Patient/UploadDocument/upload-document": {
+            "post": {
+                "tags": [
+                    "Patient"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "File",
+                                    "FileType",
+                                    "PatientId"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "PatientId": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "File": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "FileType": {
+                                        "maxLength": 32,
+                                        "type": "string"
+                                    },
+                                    "CategoryId": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    }
+                                }
+                            },
+                            "encoding": {
+                                "PatientId": {
+                                    "style": "form"
+                                },
+                                "File": {
+                                    "style": "form"
+                                },
+                                "FileType": {
+                                    "style": "form"
+                                },
+                                "CategoryId": {
+                                    "style": "form"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentViewModelResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentViewModelResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentViewModelResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Patient/GetDocuments/documents": {
+            "get": {
+                "tags": [
+                    "Patient"
+                ],
+                "parameters": [
+                    {
+                        "name": "patientId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentViewModelListResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentViewModelListResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentViewModelListResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/Patient/DownloadDocument/download-document": {
+            "get": {
+                "tags": [
+                    "Patient"
+                ],
+                "parameters": [
+                    {
+                        "name": "documentId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/Patient/DeleteDocument/document": {
+            "delete": {
+                "tags": [
+                    "Patient"
+                ],
+                "parameters": [
+                    {
+                        "name": "documentId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BooleanResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AppointmentStatus": {
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "type": "integer",
+                "format": "int32"
+            },
+            "AppointmentViewModel": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "patientId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "patientName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "patientPhone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "doctorId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "doctorName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "doctorSpecialization": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "scheduledDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/AppointmentStatus"
+                    },
+                    "statusName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "createdDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "isDeleted": {
+                        "$ref": "#/components/schemas/EntityStatus"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "AppointmentViewModelPagedResult": {
+                "type": "object",
+                "properties": {
+                    "totalCount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "isFirst": {
+                        "type": "boolean"
+                    },
+                    "isLast": {
+                        "type": "boolean"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AppointmentViewModel"
+                        },
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "AppointmentViewModelPagedResultResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/AppointmentViewModelPagedResult"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "AppointmentViewModelResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/AppointmentViewModel"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "BooleanResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "type": "boolean"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CertificateTypeViewModel": {
+                "type": "object",
+                "properties": {
+                    "valueRu": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "valueUz": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "valueUzl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "valueEn": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/EntityStatus"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "keyWord": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CertificateTypeViewModelPagedResult": {
+                "type": "object",
+                "properties": {
+                    "totalCount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "isFirst": {
+                        "type": "boolean"
+                    },
+                    "isLast": {
+                        "type": "boolean"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CertificateTypeViewModel"
+                        },
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CertificateTypeViewModelPagedResultResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/CertificateTypeViewModelPagedResult"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CertificateTypeViewModelResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/CertificateTypeViewModel"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CertificateViewModel": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "fileType": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "categoryName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "uploadedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "fileSize": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "downloadUrl": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CertificateViewModelListResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CertificateViewModel"
+                        },
+                        "nullable": true
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CertificateViewModelResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/CertificateViewModel"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ChangePasswordRequest": {
+                "required": [
+                    "confirmPassword",
+                    "currentPassword",
+                    "newPassword",
+                    "userId"
+                ],
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "currentPassword": {
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "newPassword": {
+                        "maxLength": 100,
+                        "minLength": 6,
+                        "type": "string"
+                    },
+                    "confirmPassword": {
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CreateAppointmentRequest": {
+                "required": [
+                    "doctorId",
+                    "patientId"
+                ],
+                "type": "object",
+                "properties": {
+                    "patientId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "doctorId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "message": {
+                        "maxLength": 500,
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "scheduledDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CreateSessionRequest": {
+                "type": "object",
+                "properties": {
+                    "phone": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CreateSessionResult": {
+                "type": "object",
+                "properties": {
+                    "sessionId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "expireDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CreateSessionResultResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/CreateSessionResult"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DoctorSingleViewModel": {
+                "required": [
+                    "fullName",
+                    "specialization"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "fullName": {
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "specialization": {
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "experienceYears": {
+                        "maximum": 80,
+                        "minimum": 0,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "workplace": {
+                        "maxLength": 200,
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "biography": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "certificates": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FileViewModel"
+                        },
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DoctorSingleViewModelResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/DoctorSingleViewModel"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DoctorViewModel": {
+                "required": [
+                    "fullName",
+                    "specialization"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "fullName": {
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "specialization": {
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "experienceYears": {
+                        "maximum": 80,
+                        "minimum": 0,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/EntityStatus"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DoctorViewModelPagedResult": {
+                "type": "object",
+                "properties": {
+                    "totalCount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "isFirst": {
+                        "type": "boolean"
+                    },
+                    "isLast": {
+                        "type": "boolean"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DoctorViewModel"
+                        },
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DoctorViewModelPagedResultResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/DoctorViewModelPagedResult"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DoctorViewModelResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/DoctorViewModel"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DocumentCategoryViewModel": {
+                "type": "object",
+                "properties": {
+                    "valueRu": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "valueUz": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "valueUzl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "valueEn": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/EntityStatus"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "keyWord": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DocumentCategoryViewModelPagedResult": {
+                "type": "object",
+                "properties": {
+                    "totalCount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "isFirst": {
+                        "type": "boolean"
+                    },
+                    "isLast": {
+                        "type": "boolean"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DocumentCategoryViewModel"
+                        },
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DocumentCategoryViewModelPagedResultResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/DocumentCategoryViewModelPagedResult"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DocumentCategoryViewModelResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/DocumentCategoryViewModel"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DocumentViewModel": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "fileType": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "categoryName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "uploadedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "fileSize": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "downloadUrl": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DocumentViewModelListResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DocumentViewModel"
+                        },
+                        "nullable": true
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DocumentViewModelResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/DocumentViewModel"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "EntityStatus": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "integer",
+                "format": "int32"
+            },
+            "ErrorModel": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "details": {
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "FileViewModel": {
+                "type": "object",
+                "properties": {
+                    "path": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "originalName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "size": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "extension": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "FilterAppointmentRequest": {
+                "type": "object",
+                "properties": {
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "patientId": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": true
+                    },
+                    "doctorId": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": true
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/AppointmentStatus"
+                    },
+                    "fromDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "toDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "FilterDoctorRequest": {
+                "required": [
+                    "fullName",
+                    "specialization"
+                ],
+                "type": "object",
+                "properties": {
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "fullName": {
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "specialization": {
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "experienceYears": {
+                        "maximum": 80,
+                        "minimum": 0,
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "FilterPatientRequest": {
+                "required": [
+                    "gender"
+                ],
+                "type": "object",
+                "properties": {
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "fullName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "age": {
+                        "maximum": 120,
+                        "minimum": 0,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "gender": {
+                        "maxLength": 16,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "Gender": {
+                "enum": [
+                    1,
+                    2
+                ],
+                "type": "integer",
+                "format": "int32"
+            },
+            "PagedRequest": {
+                "type": "object",
+                "properties": {
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "PatientSingleViewModel": {
+                "required": [
+                    "fullName",
+                    "gender"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "fullName": {
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "age": {
+                        "maximum": 120,
+                        "minimum": 0,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "gender": {
+                        "maxLength": 16,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "address": {
+                        "maxLength": 200,
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "additionalNotes": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "documents": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FileViewModel"
+                        },
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "PatientSingleViewModelResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/PatientSingleViewModel"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "PatientViewModel": {
+                "required": [
+                    "fullName",
+                    "gender"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "fullName": {
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "age": {
+                        "maximum": 120,
+                        "minimum": 0,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "gender": {
+                        "maxLength": 16,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "PatientViewModelPagedResult": {
+                "type": "object",
+                "properties": {
+                    "totalCount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "isFirst": {
+                        "type": "boolean"
+                    },
+                    "isLast": {
+                        "type": "boolean"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PatientViewModel"
+                        },
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "PatientViewModelPagedResultResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/PatientViewModelPagedResult"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "PatientViewModelResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/PatientViewModel"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "RefreshTokenRequest": {
+                "type": "object",
+                "properties": {
+                    "refreshToken": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "RefreshTokenResult": {
+                "type": "object",
+                "properties": {
+                    "accessToken": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "accessTokenExpiry": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "refreshToken": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "refreshTokenExpiry": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "RefreshTokenResultResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/RefreshTokenResult"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ReportViewModel": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "patientId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "patientName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "patientPhone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "doctorId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "doctorName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "doctorSpecialization": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "reportText": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "appointmentId": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": true
+                    },
+                    "pdfPath": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "downloadUrl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "notes": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "reportDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "createdDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ReportViewModelPagedResult": {
+                "type": "object",
+                "properties": {
+                    "totalCount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "isFirst": {
+                        "type": "boolean"
+                    },
+                    "isLast": {
+                        "type": "boolean"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReportViewModel"
+                        },
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ReportViewModelPagedResultResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/ReportViewModelPagedResult"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ReportViewModelResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/ReportViewModel"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "UpdateAppointmentStatusRequest": {
+                "required": [
+                    "appointmentId",
+                    "status"
+                ],
+                "type": "object",
+                "properties": {
+                    "appointmentId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/AppointmentStatus"
+                    },
+                    "notes": {
+                        "maxLength": 500,
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "scheduledDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "UpdateProfileRequest": {
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "firstName": {
+                        "maxLength": 100,
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lastName": {
+                        "maxLength": 100,
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "maxLength": 32,
+                        "type": "string",
+                        "format": "tel",
+                        "nullable": true
+                    },
+                    "email": {
+                        "maxLength": 200,
+                        "type": "string",
+                        "format": "email",
+                        "nullable": true
+                    },
+                    "dateOfBirth": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "gender": {
+                        "$ref": "#/components/schemas/Gender"
+                    },
+                    "address": {
+                        "maxLength": 500,
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "UpsertCertificateTypeRequest": {
+                "type": "object",
+                "properties": {
+                    "valueRu": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "valueUz": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "valueUzl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "valueEn": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "id": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/EntityStatus"
+                    },
+                    "keyWord": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "UpsertDoctorRequest": {
+                "required": [
+                    "fullName",
+                    "specialization"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "fullName": {
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "specialization": {
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "experienceYears": {
+                        "maximum": 80,
+                        "minimum": 0,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "workplace": {
+                        "maxLength": 200,
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "biography": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "UpsertDocumentCategoryRequest": {
+                "type": "object",
+                "properties": {
+                    "valueRu": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "valueUz": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "valueUzl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "valueEn": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "id": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "keyWord": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "UpsertPatientRequest": {
+                "required": [
+                    "fullName",
+                    "gender"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": true
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "fullName": {
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "age": {
+                        "maximum": 120,
+                        "minimum": 0,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "gender": {
+                        "maxLength": 16,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "address": {
+                        "maxLength": 200,
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "additionalNotes": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "UserProfileViewModel": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "dateOfBirth": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "gender": {
+                        "$ref": "#/components/schemas/Gender"
+                    },
+                    "address": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "profilePhotoUrl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/EntityStatus"
+                    },
+                    "createdDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "UserProfileViewModelResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/UserProfileViewModel"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "VerifySessionRequest": {
+                "type": "object",
+                "properties": {
+                    "sessionId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "code": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "VerifySessionResult": {
+                "type": "object",
+                "properties": {
+                    "accessToken": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "accessTokenExpiry": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "refreshToken": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "refreshTokenExpiry": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "VerifySessionResultResult": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "$ref": "#/components/schemas/VerifySessionResult"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorModel"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "securitySchemes": {
+            "Bearer": {
+                "type": "http",
+                "description": "JWT Authorization header using the Bearer scheme.",
+                "scheme": "Bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "security": [
+        {
+            "Bearer": []
+        }
+    ]
+}

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,8 +19,11 @@ import {
   FileText,
   ChevronRight,
   Copy,
-  CheckCircle2
+  CheckCircle2,
+  Save,
+  Loader2
 } from "lucide-react";
+import { reportService } from "@/lib/services/report.service";
 import { PatientInfoSection } from "./components/PatientInfoSection";
 import { ExaminationField } from "./components/ExaminationField";
 import { ReportPrintTemplate } from "./components/ReportPrintTemplate";
@@ -38,11 +41,18 @@ import {
 
 export default function CreateReportPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const printRef = useRef<HTMLDivElement>(null);
 
   const [showPreview, setShowPreview] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeSection, setActiveSection] = useState("patient");
+  const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  
+  // URL'den gelen parametreler
+  const [appointmentId, setAppointmentId] = useState<number | null>(null);
+  const [patientId, setPatientId] = useState<number | null>(null);
   
   const [patientInfo, setPatientInfo] = useState<PatientInfo>({
     fullName: "",
@@ -132,6 +142,123 @@ export default function CreateReportPage() {
     },
   };
 
+  // URL parametrelerini oku
+  useEffect(() => {
+    const aptId = searchParams.get('appointmentId');
+    const ptId = searchParams.get('patientId');
+    const ptName = searchParams.get('patientName');
+    const complaint = searchParams.get('complaint');
+
+    if (aptId) setAppointmentId(parseInt(aptId));
+    if (ptId) setPatientId(parseInt(ptId));
+    if (ptName) setPatientInfo(prev => ({ ...prev, fullName: decodeURIComponent(ptName) }));
+    if (complaint) setComplaints(decodeURIComponent(complaint));
+  }, [searchParams]);
+
+  // Rapor metnini oluştur
+  const generateReportText = () => {
+    return `
+BEMOR: ${patientInfo.fullName}
+TUG'ILGAN SANA: ${patientInfo.dateOfBirth}
+JINSI: ${patientInfo.gender}
+MANZIL: ${patientInfo.address}
+
+SHIKOYATLARI: ${complaints}
+
+ANAMNEZ: ${anamnesis}
+
+HAMROH KASALLIKLAR: ${comorbidities}
+
+=== O'NG KO'Z (OD) ===
+Ko'rish o'tkirligi: k/siz ${rightEye.visualAcuity.uncorrected} / k/li ${rightEye.visualAcuity.corrected}
+Refraksiya: Sph ${rightEye.refraction.sphere} Cyl ${rightEye.refraction.cylinder} Ax ${rightEye.refraction.axis}
+KIB (${iopMethod}): ${rightEye.iop} mmHg
+Ko'z olmasi: ${rightEye.globe}
+Ko'z mushaklari: ${rightEye.muscles}
+Qovoqlar: ${rightEye.lidsAndLacrimal}
+Konyunktiva: ${rightEye.conjunctiva}
+Sklera: ${rightEye.sclera}
+Shox parda: ${rightEye.cornea}
+Old kamera: ${rightEye.anteriorChamber}
+Rangdor parda va qorachiq: ${rightEye.irisAndPupil}
+Gavhar: ${rightEye.lens}
+Shishasimon tana: ${rightEye.vitreous}
+Ko'z tubi: ${rightEye.fundus}
+
+=== CHAP KO'Z (OS) ===
+Ko'rish o'tkirligi: k/siz ${leftEye.visualAcuity.uncorrected} / k/li ${leftEye.visualAcuity.corrected}
+Refraksiya: Sph ${leftEye.refraction.sphere} Cyl ${leftEye.refraction.cylinder} Ax ${leftEye.refraction.axis}
+KIB (${iopMethod}): ${leftEye.iop} mmHg
+Ko'z olmasi: ${leftEye.globe}
+Ko'z mushaklari: ${leftEye.muscles}
+Qovoqlar: ${leftEye.lidsAndLacrimal}
+Konyunktiva: ${leftEye.conjunctiva}
+Sklera: ${leftEye.sclera}
+Shox parda: ${leftEye.cornea}
+Old kamera: ${leftEye.anteriorChamber}
+Rangdor parda va qorachiq: ${leftEye.irisAndPupil}
+Gavhar: ${leftEye.lens}
+Shishasimon tana: ${leftEye.vitreous}
+Ko'z tubi: ${leftEye.fundus}
+
+=== TASHXIS ===
+OU (Ikkala ko'z): ${diagnosis.bothEyes}
+OD (O'ng ko'z): ${diagnosis.rightEye}
+OS (Chap ko'z): ${diagnosis.leftEye}
+
+=== TAVSIYALAR ===
+${recommendations}
+
+Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
+    `.trim();
+  };
+
+  // Backend'e kaydet
+  const handleSaveReport = async () => {
+    if (!patientId) {
+      alert("Bemor ID topilmadi. Iltimos randevu orqali kiring.");
+      return;
+    }
+
+    if (!patientInfo.fullName.trim()) {
+      alert("Bemor ismi kiritilishi shart");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const { doctorResolver } = await import("@/lib/services/doctorResolver");
+      const doctorId = await doctorResolver.resolve();
+
+      if (!doctorId) {
+        throw new Error("Doktor profili topilmadi. Profilingizni to'ldiring.");
+      }
+
+      console.log("Saving report...", { patientId, doctorId, appointmentId });
+
+      const result = await reportService.createReport({
+        patientId: patientId,
+        doctorId: doctorId,
+        reportText: generateReportText(),
+        appointmentId: appointmentId || undefined,
+        notes: `Ko'z muoyenasi - ${new Date().toLocaleDateString('uz-UZ')}`,
+      });
+
+      console.log("Report saved:", result);
+      setSaveSuccess(true);
+      
+      // 2 saniye sonra dashboard'a git
+      setTimeout(() => {
+        router.push("/dashboard/appointments");
+      }, 2000);
+    } catch (error: any) {
+      console.error("Save error:", error);
+      alert(error.message || "Hisobot saqlanmadi. Qaytadan urinib ko'ring.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handlePrint = () => {
     if (printRef.current) {
       const printWindow = window.open('', '_blank');
@@ -144,7 +271,7 @@ export default function CreateReportPage() {
               <style>
                 @page {
                   size: A4;
-                  margin: 12mm 15mm;
+                  margin: 10mm 12mm;
                 }
                 body {
                   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -153,8 +280,341 @@ export default function CreateReportPage() {
                   margin: 0;
                   padding: 0;
                   color: #1e293b;
+                  print-color-adjust: exact;
+                  -webkit-print-color-adjust: exact;
                 }
                 * { box-sizing: border-box; }
+                
+                .print-container {
+                  max-width: 210mm;
+                  margin: 0 auto;
+                  padding: 20px;
+                  font-size: 10pt;
+                  line-height: 1.4;
+                  color: #1e293b;
+                }
+                
+                .report-header {
+                  text-align: center;
+                  border-bottom: 3px solid #0d9488;
+                  padding-bottom: 12px;
+                  margin-bottom: 16px;
+                }
+                
+                .report-header h1 {
+                  font-size: 18pt;
+                  font-weight: 700;
+                  color: #0d9488;
+                  margin: 0 0 4px 0;
+                  letter-spacing: 0.5px;
+                }
+                
+                .report-header .date {
+                  font-size: 10pt;
+                  color: #64748b;
+                }
+                
+                .section {
+                  margin-bottom: 14px;
+                  page-break-inside: avoid;
+                }
+                
+                .section-title {
+                  font-size: 11pt;
+                  font-weight: 700;
+                  color: #0f766e;
+                  padding: 6px 10px;
+                  background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+                  border-left: 4px solid #0d9488;
+                  margin-bottom: 10px;
+                  border-radius: 0 6px 6px 0;
+                }
+                
+                .info-grid {
+                  display: grid;
+                  grid-template-columns: repeat(2, 1fr);
+                  gap: 8px;
+                  margin-bottom: 12px;
+                }
+                
+                .info-item {
+                  display: flex;
+                  align-items: baseline;
+                  gap: 8px;
+                  padding: 6px 10px;
+                  background: #f8fafc;
+                  border-radius: 6px;
+                  border: 1px solid #e2e8f0;
+                }
+                
+                .info-item.full-width {
+                  grid-column: span 2;
+                }
+                
+                .info-label {
+                  font-weight: 600;
+                  color: #64748b;
+                  font-size: 9pt;
+                  min-width: 100px;
+                }
+                
+                .info-value {
+                  color: #1e293b;
+                  font-weight: 500;
+                }
+                
+                .info-value.highlight {
+                  font-size: 12pt;
+                  font-weight: 700;
+                  color: #0f766e;
+                }
+                
+                .exam-table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  font-size: 9pt;
+                  margin-bottom: 12px;
+                }
+                
+                .exam-table th {
+                  background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+                  color: white;
+                  font-weight: 600;
+                  padding: 8px 10px;
+                  text-align: center;
+                  font-size: 10pt;
+                }
+                
+                .exam-table th:first-child {
+                  border-radius: 8px 0 0 0;
+                  text-align: left;
+                }
+                
+                .exam-table th:last-child {
+                  border-radius: 0 8px 0 0;
+                }
+                
+                .exam-table td {
+                  padding: 6px 10px;
+                  border-bottom: 1px solid #e2e8f0;
+                  vertical-align: middle;
+                }
+                
+                .exam-table tr:nth-child(even) {
+                  background: #f8fafc;
+                }
+                
+                .exam-table .label-cell {
+                  font-weight: 600;
+                  color: #475569;
+                  width: 25%;
+                  background: #f1f5f9;
+                }
+                
+                .exam-table .value-cell {
+                  width: 37.5%;
+                }
+                
+                .measurements-grid {
+                  display: grid;
+                  grid-template-columns: repeat(2, 1fr);
+                  gap: 12px;
+                  margin-bottom: 12px;
+                }
+                
+                .eye-card {
+                  border: 2px solid #e2e8f0;
+                  border-radius: 10px;
+                  overflow: hidden;
+                }
+                
+                .eye-card.right {
+                  border-color: #99f6e4;
+                }
+                
+                .eye-card.left {
+                  border-color: #bfdbfe;
+                }
+                
+                .eye-card-header {
+                  padding: 8px 12px;
+                  font-weight: 700;
+                  font-size: 11pt;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                }
+                
+                .eye-card.right .eye-card-header {
+                  background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%);
+                  color: #0f766e;
+                }
+                
+                .eye-card.left .eye-card-header {
+                  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+                  color: #1e40af;
+                }
+                
+                .eye-badge {
+                  width: 24px;
+                  height: 24px;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 9pt;
+                  font-weight: 700;
+                  color: white;
+                }
+                
+                .eye-card.right .eye-badge {
+                  background: #0d9488;
+                }
+                
+                .eye-card.left .eye-badge {
+                  background: #2563eb;
+                }
+                
+                .eye-card-content {
+                  padding: 10px 12px;
+                }
+                
+                .measurement-row {
+                  display: flex;
+                  justify-content: space-between;
+                  padding: 5px 0;
+                  border-bottom: 1px dashed #e2e8f0;
+                }
+                
+                .measurement-row:last-child {
+                  border-bottom: none;
+                }
+                
+                .measurement-label {
+                  color: #64748b;
+                  font-size: 9pt;
+                }
+                
+                .measurement-value {
+                  font-weight: 600;
+                  color: #1e293b;
+                }
+                
+                .refraction-box {
+                  display: grid;
+                  grid-template-columns: repeat(3, 1fr);
+                  gap: 4px;
+                  margin-top: 8px;
+                  padding: 8px;
+                  background: #f8fafc;
+                  border-radius: 6px;
+                }
+                
+                .refraction-item {
+                  text-align: center;
+                }
+                
+                .refraction-item .label {
+                  font-size: 8pt;
+                  color: #94a3b8;
+                  font-weight: 600;
+                }
+                
+                .refraction-item .value {
+                  font-size: 11pt;
+                  font-weight: 700;
+                  color: #1e293b;
+                }
+                
+                .diagnosis-box {
+                  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+                  border: 2px solid #f59e0b;
+                  border-radius: 10px;
+                  padding: 12px 16px;
+                  margin-bottom: 12px;
+                }
+                
+                .diagnosis-box h3 {
+                  font-size: 12pt;
+                  font-weight: 700;
+                  color: #92400e;
+                  margin: 0 0 8px 0;
+                  display: flex;
+                  align-items: center;
+                  gap: 6px;
+                }
+                
+                .diagnosis-content {
+                  font-size: 10pt;
+                  color: #78350f;
+                  line-height: 1.5;
+                }
+                
+                .diagnosis-content strong {
+                  color: #92400e;
+                }
+                
+                .recommendations-box {
+                  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+                  border: 2px solid #10b981;
+                  border-radius: 10px;
+                  padding: 12px 16px;
+                  margin-bottom: 16px;
+                }
+                
+                .recommendations-box h3 {
+                  font-size: 12pt;
+                  font-weight: 700;
+                  color: #065f46;
+                  margin: 0 0 8px 0;
+                }
+                
+                .recommendations-content {
+                  font-size: 10pt;
+                  color: #064e3b;
+                  line-height: 1.6;
+                  white-space: pre-line;
+                }
+                
+                .signature-section {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: flex-end;
+                  margin-top: 24px;
+                  padding-top: 16px;
+                  border-top: 2px solid #e2e8f0;
+                }
+                
+                .doctor-info {
+                  font-size: 10pt;
+                }
+                
+                .doctor-info .title {
+                  color: #64748b;
+                  font-size: 9pt;
+                }
+                
+                .doctor-info .name {
+                  font-size: 12pt;
+                  font-weight: 700;
+                  color: #1e293b;
+                }
+                
+                .signature-box {
+                  text-align: center;
+                }
+                
+                .signature-line {
+                  width: 150px;
+                  border-bottom: 2px solid #1e293b;
+                  margin-bottom: 4px;
+                }
+                
+                .signature-label {
+                  font-size: 9pt;
+                  color: #64748b;
+                  font-style: italic;
+                }
               </style>
             </head>
             <body>
@@ -212,7 +672,7 @@ export default function CreateReportPage() {
             <div className="flex gap-3">
               <Button
                 variant="outline"
-                onClick={() => router.push("/dashboard")}
+                onClick={() => router.push("/dashboard/appointments")}
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Orqaga
@@ -225,10 +685,34 @@ export default function CreateReportPage() {
                 <Eye className="h-4 w-4 mr-2" />
                 {showPreview ? "Formani ko'rish" : "Oldindan ko'rish"}
               </Button>
-              <Button onClick={handlePrint}>
+              <Button variant="outline" onClick={handlePrint}>
                 <Printer className="h-4 w-4 mr-2" />
                 Chop etish
               </Button>
+              {patientId && (
+                <Button 
+                  onClick={handleSaveReport} 
+                  disabled={saving || saveSuccess}
+                  className={saveSuccess ? "bg-green-600 hover:bg-green-600" : ""}
+                >
+                  {saving ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Saqlanmoqda...
+                    </>
+                  ) : saveSuccess ? (
+                    <>
+                      <CheckCircle2 className="h-4 w-4 mr-2" />
+                      Saqlandi!
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4 mr-2" />
+                      Saqlash
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -727,10 +1211,34 @@ export default function CreateReportPage() {
                       <Eye className="h-4 w-4 mr-2" />
                       Oldindan ko'rish
                     </Button>
-                    <Button onClick={handlePrint}>
+                    <Button variant="outline" onClick={handlePrint}>
                       <Printer className="h-4 w-4 mr-2" />
                       Chop etish
                     </Button>
+                    {patientId && (
+                      <Button 
+                        onClick={handleSaveReport} 
+                        disabled={saving || saveSuccess}
+                        className={saveSuccess ? "bg-green-600 hover:bg-green-600" : ""}
+                      >
+                        {saving ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Saqlanmoqda...
+                          </>
+                        ) : saveSuccess ? (
+                          <>
+                            <CheckCircle2 className="h-4 w-4 mr-2" />
+                            Saqlandi!
+                          </>
+                        ) : (
+                          <>
+                            <Save className="h-4 w-4 mr-2" />
+                            Saqlash
+                          </>
+                        )}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>

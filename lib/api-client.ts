@@ -1,7 +1,9 @@
 import { BackendResponse } from "@/types";
+import { isTokenExpired } from "./utils/token";
+import { apiLogger } from "@/lib/utils/logger";
 
-// Backend API URL - .env.local'dan alınır
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mymd.uz";
+// Backend API URL - .env.local'dan alınır veya boş bırakılır (proxy için)
+const API_URL = "";
 const API_VERSION = "/api/v1";
 
 export class ApiError extends Error {
@@ -16,6 +18,10 @@ export class ApiError extends Error {
   }
 }
 
+// Flag to prevent infinite refresh loops
+let isRefreshing = false;
+let refreshPromise: Promise<void> | null = null;
+
 // Backend response handler
 async function handleResponse<T>(response: Response): Promise<T> {
   const contentType = response.headers.get("content-type");
@@ -29,6 +35,13 @@ async function handleResponse<T>(response: Response): Promise<T> {
   }
 
   const result: BackendResponse<T> = await response.json();
+
+  // DEBUG: Log the backend response
+  apiLogger.debug("Response", {
+    url: response.url,
+    status: response.status,
+    success: result.success,
+  });
 
   if (!result.success || !response.ok) {
     throw new ApiError(
@@ -57,6 +70,7 @@ function getStoredToken(): string | null {
 // Token'ı localStorage'a kaydet
 export function setStoredToken(token: string): void {
   if (typeof window !== "undefined") {
+    apiLogger.debug("Auth", `Setting token: ${token ? token.substring(0, 5) + "..." : "null"}`);
     localStorage.setItem("auth_token", token);
   }
 }
@@ -65,7 +79,79 @@ export function setStoredToken(token: string): void {
 export function clearStoredToken(): void {
   if (typeof window !== "undefined") {
     localStorage.removeItem("auth_token");
+    document.cookie = "token=; path=/; max-age=0"; // Clear cookie too
   }
+}
+
+// Attempt to refresh token - returns true if refresh succeeded
+async function attemptTokenRefresh(): Promise<boolean> {
+  if (isRefreshing) {
+    // Wait for ongoing refresh
+    if (refreshPromise) {
+      await refreshPromise;
+      return !!getStoredToken();
+    }
+    return false;
+  }
+
+  isRefreshing = true;
+  refreshPromise = (async () => {
+    try {
+      const storedRefreshToken = typeof window !== "undefined"
+        ? localStorage.getItem("refresh_token")
+        : null;
+
+      if (!storedRefreshToken) {
+        apiLogger.warn("Refresh", "No refresh token available");
+        return;
+      }
+
+      apiLogger.info("Refresh", "Attempting token refresh...");
+
+      // Call refresh endpoint directly to avoid circular dependency
+      const response = await fetch(`${API_URL}${API_VERSION}/Authorization/RefreshToken`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({ refreshToken: storedRefreshToken }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Refresh failed");
+      }
+
+      const result: BackendResponse<any> = await response.json();
+
+      if (result.success && result.payload?.accessToken) {
+        apiLogger.info("Refresh", "Token refresh successful");
+        setStoredToken(result.payload.accessToken);
+
+        if (typeof window !== "undefined") {
+          localStorage.setItem("refresh_token", result.payload.refreshToken);
+          localStorage.setItem("access_token_expiry", result.payload.accessTokenExpiry);
+          localStorage.setItem("refresh_token_expiry", result.payload.refreshTokenExpiry);
+        }
+      } else {
+        throw new Error("Invalid refresh response");
+      }
+    } catch (error) {
+      apiLogger.error("Refresh", "Token refresh failed:", error);
+      clearStoredToken();
+
+      // Redirect to login
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
+    } finally {
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+
+  await refreshPromise;
+  return !!getStoredToken();
 }
 
 export const apiClient = {
@@ -73,7 +159,7 @@ export const apiClient = {
   async get<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
     const { token, ...fetchOptions } = options;
     const authToken = token || getStoredToken();
-    
+
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -84,13 +170,45 @@ export const apiClient = {
       headers["Authorization"] = `Bearer ${authToken}`;
     }
 
-    const response = await fetch(`${API_URL}${API_VERSION}${endpoint}`, {
-      ...fetchOptions,
-      method: "GET",
-      headers,
-    });
+    const url = `${API_URL}${API_VERSION}${endpoint}`;
 
-    return handleResponse<T>(response);
+    apiLogger.debug("GET", endpoint, authToken ? "(authenticated)" : "(no token)");
+
+    try {
+      const response = await fetch(url, {
+        ...fetchOptions,
+        method: "GET",
+        headers,
+      });
+
+      return handleResponse<T>(response);
+    } catch (error) {
+      // If 401 and we're not already refreshing, try token refresh
+      if (error instanceof ApiError && error.status === 401 && !isRefreshing) {
+        apiLogger.info("Auth", `401 on GET ${endpoint}, refreshing token...`);
+        const refreshed = await attemptTokenRefresh();
+
+        if (refreshed) {
+          apiLogger.debug("Auth", `Retrying GET ${endpoint} with new token`);
+          // Retry with new token
+          const newToken = getStoredToken();
+          if (newToken) {
+            headers["Authorization"] = `Bearer ${newToken}`;
+          }
+
+          const retryResponse = await fetch(url, {
+            ...fetchOptions,
+            method: "GET",
+            headers,
+          });
+
+          return handleResponse<T>(retryResponse);
+        }
+      }
+
+      apiLogger.error("GET", `Error on ${endpoint}:`, error);
+      throw error;
+    }
   },
 
   // POST request
@@ -101,7 +219,7 @@ export const apiClient = {
   ): Promise<T> {
     const { token, ...fetchOptions } = options;
     const authToken = token || getStoredToken();
-    
+
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -112,14 +230,20 @@ export const apiClient = {
       headers["Authorization"] = `Bearer ${authToken}`;
     }
 
-    const response = await fetch(`${API_URL}${API_VERSION}${endpoint}`, {
-      ...fetchOptions,
-      method: "POST",
-      headers,
-      body: data ? JSON.stringify(data) : undefined,
-    });
+    const url = `${API_URL}${API_VERSION}${endpoint}`;
+    try {
+      const response = await fetch(url, {
+        ...fetchOptions,
+        method: "POST",
+        headers,
+        body: data ? JSON.stringify(data) : undefined,
+      });
 
-    return handleResponse<T>(response);
+      return handleResponse<T>(response);
+    } catch (error) {
+      apiLogger.error("POST", `Error on ${endpoint}:`, error);
+      throw error;
+    }
   },
 
   // PUT request
@@ -130,7 +254,7 @@ export const apiClient = {
   ): Promise<T> {
     const { token, ...fetchOptions } = options;
     const authToken = token || getStoredToken();
-    
+
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -141,14 +265,20 @@ export const apiClient = {
       headers["Authorization"] = `Bearer ${authToken}`;
     }
 
-    const response = await fetch(`${API_URL}${API_VERSION}${endpoint}`, {
-      ...fetchOptions,
-      method: "PUT",
-      headers,
-      body: data ? JSON.stringify(data) : undefined,
-    });
+    const url = `${API_URL}${API_VERSION}${endpoint}`;
+    try {
+      const response = await fetch(url, {
+        ...fetchOptions,
+        method: "PUT",
+        headers,
+        body: data ? JSON.stringify(data) : undefined,
+      });
 
-    return handleResponse<T>(response);
+      return handleResponse<T>(response);
+    } catch (error) {
+      apiLogger.error("PUT", `Error on ${endpoint}:`, error);
+      throw error;
+    }
   },
 
   // PATCH request
@@ -159,7 +289,7 @@ export const apiClient = {
   ): Promise<T> {
     const { token, ...fetchOptions } = options;
     const authToken = token || getStoredToken();
-    
+
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -170,21 +300,27 @@ export const apiClient = {
       headers["Authorization"] = `Bearer ${authToken}`;
     }
 
-    const response = await fetch(`${API_URL}${API_VERSION}${endpoint}`, {
-      ...fetchOptions,
-      method: "PATCH",
-      headers,
-      body: data ? JSON.stringify(data) : undefined,
-    });
+    const url = `${API_URL}${API_VERSION}${endpoint}`;
+    try {
+      const response = await fetch(url, {
+        ...fetchOptions,
+        method: "PATCH",
+        headers,
+        body: data ? JSON.stringify(data) : undefined,
+      });
 
-    return handleResponse<T>(response);
+      return handleResponse<T>(response);
+    } catch (error) {
+      apiLogger.error("PATCH", `Error on ${endpoint}:`, error);
+      throw error;
+    }
   },
 
   // DELETE request
   async delete<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
     const { token, ...fetchOptions } = options;
     const authToken = token || getStoredToken();
-    
+
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -195,13 +331,19 @@ export const apiClient = {
       headers["Authorization"] = `Bearer ${authToken}`;
     }
 
-    const response = await fetch(`${API_URL}${API_VERSION}${endpoint}`, {
-      ...fetchOptions,
-      method: "DELETE",
-      headers,
-    });
+    const url = `${API_URL}${API_VERSION}${endpoint}`;
+    try {
+      const response = await fetch(url, {
+        ...fetchOptions,
+        method: "DELETE",
+        headers,
+      });
 
-    return handleResponse<T>(response);
+      return handleResponse<T>(response);
+    } catch (error) {
+      apiLogger.error("DELETE", `Error on ${endpoint}:`, error);
+      throw error;
+    }
   },
 
   // File upload (multipart/form-data)
@@ -212,7 +354,7 @@ export const apiClient = {
   ): Promise<T> {
     const { token, ...fetchOptions } = options;
     const authToken = token || getStoredToken();
-    
+
     const headers: Record<string, string> = {
       "Accept": "application/json",
       ...(fetchOptions.headers as Record<string, string>),
@@ -223,14 +365,20 @@ export const apiClient = {
       headers["Authorization"] = `Bearer ${authToken}`;
     }
 
-    const response = await fetch(`${API_URL}${API_VERSION}${endpoint}`, {
-      ...fetchOptions,
-      method: "POST",
-      headers,
-      body: formData,
-    });
+    const url = `${API_URL}${API_VERSION}${endpoint}`;
+    try {
+      const response = await fetch(url, {
+        ...fetchOptions,
+        method: "POST",
+        headers,
+        body: formData,
+      });
 
-    return handleResponse<T>(response);
+      return handleResponse<T>(response);
+    } catch (error) {
+      apiLogger.error("UPLOAD", `Error on ${endpoint}:`, error);
+      throw error;
+    }
   },
 };
 
@@ -249,7 +397,7 @@ export const API_ENDPOINTS = {
     DEACTIVATE: "/Authorization/DeactivateAccount",
     DELETE_ACCOUNT: "/Authorization/DeleteAccount",
   },
-  
+
   // Appointment
   APPOINTMENT: {
     UPSERT: "/Appointment/UpsertAppointment",
@@ -266,7 +414,7 @@ export const API_ENDPOINTS = {
     DOWNLOAD_REPORT: "/Appointment/DownloadReport",
     DELETE_REPORT: "/Appointment/DeleteReport",
   },
-  
+
   // Doctor
   DOCTOR: {
     UPSERT: "/Doctor/UpsertDoctor",
@@ -278,7 +426,7 @@ export const API_ENDPOINTS = {
     DOWNLOAD_CERTIFICATE: "/Doctor/DownloadCertificate/download-certificate",
     DELETE_CERTIFICATE: "/Doctor/DeleteCertificate/certificate",
   },
-  
+
   // Patient
   PATIENT: {
     UPSERT: "/Patient/UpsertPatient",
@@ -290,7 +438,7 @@ export const API_ENDPOINTS = {
     DOWNLOAD_DOCUMENT: "/Patient/DownloadDocument/download-document",
     DELETE_DOCUMENT: "/Patient/DeleteDocument/document",
   },
-  
+
   // Certificate Type
   CERTIFICATE_TYPE: {
     UPSERT: "/CertificateType/UpsertCertificateType",

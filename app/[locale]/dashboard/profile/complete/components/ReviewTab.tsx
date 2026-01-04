@@ -130,7 +130,7 @@ export function ReviewTab({
       {personalComplete && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">👤 Shaxsiy ma'lumotlar</CardTitle>
+            <CardTitle className="text-lg">Shaxsiy ma'lumotlar</CardTitle>
           </CardHeader>
           <CardContent className="space-y-1">
             <InfoRow label="F.I.O" value={`${formData.lastName} ${formData.firstName} ${formData.middleName}`} />
@@ -199,7 +199,7 @@ export function ReviewTab({
       {specializationComplete && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">🎯 Ixtisoslik</CardTitle>
+            <CardTitle className="text-lg">Ixtisoslik</CardTitle>
           </CardHeader>
           <CardContent className="space-y-1">
             <InfoRow label="Asosiy yo'nalish" value={formData.specialization1} />

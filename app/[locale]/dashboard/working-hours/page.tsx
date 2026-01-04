@@ -98,7 +98,7 @@ export default function WorkingHoursPage() {
             <Card className={message.type === "success" ? "border-teal-200 bg-teal-50" : "border-red-200 bg-red-50"}>
               <CardContent className="py-4">
                 <p className={message.type === "success" ? "text-teal-700" : "text-red-700"}>
-                  {message.type === "success" ? "✅ " : "❌ "}
+                  {message.type === "success" ? "" : ""}
                   {message.text}
                 </p>
               </CardContent>
@@ -130,7 +130,7 @@ export default function WorkingHoursPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between gap-4">
                 <div className="text-sm text-slate-500">
-                  <p className="font-semibold mb-1 text-slate-700">💡 Eslatma:</p>
+                  <p className="font-semibold mb-1 text-slate-700">Eslatma:</p>
                   <p>Ish vaqtlaringiz bemorlar uchun ko'rinadi va randevu olishda qo'llaniladi.</p>
                 </div>
                 <Button

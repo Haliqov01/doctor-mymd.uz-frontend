@@ -130,16 +130,54 @@ export const patientService = {
     );
   },
 
-  // Doktora göre hastaları getir (randevusu olan hastalar)
+  /**
+   * Doktora ait hastaları getir (randevular üzerinden)
+   * Backend'de doctorId filtresi olmadığı için randevulardan hesaplanır
+   */
   async getPatientsByDoctor(
     doctorId: number,
     page: number = 1,
     pageSize: number = 20
-  ): Promise<PaginatedResponse<PatientListItem>> {
-    // TODO: Backend'e doctorId filtresi eklendiğinde güncelle
-    return this.getPatients({
-      pageNumber: page,
-      pageSize,
+  ): Promise<{ patients: PatientListItem[], totalCount: number }> {
+    // Randevulardan unique patient'ları çek
+    const { appointmentService } = await import("./appointment.service");
+    
+    const appointments = await appointmentService.getAppointments({
+      doctorId: doctorId,
+      pageNumber: 1,
+      pageSize: 1000, // Tüm randevuları al
     });
+
+    // Unique patient ID'leri çıkar
+    const uniquePatientIds = [...new Set(
+      (appointments.data || []).map(apt => apt.patientId)
+    )];
+
+    // Pagination uygula
+    const startIdx = (page - 1) * pageSize;
+    const endIdx = startIdx + pageSize;
+    const pagePatientIds = uniquePatientIds.slice(startIdx, endIdx);
+
+    // Her patient için detay çek
+    const patients: PatientListItem[] = [];
+    for (const patientId of pagePatientIds) {
+      try {
+        const patient = await this.getPatientById(patientId);
+        patients.push({
+          id: patient.id,
+          userId: patient.userId,
+          fullName: patient.fullName,
+          gender: patient.gender,
+          age: patient.age,
+        });
+      } catch (e) {
+        console.warn(`Patient ${patientId} not found`);
+      }
+    }
+
+    return {
+      patients,
+      totalCount: uniquePatientIds.length,
+    };
   },
 };

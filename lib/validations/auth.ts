@@ -7,9 +7,9 @@ export const doctorRegistrationStep1Schema = z.object({
   email: z.string().min(1, "Email kiriting").email("To'g'ri email kiriting"),
   phoneNumber: z
     .string()
-    .min(1, "Telefon raqamini kiriting")
-    .regex(/^\+998\d{9}$/, "To'g'ri format: +998XXXXXXXXX"),
-  specialization: z.string().min(1, "Mutaxassislik kiriting"),
+    .min(9, "Telefon raqami 9 ta raqamdan iborat bo'lishi kerak")
+    .max(9, "Telefon raqami 9 ta raqamdan iborat bo'lishi kerak")
+    .regex(/^\d{9}$/, "Faqat raqamlarni kiriting (901234567)"),
 });
 
 export type DoctorRegistrationStep1Input = z.infer<typeof doctorRegistrationStep1Schema>;
@@ -23,7 +23,6 @@ export const doctorRegistrationSchema = z
     phoneNumber: z
       .string()
       .regex(/^\+998\d{9}$/, "To'g'ri format: +998XXXXXXXXX"),
-    specialization: z.string().min(1, "Mutaxassislik kiriting"),
     password: z
       .string()
       .min(8, "Parol kamida 8 ta belgidan iborat bo'lishi kerak")
@@ -44,8 +43,9 @@ export type DoctorRegistrationInput = z.infer<typeof doctorRegistrationSchema>;
 export const doctorLoginSchema = z.object({
   phoneNumber: z
     .string()
-    .min(1, "Telefon raqamini kiriting")
-    .regex(/^\+998\d{9}$/, "To'g'ri format: +998XXXXXXXXX"),
+    .min(9, "Telefon raqami 9 ta raqamdan iborat bo'lishi kerak")
+    .max(9, "Telefon raqami 9 ta raqamdan iborat bo'lishi kerak")
+    .regex(/^\d{9}$/, "Faqat raqamlarni kiriting (901234567)"),
   password: z.string().min(1, "Parolni kiriting"),
 });
 

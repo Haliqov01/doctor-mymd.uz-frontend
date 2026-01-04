@@ -3,10 +3,10 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { firstName, lastName, email, phoneNumber, specialization, password } = body;
+    const { firstName, lastName, email, phoneNumber } = body;
 
     // Validation
-    if (!firstName || !lastName || !email || !phoneNumber || !specialization || !password) {
+    if (!firstName || !lastName || !email || !phoneNumber) {
       return NextResponse.json(
         {
           success: false,
@@ -31,7 +31,6 @@ export async function POST(request: Request) {
         profile: {
           firstName: firstName,
           lastName: lastName,
-          specialization: specialization,
           licenseVerified: false
         },
         token: "mock-jwt-token-" + Date.now()

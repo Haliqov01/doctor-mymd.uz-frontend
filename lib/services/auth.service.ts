@@ -1,4 +1,5 @@
 import { apiClient, API_ENDPOINTS, setStoredToken, clearStoredToken } from "../api-client";
+import { getRoleFromToken as extractRoleFromToken } from "../utils/token";
 
 // Session Types (SMS tabanlı authentication)
 export interface CreateSessionRequest {
@@ -46,6 +47,19 @@ export interface UserProfile {
   status: number;
   createdDate: string;
   updatedDate?: string;
+  role?: string; // Appended from Token
+}
+
+
+function getRoleFromToken(): string | undefined {
+  if (typeof window === "undefined") return undefined;
+  const token = localStorage.getItem("auth_token");
+  if (!token) return undefined;
+  return extractRoleFromToken(token);
+}
+
+export interface RefreshTokenRequest {
+  refreshToken: string;
 }
 
 export interface UpdateProfileRequest {
@@ -81,7 +95,7 @@ export const authService = {
       API_ENDPOINTS.AUTH.VERIFY_SESSION,
       data
     );
-    
+
     // Token'ları kaydet
     if (response.accessToken) {
       setStoredToken(response.accessToken);
@@ -91,14 +105,14 @@ export const authService = {
         localStorage.setItem("refresh_token_expiry", response.refreshTokenExpiry);
       }
     }
-    
+
     return response;
   },
 
   // Token yenile
   async refreshToken(refreshToken?: string): Promise<RefreshTokenResponse> {
     const token = refreshToken || (typeof window !== "undefined" ? localStorage.getItem("refresh_token") : null);
-    
+
     if (!token) {
       throw new Error("Refresh token bulunamadı");
     }
@@ -107,7 +121,7 @@ export const authService = {
       API_ENDPOINTS.AUTH.REFRESH_TOKEN,
       { refreshToken: token }
     );
-    
+
     if (response.accessToken) {
       setStoredToken(response.accessToken);
       if (typeof window !== "undefined") {
@@ -116,13 +130,21 @@ export const authService = {
         localStorage.setItem("refresh_token_expiry", response.refreshTokenExpiry);
       }
     }
-    
+
     return response;
   },
 
   // Profil bilgilerini al
   async getProfile(): Promise<UserProfile> {
-    return apiClient.get<UserProfile>(API_ENDPOINTS.AUTH.GET_PROFILE);
+    const profile = await apiClient.get<UserProfile>(API_ENDPOINTS.AUTH.GET_PROFILE);
+    if (profile) {
+      // Token'dan rolü al ve profile ekle
+      const role = getRoleFromToken();
+      if (role) {
+        profile.role = role;
+      }
+    }
+    return profile;
   },
 
   // Profil güncelle
@@ -171,27 +193,27 @@ export const authService = {
   // Token geçerli mi kontrol et
   isTokenExpired(): boolean {
     if (typeof window === "undefined") return true;
-    
+
     const expiry = localStorage.getItem("access_token_expiry");
     if (!expiry) return true;
-    
+
     return new Date(expiry) <= new Date();
   },
 
   // Refresh token geçerli mi kontrol et
   isRefreshTokenExpired(): boolean {
     if (typeof window === "undefined") return true;
-    
+
     const expiry = localStorage.getItem("refresh_token_expiry");
     if (!expiry) return true;
-    
+
     return new Date(expiry) <= new Date();
   },
 
   // Oturum açık mı kontrol et
   isAuthenticated(): boolean {
     if (typeof window === "undefined") return false;
-    
+
     const token = localStorage.getItem("auth_token");
     return !!token && !this.isTokenExpired();
   },

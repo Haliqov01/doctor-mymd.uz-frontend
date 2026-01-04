@@ -42,7 +42,7 @@ export function TemplateSelector({ onSelectTemplate }: TemplateSelectorProps) {
     <Card className="border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-white">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          🚀 Tezkor sozlash
+          Tezkor sozlash
         </CardTitle>
         <CardDescription>
           Tayyor shablon tanlang yoki qo'lda o'zgartiring

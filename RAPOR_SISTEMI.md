@@ -1,12 +1,12 @@
 # Ko'z Muoyenasi Hisobot Tizimi
 
-## 📋 Umumiy ma'lumot
+## Umumiy ma'lumot
 
 Bu sistem shifokorlarga ko'z muoyenasi hisobotlarini tez va oson yaratish imkonini beradi. Tizim A4 formatda chop etish uchun to'liq optimallashtirilgan.
 
-## 🎯 Xususiyatlar
+## Xususiyatlar
 
-### 1. **To'liq Muoyena Formi**
+### 1. To'liq Muoyena Formi
 - Bemor ma'lumotlari
 - Shikoyatlar va anamnez
 - Har ikkala ko'z uchun alohida muoyena
@@ -14,21 +14,21 @@ Bu sistem shifokorlarga ko'z muoyenasi hisobotlarini tez va oson yaratish imkoni
 - Vizual o'tkirlik va refraktsiya
 - Qo'shimcha o'lchashlar (KIB, paximetriya, B-skan, va boshqalar)
 
-### 2. **Aqlli Tanlash Tizimi**
+### 2. Aqlli Tanlash Tizimi
 Har bir muoyena bo'limi uchun:
 - **Tanlash rejimi**: Oldindan tayyorlangan ta'riflardan tanlash
 - **Yozish rejimi**: O'z ta'rifingizni yozish
 - 100+ oldindan tayyorlangan tibbiy ta'rif
 
-### 3. **A4 Formati**
+### 3. A4 Formati
 - Professional tablo dizayni
 - Chop etish uchun optimallashtirilgan
 - Barcha muhim ma'lumotlar bir sahifada
 
-### 4. **Tezkor Nusxalash**
+### 4. Tezkor Nusxalash
 O'ng ko'z ma'lumotlarini chap ko'zga bir tugma bilan nusxalash
 
-## 🚀 Ishlatish
+## Ishlatish
 
 ### 1. Dashboard'dan kirish
 ```
@@ -37,15 +37,15 @@ Dashboard → Tezkor Harakatlar → Ko'z Muoyenasi Hisoboti
 
 ### 2. Formani to'ldirish
 
-#### **Bemor Ma'lumotlari**
+#### Bemor Ma'lumotlari
 - F.I.Sh., manzil, tug'ilgan sanasi, jinsi
 
-#### **Shikoyatlar**
+#### Shikoyatlar
 - Bemorning asosiy shikoyatlari
 - Kasallik tarixi (anamnez)
 - Yondosh kasalliklar
 
-#### **Muoyena (Har iki ko'z uchun)**
+#### Muoyena (Har iki ko'z uchun)
 
 Har bir bo'lim uchun:
 1. "Tanlash" tugmasini bosing → oldindan tayyorlangan variantlardan tanlang
@@ -73,12 +73,12 @@ Har bir bo'lim uchun:
 - B-skan
 - Gonioskopiya
 
-#### **Tashhis**
+#### Tashhis
 - OU (Ikkala ko'z)
 - OD (O'ng ko'z)
 - OS (Chap ko'z)
 
-#### **Tavsiya**
+#### Tavsiya
 Davolash rejasi va tavsiyalar
 
 ### 3. Ko'rib chiqish
@@ -87,9 +87,9 @@ Davolash rejasi va tavsiyalar
 ### 4. Chop etish
 "Chop etish" tugmasini bosing → A4 formatda chop eting
 
-## 📊 Oldindan tayyorlangan ta'riflar
+## Oldindan tayyorlangan ta'riflar
 
-### **Konyunktiva**
+### Konyunktiva
 - Och pushti, yupqa, silliq, yaltiroq, ajralma yo'q (Normal)
 - Qizarib ketgan, tomirlar kengaygan
 - Shishib ketgan (xemoz)
@@ -97,7 +97,7 @@ Davolash rejasi va tavsiyalar
 - Subkonyunktival qon quyilish
 - va boshqalar...
 
-### **Shox parda**
+### Shox parda
 - Shaffof, yaltiroq, silliq, o'lchami normal (Normal)
 - Shaffofroq xususiyati yo'qolgan
 - Eroziya mavjud
@@ -105,7 +105,7 @@ Davolash rejasi va tavsiyalar
 - Konussimon shakl (keratokonus)
 - va boshqalar...
 
-### **Gavhar**
+### Gavhar
 - Shaffof (Normal)
 - Nozik loyqaliklar (boshlanuvchi katarakt)
 - Qisman loyqa (noetil katarakt)
@@ -113,7 +113,7 @@ Davolash rejasi va tavsiyalar
 - Sun'iy gavhar o'rnatilgan (psevdofakiya)
 - va boshqalar...
 
-### **Ko'z tubi**
+### Ko'z tubi
 - Ko'z tubi pushti, chegaralari aniq (Normal)
 - Ko'z sinir diskining excavatsiyasi kengaygan (glaukoma)
 - Diabetik retinopatiya belgilari
@@ -121,7 +121,7 @@ Davolash rejasi va tavsiyalar
 - Retina otkreshgan (dekolman)
 - va boshqalar...
 
-### **Tashhislar**
+### Tashhislar
 100+ ko'z kasalliklari:
 - Miyopiya, Gipermetropiya, Astigmatizm
 - Katarakt (turli xillari)
@@ -131,14 +131,14 @@ Davolash rejasi va tavsiyalar
 - Konyunktivit, Keratit, Uveit
 - va boshqalar...
 
-## 💡 Maslahatlar
+## Maslahatlar
 
 1. **Tez to'ldirish**: Ko'pchilik bo'limlar normal qiymatlar bilan to'ldirilgan
 2. **Nusxalash**: Agar ikkala ko'z ham bir xil bo'lsa, o'ng ko'zni to'ldiring va "O'ng ko'zdan chap ko'zga nusxalash" tugmasini bosing
 3. **Aralash usul**: Oldindan tayyorlangan ta'rifni tanlab, keyin tahrirlash mumkin
 4. **Oldindan ko'rish**: Chop etishdan oldin doimo oldindan ko'rib chiqing
 
-## 🔧 Texnik Ma'lumotlar
+## Texnik Ma'lumotlar
 
 ### Yaratilgan Fayllar:
 ```
@@ -159,7 +159,7 @@ app/dashboard/reports/create/
 - Tailwind CSS
 - Browser Print API
 
-## 📝 Misol
+## Misol
 
 **Normal Ko'z Muoyenasi:**
 ```
@@ -184,28 +184,27 @@ Tashhis: OU Miyopiya o'rtacha darajali
 Tavsiya: Ko'zoynak buyurildi. Nazorat muoyanasiga 1 yildan keyin.
 ```
 
-## 🎨 Xususiyatlar
+## Xususiyatlar
 
-- ✅ To'liq responsiv dizayn
-- ✅ A4 format printga optimallashtirilgan
-- ✅ 100+ oldindan tayyorlangan tibbiy ta'rif
-- ✅ Tez to'ldirish va nusxalash
-- ✅ Ikki til qo'llab-quvvatlaydi (O'zbek/Lotin)
-- ✅ Professional tibbiy hisobot dizayni
-- ✅ Browser print va PDF export
+- To'liq responsiv dizayn
+- A4 format printga optimallashtirilgan
+- 100+ oldindan tayyorlangan tibbiy ta'rif
+- Tez to'ldirish va nusxalash
+- Professional tibbiy hisobot dizayni
+- Browser print va PDF export
 
-## 🔜 Kelajakda qo'shilishi mumkin
+## Kelajakda qo'shilishi mumkin
 
-- [ ] Hisobotlarni saqlash (Database)
-- [ ] Hisobotlar tarixi
-- [ ] Bemor bilan bog'lash
-- [ ] Rasm yuklash (fundus foto, va boshqalar)
-- [ ] Dijital imzo
-- [ ] PDF eksport
-- [ ] Hisobot shablonlari
-- [ ] Statistika va tahlil
+- Hisobotlarni saqlash (Database)
+- Hisobotlar tarixi
+- Bemor bilan bog'lash
+- Rasm yuklash (fundus foto, va boshqalar)
+- Dijital imzo
+- PDF eksport
+- Hisobot shablonlari
+- Statistika va tahlil
 
-## 📞 Yordam
+## Yordam
 
 Agar muammolar bo'lsa yoki takliflaringiz bo'lsa, iltimos admin bilan bog'laning.
 
@@ -214,206 +213,3 @@ Agar muammolar bo'lsa yoki takliflaringiz bo'lsa, iltimos admin bilan bog'laning
 **Yaratildi:** 2025
 **Versiya:** 1.0.0
 **Til:** O'zbek tili (Lotin)
-
-							
-Jinsi					Ko'z		Manzil
-erkak					OD		Toshkent sh
-ayol					OS		Toshkent v.
-					OU		Andijon v.
-Ko'z olmasi							Buxoro v.
-normada							Farg'ona v.
-subatrofiya							Jizzah v.
-atrofiya							Namangan v.
-mikroftalm							Navoiy v.
-gidroftalm							Qashqadaryo v.
-buftalm							Samarqand v.
-							Sirdaryo v.
-Ko'z mushaklari							Surxondaryo v.
-Faol, barcha tomonga harakat to'liq saqlangan							Xorazm v.
-harakat yo'q							Qoraqalpog'iston R.
-harakat cheklangan							Qozog'iston
-nistagm							Tojikiston
-							Qirg'iziston
-Qovoqlar							
-Qovoqlar holati to'g'ri, yumilishi to'liq							
-qovoqlar yumilishi qisman							
-ptoz							
-qisman ptoz							
-pastki qovoqning tashqariga ag'darilishi							
-pastki qovoq ichkariga ag'darilishi							
-							
-							
-							
-							
-Konyunktiva							
-och pushti, yupqa, silliq, yaltiroq, ajralma yo'q							
-giperemiya							
-limb sohasida qalinlashgan							
-giposfagma - mahalliy							
-giposfagma - sektoral							
-giposfagma - diffuz							
-etdor, uchburchak shaklidagi o'sma							
-nevus							
-							
-							
-							
-							
-Sklera							
-normada							
-filtratsion yostiq ko'tarilib turibdi							
-filtratsion yostiq yassi							
-skleromalyatsiya							
-mahalliy tomirlar inyektsiyasi							
-tomirlarining diffuz inyektsiyasi							
-tomirlarining sektoral inyektsiyasi							
-							
-							
-							
-Shox parda							
-Shaffof							
-yuzaki hiralanish							
-chuqur hiralanish							
-oq dog' I toifa							
-oq dog' II toifa							
-oq dog' III toifa							
-oq dog' IV toifa							
-yot jism							
-epiteliopatiya							
-eroziya							
-infiltrat							
-konyunktiva o'smasi							
-jarrohlik o'rni							
-							
-							
-							
-							
-							
-Old kamera va ko'z ichi suyuqligi							
-o'rta chuqurlikda, suyuqligi shaffof							
-sayoz >2.5							
-sayoz <2.5							
-hujayraviy reaksiya +							
-hujayraviy reaksiya ++							
-hujayraviy reaksiya +++							
-fibrin							
-gipopion <1 mm							
-gipopion <2 mm							
-gipopion <3 mm							
-gipopion >3 mm							
-gifema<1mm							
-gifema<2mm							
-gifema<3mm							
-							
-							
-							
-							
-							
-							
-							
-							
-Rangdor parda va qorachiq							
-							
-rangi va relyefi saqlangan, Ø3.0 мм, reak.jonli							
-profil to'g'ri							
-profil yassi							
-profil qavariq							
-PES+							
-PES++							
-PES+++							
-							
-Gavhar							
-shaffof							
-fakoskleroz							
-kortikal qavatlarda hiralashgan							
-kortikal va mag'iz qavatlarda hiralashgan							
-orqa subkapsulyar qavatlarda hiralashgan							
-barcha qavatlar hiralashgan							
-gavhar orqa kapsulasi hiralashgan							
-IOL hiralashgan							
-gavhar yo'q, IOL markazda							
-lazer distsiyadan keyingi holat							
-							
-CS +							
-CS ++							
-CS +++							
-NC+							
-NC++							
-NC+++							
-NO+							
-NO++							
-NO+++							
-PSC+							
-PSC++							
-PSC+++							
-							
-							
-Ko'rish o'tkirligi							
-0 (nol)	0 (nol)						
-1	0,1						
-0,9	0,2						
-0,8	0,3						
-0,7	0,4						
-0,6	0,5						
-0,5	0,6						
-0,4	0,7						
-0,3	0,8						
-0,2	0,9						
-0,1	1						
-0,09	0,09						
-0,08	0,08						
-0,07	0,07						
-0,06	0,06						
-0,05	0,05						
-0,04	0,04						
-0,03	0,03						
-0,02	0,02						
-0,01	0,01						
-barmoq sanash 40-45sm	barmoq sanash 40-45sm						
-barmoq sanash 30-35sm	barmoq sanash 30-35sm						
-barmoq sanash20-25sm	barmoq sanash 20-25sm						
-barmoq sanash 10-15sm	barmoq sanash 10-15sm						
-barmoq sanash 5-10sm	barmoq sanash 5-10sm						
-qo'l harakati	qo'l harakati						
-1/8 pr.lucis certae	1/8 pr.lucis certae						
-1/8 pr.lucis incertae	1/8 pr.lucis incertae						
-							
-							
-							
-							
-							
-Shikoyatlar							
-ko'rish pasayishi							
-qichishish, qizarish, ajralma kelishi							
-og'riq							
-ko'z qurishi, bezovtalik							
-ko'zoynak tanlash							
-ko'z yoshlanishi							
-suzib yurivchi hiralanishlar							
-							
-							
-							
-							
-Yondosh kasalliklar							
-Qandli diabet							
-Gipertoniya kasalligi							
-Bosh miya insulti							
-Miokard infarti							
-							
-Shishasimon tana							
-o'zgarishsiz							
-destruktiv o'zgarishlar							
-Veys xalqasi							
-kumush yomg'ir simptomi							
-oltin yomg'ir simptomi							
-qisman gemoftalm							
-total gemoftalm							
-							
-							
-							
-							
-KIB							
-Pnevmo.							
-Maklakov							
-GAT							
-Shiots							
-icare							

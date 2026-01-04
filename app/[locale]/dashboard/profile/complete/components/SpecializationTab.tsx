@@ -53,7 +53,7 @@ export function SpecializationTab({
       <Card className="border-2 border-purple-100 bg-purple-50/30">
         <CardHeader>
           <CardTitle className="text-lg text-purple-700 flex items-center gap-2">
-            🎯 Ixtisoslik yo'nalishlari
+            Ixtisoslik yo'nalishlari
           </CardTitle>
           <CardDescription>
             Eng ustuvor yo'nalishni birinchi o'ringa qo'ying

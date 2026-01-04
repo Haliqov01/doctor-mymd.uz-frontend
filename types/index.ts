@@ -244,14 +244,40 @@ export interface GetDoctorsRequest {
   experienceYears?: number;
 }
 
+/**
+ * UpsertDoctor Request - Swagger Uyumlu
+ * Endpoint: POST /api/v1/Doctor/UpsertDoctor
+ * Required: fullName, specialization
+ */
 export interface UpsertDoctorRequest {
+  /** Doctor ID (update için gerekli, yeni kayıt için undefined) */
   id?: number;
-  userId?: number;
+  /** User ID - ZORUNLU (int64) */
+  userId: number;
+  /** Tam ad - ZORUNLU (minLength: 1, maxLength: 200) */
+  fullName: string;
+  /** İhtisas - ZORUNLU (minLength: 1, maxLength: 100) */
+  specialization: string;
+  /** Deneyim yılı (min: 0, max: 80, default: 0) */
+  experienceYears?: number;
+  /** İş yeri (maxLength: 200, nullable) */
+  workplace?: string | null;
+  /** Biyografi (nullable) */
+  biography?: string | null;
+}
+
+export interface DoctorViewModel {
+  id: number;
+  userId: number;
   fullName: string;
   specialization: string;
   experienceYears: number;
   workplace?: string;
   biography?: string;
+  certificates?: Certificate[];
+  createdDate?: Date;
+  updatedDate?: Date;
+  status?: EntityStatus;
 }
 
 // Patient Request Types
@@ -360,12 +386,22 @@ export interface FileViewModel {
   extension: string;
 }
 
-// Upload Certificate Request
+/**
+ * UploadCertificate Request - Swagger Uyumlu
+ * Endpoint: POST /api/v1/Doctor/UploadCertificate/upload-certificate
+ * Content-Type: multipart/form-data
+ * Required: DoctorId, File, FileType, CategoryId
+ */
 export interface UploadCertificateRequest {
+  /** Doctor ID - ZORUNLU (int64) */
   doctorId: number;
+  /** Dosya - ZORUNLU (binary) */
   file: File;
+  /** Dosya tipi - ZORUNLU (maxLength: 32, format: ".pdf", ".jpg" vb.) */
   fileType: string;
+  /** Kategori ID - ZORUNLU (int64) */
   categoryId: number;
+  /** Açıklama (maxLength: 500, optional) */
   description?: string;
 }
 

@@ -13,10 +13,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Stethoscope, User, LogOut, Loader2, Clock, Calendar, Users, FileText, Settings, Edit2, Utensils, Ban, Lightbulb, CheckCircle, XCircle, Edit, ClipboardList, UserPlus } from "lucide-react";
-import { authService, appointmentService, patientService } from "@/lib/services";
+import { authService, appointmentService } from "@/lib/services";
+import { doctorService } from "@/lib/services/doctor.service";
 import { clearStoredToken } from "@/lib/api-client";
 import { ProfileResponse, WorkingHour, AppointmentStatus } from "@/types";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { dashboardLogger } from "@/lib/utils/logger";
 
 export default function DoctorDashboardPage() {
   const router = useRouter();
@@ -30,50 +32,115 @@ export default function DoctorDashboardPage() {
     pendingAppointments: 0,
     totalDocuments: 0,
   });
+  const [errorDetails, setErrorDetails] = useState<string>("");
+  const [logs, setLogs] = useState<string[]>([]);
+
+  const addLog = (msg: string) => {
+    setLogs(prev => [...prev.slice(-10), `${new Date().toLocaleTimeString()} ${msg}`]);
+    console.log(`[Dashboard] ${msg}`);
+  };
+
 
   useEffect(() => {
+    // 1. Token Recovery from Cookie
+    const localToken = localStorage.getItem("auth_token");
+    if (!localToken) {
+      const cookieToken = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+      if (cookieToken) {
+        console.log("[Dashboard] Restoring missing token from cookie");
+        localStorage.setItem("auth_token", cookieToken);
+      }
+    }
+
+    // 2. Fetch Data
     fetchDashboardData();
   }, []);
 
   const fetchDashboardData = async () => {
     try {
       // Profil bilgilerini al
-      const profileData = await authService.getProfile();
-      
-      if (profileData.role !== "Doctor") {
-        router.push("/");
-        return;
+      let profileData;
+
+      // Mock Data Check (Local Storage)
+      const token = localStorage.getItem("auth_token");
+      if (token && token.startsWith("mock-jwt-token-")) {
+        const storedProfile = localStorage.getItem("mock_user_profile");
+        if (storedProfile) {
+          profileData = JSON.parse(storedProfile);
+        }
+      }
+
+      // If no mock data, try fetching from API
+      if (!profileData) {
+        addLog("Fetching profile from API...");
+        try {
+          profileData = await authService.getProfile();
+          addLog(`Profile received: ${JSON.stringify(profileData)?.substring(0, 50)}...`);
+        } catch (fetchError: any) {
+          addLog(`Fetch failed: ${fetchError?.message || fetchError}`);
+          throw fetchError;
+        }
       }
 
       setProfile(profileData);
 
-      // Randevu istatistiklerini al
+      // Use DoctorResolver to get doctor ID
+      let doctorId: number | null = null;
       try {
-        const appointments = await appointmentService.getAppointments({
-          pageNumber: 1,
-          pageSize: 100,
-          status: AppointmentStatus.Pending,
-        });
-        setStats(prev => ({
-          ...prev,
-          pendingAppointments: appointments.totalCount || 0,
-        }));
+        const { doctorResolver } = await import("@/lib/services/doctorResolver");
+        doctorId = await doctorResolver.resolve();
+
+        if (doctorId) {
+          dashboardLogger.info("Init", "Doctor ID resolved:", doctorId);
+        } else {
+          dashboardLogger.error("Init", "Could not resolve doctor ID - cannot load appointments");
+          // 🔴 CRITICAL: Don't proceed without doctorId to prevent data leakage
+          throw new Error("Doctor ID not found. Please complete your profile.");
+        }
       } catch (e) {
-        console.log("Randevu verileri alınamadı:", e);
+        dashboardLogger.error("Init", "Error resolving doctor ID:", e);
+
+        // If doctorId resolution fails, redirect to profile completion
+        // This is safer than showing an error - user needs to complete profile
+        dashboardLogger.info("Init", "Redirecting to profile completion due to missing doctorId");
+        router.push("/dashboard/profile/complete");
+        return;
       }
 
-      // Hasta sayısını al
+      // Randevu istatistiklerini al (only if doctorId is available)
       try {
-        const patients = await patientService.getPatients({
+        // SECURITY: Always filter by doctorId
+        // Tüm randevuları al (hasta sayısı hesaplamak için de kullanılacak)
+        const allAppointmentsPayload = {
           pageNumber: 1,
-          pageSize: 1,
-        });
+          pageSize: 1000, // Tüm randevuları al
+          doctorId: doctorId, // MANDATORY - prevents data leak
+        };
+
+        dashboardLogger.debug("Appointments", "Fetching all appointments for doctorId:", doctorId);
+
+        const allAppointments = await appointmentService.getAppointments(allAppointmentsPayload);
+        const appointmentsData = allAppointments.data || [];
+
+        // Pending randevu sayısı
+        const pendingCount = appointmentsData.filter(
+          apt => apt.status === AppointmentStatus.Pending
+        ).length;
+
+        // Unique hasta sayısı (randevulardan)
+        const uniquePatientIds = new Set(
+          appointmentsData.map(apt => apt.patientId)
+        );
+
+        dashboardLogger.info("Stats", `Pending: ${pendingCount}, Unique Patients: ${uniquePatientIds.size}`);
+
         setStats(prev => ({
           ...prev,
-          totalPatients: patients.totalCount || 0,
+          pendingAppointments: pendingCount,
+          totalPatients: uniquePatientIds.size,
         }));
       } catch (e) {
-        console.log("Hasta verileri alınamadı:", e);
+        dashboardLogger.warn("Appointments", "Failed to fetch appointments:", e);
       }
 
       // Çalışma saatlerini al (şimdilik mock - backend'de henüz yok)
@@ -95,7 +162,23 @@ export default function DoctorDashboardPage() {
       setTodaySchedule(todayHours || null);
 
     } catch (error: any) {
-      console.error("Dashboard verileri yüklenirken hata:", error);
+      dashboardLogger.error("Dashboard", "Error loading dashboard:", error);
+      let errorMessage = "Kutilmagan xatolik yuz berdi";
+
+      if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else {
+        try {
+          errorMessage = JSON.stringify(error) || "Empty Error Object";
+        } catch {
+          errorMessage = "Unknown Non-String Error";
+        }
+      }
+
+      dashboardLogger.debug("Dashboard", "Setting error details:", errorMessage);
+      setErrorDetails(errorMessage);
       // DEV BYPASS: 401 hatası olsa bile login'e yönlendirme
       // if (error.status === 401) {
       //   clearStoredToken();
@@ -154,6 +237,48 @@ export default function DoctorDashboardPage() {
     );
   }
 
+  // Error State for connectivity issues
+  if (!profile && !loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#FAFBFC] p-4">
+        <div className="max-w-md w-full bg-white p-6 rounded-2xl shadow-lg border border-red-100 text-center">
+          <div className="h-12 w-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <XCircle className="h-6 w-6 text-red-600" />
+          </div>
+          <h2 className="text-xl font-bold text-slate-800 mb-2">Bog'lanib bo'lmadi</h2>
+          <div className="text-slate-500 mb-6">
+            Server bilan aloqa yo'q. Internetingizni tekshiring yoki keyinroq urinib ko'ring.
+            <br />
+            <div className="text-xs text-red-500 mt-2 block font-mono bg-red-50 p-2 rounded">
+              Error: {errorDetails}
+            </div>
+            <div className="text-xs text-slate-400 mt-1 block font-mono">
+              Token Status: {localStorage.getItem("auth_token") ? "Present" : "Missing"}
+            </div>
+            <div className="text-[10px] text-slate-300 mt-1 font-mono break-all max-h-20 overflow-auto">
+              Storage: {typeof window !== 'undefined' ? JSON.stringify(window.localStorage) : 'N/A'}
+            </div>
+            <div className="text-[10px] text-slate-600 mt-4 font-mono bg-slate-100 p-2 rounded max-h-40 overflow-auto text-left">
+              <strong>Debug Logs:</strong>
+              {logs.map((log, i) => <div key={i}>{log}</div>)}
+            </div>
+          </div>
+          <div className="flex gap-3 justify-center">
+            <Button onClick={() => window.location.reload()} variant="outline">
+              Qayta yuklash
+            </Button>
+            <Button onClick={() => {
+              authService.logout();
+              window.location.href = '/login';
+            }} variant="ghost" className="text-red-600 hover:text-red-700 hover:bg-red-50">
+              Chiqish
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#FAFBFC]">
       {/* Background Pattern */}
@@ -161,7 +286,7 @@ export default function DoctorDashboardPage() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/[0.02] rounded-full blur-[100px]" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/[0.02] rounded-full blur-[100px]" />
       </div>
-      
+
       {/* Header */}
       <header className="relative z-50 border-b border-slate-200/60 bg-white/80 backdrop-blur-xl sticky top-0">
         <div className="container mx-auto px-6 py-4">
@@ -204,7 +329,7 @@ export default function DoctorDashboardPage() {
       {/* Main Content */}
       <main className="relative z-10 container mx-auto px-6 py-8">
         <div className="max-w-6xl mx-auto space-y-6">
-          
+
           {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Total Patients */}
@@ -335,7 +460,7 @@ export default function DoctorDashboardPage() {
 
           {/* Two Column Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+
             {/* Weekly Schedule Summary */}
             <Card className="border-slate-200">
               <CardHeader>
@@ -398,7 +523,7 @@ export default function DoctorDashboardPage() {
                       </div>
                     </Button>
                   </Link>
-                  
+
                   <Link href="/dashboard/working-hours">
                     <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 hover:border-teal-300 hover:bg-teal-50 transition-all">
                       <div className="h-10 w-10 bg-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -410,7 +535,7 @@ export default function DoctorDashboardPage() {
                       </div>
                     </Button>
                   </Link>
-                  
+
                   <Link href="/dashboard/appointments">
                     <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 hover:border-teal-300 hover:bg-teal-50 transition-all">
                       <div className="h-10 w-10 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -422,7 +547,7 @@ export default function DoctorDashboardPage() {
                       </div>
                     </Button>
                   </Link>
-                  
+
                   <Link href="/dashboard/reports/create">
                     <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4 border-teal-300 hover:border-teal-500 bg-teal-50/50 hover:bg-teal-100 transition-all">
                       <div className="h-10 w-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-teal-500/20">
@@ -434,7 +559,7 @@ export default function DoctorDashboardPage() {
                       </div>
                     </Button>
                   </Link>
-                  
+
                   <Button variant="outline" className="w-full justify-start gap-3 h-auto py-4" disabled>
                     <div className="h-10 w-10 bg-slate-100 rounded-xl flex items-center justify-center flex-shrink-0">
                       <UserPlus className="h-5 w-5 text-slate-400" />

@@ -1,300 +1,366 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Stethoscope, Loader2, ChevronRight, ChevronLeft, User, GraduationCap, Briefcase, Target, Globe, CheckCircle } from "lucide-react";
-import { useProfileForm } from "./hooks/use-profile-form";
-import { PersonalInfoTab } from "./components/PersonalInfoTab";
-import { EducationTab } from "./components/EducationTab";
-import { ExperienceTab } from "./components/ExperienceTab";
-import { SpecializationTab } from "./components/SpecializationTab";
-import { SocialMediaTab } from "./components/SocialMediaTab";
-import { ReviewTab } from "./components/ReviewTab";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Stethoscope, Loader2, CheckCircle2 } from "lucide-react";
+import { authService } from "@/lib/services";
+import { doctorService } from "@/lib/services/doctor.service";
 
-const tabs = [
-  { value: "personal", label: "Shaxsiy", icon: User, iconColor: "text-blue-600", bgColor: "bg-blue-100", fullLabel: "Shaxsiy ma'lumotlar" },
-  { value: "education", label: "Ta'lim", icon: GraduationCap, iconColor: "text-violet-600", bgColor: "bg-violet-100", fullLabel: "Ta'lim ma'lumotlari" },
-  { value: "experience", label: "Tajriba", icon: Briefcase, iconColor: "text-orange-600", bgColor: "bg-orange-100", fullLabel: "Kasbiy tajriba" },
-  { value: "specialization", label: "Ixtisoslik", icon: Target, iconColor: "text-rose-600", bgColor: "bg-rose-100", fullLabel: "Ixtisoslik" },
-  { value: "social", label: "Ijtimoiy", icon: Globe, iconColor: "text-cyan-600", bgColor: "bg-cyan-100", fullLabel: "Ijtimoiy tarmoqlar" },
-  { value: "review", label: "Tasdiqlash", icon: CheckCircle, iconColor: "text-teal-600", bgColor: "bg-teal-100", fullLabel: "Tasdiqlash" },
+// Uzmanlık alanları listesi
+const SPECIALIZATIONS = [
+  "Kardiolog",
+  "Nevropatolog", 
+  "Terapevt",
+  "Pediatr",
+  "Ginekolog",
+  "Xirurg",
+  "Oftalmolog",
+  "Dermatolog",
+  "Endokrinolog",
+  "Gastroenterolog",
+  "Pulmonolog",
+  "Urolog",
+  "Ortoped",
+  "Otorinolaringolog (LOR)",
+  "Psixiatr",
+  "Onkolog",
+  "Infeksionist",
+  "Allergolog",
+  "Revmatolog",
+  "Nefrolog",
+  "Boshqa",
 ];
 
-export default function CompleteProfilePage() {
+export default function SimpleProfileCompletePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("personal");
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
-  const {
-    formData,
-    bachelorDiploma,
-    setBachelorDiploma,
-    masterDiploma,
-    setMasterDiploma,
-    academicDegreeCertificate,
-    setAcademicDegreeCertificate,
-    categoryCertificate,
-    setCategoryCertificate,
-    internationalTraining,
-    handleInputChange,
-    handleTextareaChange,
-    handleSelectChange,
-    handleCheckboxChange,
-    handleTrainingChange,
-    addTraining,
-    removeTraining,
-  } = useProfileForm();
+  // Form state - backend'in istediği alanlar
+  const [formData, setFormData] = useState({
+    fullName: "",
+    specialization: "",
+    experienceYears: "",
+    workplace: "",
+    biography: "",
+  });
 
-  const currentTabIndex = tabs.findIndex((tab) => tab.value === activeTab);
-  const isFirstTab = currentTabIndex === 0;
-  const isLastTab = currentTabIndex === tabs.length - 1;
+  const [userId, setUserId] = useState<number | null>(null);
+  const [existingDoctorId, setExistingDoctorId] = useState<number | null>(null);
 
-  const handleNext = () => {
-    if (!isLastTab) {
-      setActiveTab(tabs[currentTabIndex + 1].value);
-    }
-  };
+  // Sayfa yüklendiğinde profil bilgilerini al
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const profile = await authService.getProfile();
+        if (profile) {
+          setUserId(profile.id);
+          // İsim varsa doldur
+          const name = `${profile.firstName || ""} ${profile.lastName || ""}`.trim();
+          if (name) {
+            setFormData(prev => ({ ...prev, fullName: name }));
+          }
+        }
 
-  const handlePrevious = () => {
-    if (!isFirstTab) {
-      setActiveTab(tabs[currentTabIndex - 1].value);
-    }
-  };
+        // Mevcut doktor profili var mı kontrol et
+        try {
+          const { doctorResolver } = await import("@/lib/services/doctorResolver");
+          const docId = await doctorResolver.resolve();
+          if (docId) {
+            setExistingDoctorId(docId);
+            // Mevcut bilgileri yükle
+            const doc = await doctorService.getDoctorById(docId);
+            if (doc) {
+              setFormData({
+                fullName: doc.fullName || "",
+                specialization: doc.specialization || "",
+                experienceYears: doc.experienceYears?.toString() || "",
+                workplace: doc.workplace || "",
+                biography: doc.biography || "",
+              });
+            }
+          }
+        } catch (e) {
+          console.log("No existing doctor profile");
+        }
+      } catch (e) {
+        console.error("Profile load error:", e);
+        setError("Profil yuklanmadi. Qaytadan login qiling.");
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+
+    loadProfile();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+
+    // Validation
+    if (!formData.fullName.trim()) {
+      setError("Ism familiya kiritilishi shart");
+      return;
+    }
+    if (!formData.specialization) {
+      setError("Mutaxassislik tanlanishi shart");
+      return;
+    }
+    if (!userId) {
+      setError("Foydalanuvchi topilmadi. Qaytadan login qiling.");
+      return;
+    }
+
     setLoading(true);
 
-    // TODO: API call to save profile data
-    console.log("Form data:", formData);
-    console.log("Files:", {
-      bachelorDiploma,
-      masterDiploma,
-      academicDegreeCertificate,
-      categoryCertificate,
-    });
-    console.log("International training:", internationalTraining);
+    try {
+      const payload: any = {
+        userId: userId,
+        fullName: formData.fullName.trim(),
+        specialization: formData.specialization,
+        experienceYears: formData.experienceYears ? parseInt(formData.experienceYears) : 0,
+        workplace: formData.workplace.trim() || undefined,
+        biography: formData.biography.trim() || undefined,
+      };
 
-    setTimeout(() => {
+      // Güncelleme ise ID ekle
+      if (existingDoctorId) {
+        payload.id = existingDoctorId;
+      }
+
+      console.log("Saving doctor profile:", payload);
+      const result = await doctorService.upsertDoctor(payload);
+      console.log("Doctor profile saved:", result);
+
+      if (result?.id) {
+        // Cache doctor ID
+        localStorage.setItem("doctor_id_cache", JSON.stringify({
+          userId: userId,
+          doctorId: result.id,
+          timestamp: Date.now(),
+        }));
+
+        setSuccess(true);
+        
+        // 1.5 saniye sonra dashboard'a git
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 1500);
+      }
+    } catch (err: any) {
+      console.error("Save error:", err);
+      
+      if (err.code === "DoctorAlreadyExist") {
+        setError("Profil allaqachon mavjud. Sahifa yangilanmoqda...");
+        setTimeout(() => window.location.reload(), 1500);
+      } else {
+        setError(err.message || "Xatolik yuz berdi");
+      }
+    } finally {
       setLoading(false);
-      alert("Profil muvaffaqiyatli saqlandi!");
-      router.push("/dashboard/profile");
-    }, 1500);
+    }
   };
 
-  // Calculate progress
-  const completedSections = [
-    formData.firstName && formData.email && formData.mobilePhone, // Personal
-    formData.bachelorUniversity && bachelorDiploma && formData.masterUniversity && masterDiploma, // Education
-    formData.yearsOfExperience, // Experience
-    formData.specialization1 && formData.keywords && formData.clinic1Name, // Specialization
-    true, // Social media is optional
-    true, // Review
-  ].filter(Boolean).length;
+  if (initialLoading) {
+    return (
+      <div className="min-h-screen bg-[#FAFBFC] flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-teal-600 mx-auto mb-4" />
+          <p className="text-slate-600">Yuklanmoqda...</p>
+        </div>
+      </div>
+    );
+  }
 
-  const progress = Math.round((completedSections / tabs.length) * 100);
+  if (success) {
+    return (
+      <div className="min-h-screen bg-[#FAFBFC] flex items-center justify-center">
+        <div className="text-center">
+          <CheckCircle2 className="h-16 w-16 text-teal-600 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-slate-800 mb-2">Profil saqlandi!</h2>
+          <p className="text-slate-600">Dashboard'ga yo'naltirilmoqda...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-[#FAFBFC]">
-      {/* Background Pattern */}
+    <div className="min-h-screen bg-[#FAFBFC] flex items-center justify-center p-4">
+      {/* Background */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/[0.02] rounded-full blur-[100px]" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/[0.02] rounded-full blur-[100px]" />
       </div>
-      
-      {/* Header */}
-      <header className="relative z-50 border-b border-slate-200/60 bg-white/80 backdrop-blur-xl sticky top-0">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center gap-4">
-            <div className="h-12 w-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
-              <Stethoscope className="h-6 w-6 text-white" />
-            </div>
-            <div className="flex-1">
-              <h1 className="text-2xl font-bold text-slate-800">
-                Profil ma'lumotlarini to'ldirish
-              </h1>
-              <p className="text-base text-slate-500">
-                Platformada faol bo'lish uchun ma'lumotlaringizni kiriting
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <Link href="/dashboard">
-                <Button variant="outline" size="default" className="hover:border-teal-500 hover:bg-teal-50">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Dashboard
-                </Button>
-              </Link>
+
+      <div className="relative z-10 w-full max-w-lg">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <div className="h-16 w-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-500/20">
+              <Stethoscope className="h-8 w-8 text-white" />
             </div>
           </div>
-
-          {/* Progress Bar */}
-          <div className="mt-5">
-            <div className="flex items-center justify-between text-base text-slate-700 mb-3">
-              <span className="font-semibold">Jarayon:</span>
-              <span className="font-bold text-teal-600">{progress}% to'ldirildi</span>
-            </div>
-            <div className="h-3 bg-slate-200 rounded-full overflow-hidden shadow-inner">
-              <div
-                className="h-full bg-gradient-to-r from-teal-500 to-teal-600 transition-all duration-500 shadow-sm"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
+          <h1 className="text-3xl font-bold text-slate-800 mb-2">
+            Doctor <span className="text-teal-600">MyMD</span>
+          </h1>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="relative z-10 container mx-auto px-6 py-8">
-        <div className="max-w-5xl mx-auto">
-          <form onSubmit={handleSubmit}>
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              {/* Tabs List */}
-              <div className="mb-8 overflow-x-auto pb-2">
-                <TabsList className="inline-flex h-auto w-full md:w-auto bg-white border border-slate-200 rounded-2xl p-2 shadow-sm">
-                  {tabs.map((tab) => {
-                    const IconComponent = tab.icon;
-                    const isActive = activeTab === tab.value;
-                    return (
-                      <TabsTrigger
-                        key={tab.value}
-                        value={tab.value}
-                        className={`flex-1 md:flex-initial min-w-[100px] rounded-xl transition-all duration-200 ${
-                          isActive 
-                            ? 'bg-teal-50 border-2 border-teal-500 shadow-sm' 
-                            : 'border-2 border-transparent hover:bg-slate-50'
-                        }`}
-                      >
-                        <div className="flex flex-col items-center gap-2 py-3 px-3">
-                          <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${
-                            isActive ? 'bg-gradient-to-br from-teal-500 to-teal-600 shadow-lg shadow-teal-500/20' : tab.bgColor
-                          }`}>
-                            <IconComponent className={`h-5 w-5 ${isActive ? 'text-white' : tab.iconColor}`} />
-                          </div>
-                          <span className={`text-sm font-semibold ${
-                            isActive ? 'text-teal-700' : 'text-slate-600'
-                          }`}>
-                            {tab.label}
-                          </span>
-                        </div>
-                      </TabsTrigger>
-                    );
-                  })}
-                </TabsList>
+        <Card className="shadow-xl border-slate-200">
+          <CardHeader className="text-center pb-2">
+            <CardTitle className="text-2xl font-bold text-slate-800">
+              Profilni to'ldiring
+            </CardTitle>
+            <CardDescription className="text-base">
+              Platformada faol bo'lish uchun ma'lumotlaringizni kiriting
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Full Name */}
+              <div className="space-y-2">
+                <Label htmlFor="fullName" className="text-sm font-medium">
+                  Ism Familiya <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="fullName"
+                  value={formData.fullName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+                  placeholder="To'liq ismingiz"
+                  disabled={loading}
+                  className="h-12"
+                />
               </div>
 
-              {/* Tab Contents */}
-              <div className="mb-6">
-                <TabsContent value="personal" className="mt-0">
-                  <PersonalInfoTab formData={formData} handleInputChange={handleInputChange} />
-                </TabsContent>
-
-                <TabsContent value="education" className="mt-0">
-                  <EducationTab
-                    formData={formData}
-                    handleInputChange={handleInputChange}
-                    handleSelectChange={handleSelectChange}
-                    bachelorDiploma={bachelorDiploma}
-                    setBachelorDiploma={setBachelorDiploma}
-                    masterDiploma={masterDiploma}
-                    setMasterDiploma={setMasterDiploma}
-                  />
-                </TabsContent>
-
-                <TabsContent value="experience" className="mt-0">
-                  <ExperienceTab
-                    formData={formData}
-                    handleInputChange={handleInputChange}
-                    handleSelectChange={handleSelectChange}
-                    academicDegreeCertificate={academicDegreeCertificate}
-                    setAcademicDegreeCertificate={setAcademicDegreeCertificate}
-                    categoryCertificate={categoryCertificate}
-                    setCategoryCertificate={setCategoryCertificate}
-                    internationalTraining={internationalTraining}
-                    handleTrainingChange={handleTrainingChange}
-                    addTraining={addTraining}
-                    removeTraining={removeTraining}
-                  />
-                </TabsContent>
-
-                <TabsContent value="specialization" className="mt-0">
-                  <SpecializationTab
-                    formData={formData}
-                    handleInputChange={handleInputChange}
-                    handleTextareaChange={handleTextareaChange}
-                    handleSelectChange={handleSelectChange}
-                  />
-                </TabsContent>
-
-                <TabsContent value="social" className="mt-0">
-                  <SocialMediaTab
-                    formData={formData}
-                    handleInputChange={handleInputChange}
-                    handleSelectChange={handleSelectChange}
-                    handleCheckboxChange={handleCheckboxChange}
-                  />
-                </TabsContent>
-
-                <TabsContent value="review" className="mt-0">
-                  <ReviewTab
-                    formData={formData}
-                    bachelorDiploma={bachelorDiploma}
-                    masterDiploma={masterDiploma}
-                    academicDegreeCertificate={academicDegreeCertificate}
-                    categoryCertificate={categoryCertificate}
-                    internationalTraining={internationalTraining}
-                  />
-                </TabsContent>
+              {/* Specialization */}
+              <div className="space-y-2">
+                <Label htmlFor="specialization" className="text-sm font-medium">
+                  Mutaxassislik <span className="text-red-500">*</span>
+                </Label>
+                <Select
+                  value={formData.specialization}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, specialization: value }))}
+                  disabled={loading}
+                >
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Mutaxassislikni tanlang" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SPECIALIZATIONS.map((spec) => (
+                      <SelectItem key={spec} value={spec}>
+                        {spec}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
-              {/* Navigation Buttons */}
-              <Card className="border-slate-200">
-                <CardContent className="pt-6 pb-6">
-                  <div className="flex items-center justify-between gap-6">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={handlePrevious}
-                      disabled={isFirstTab}
-                      className="flex-1 md:flex-initial text-base font-semibold disabled:opacity-50"
-                    >
-                      <ChevronLeft className="h-5 w-5 mr-2" />
-                      Orqaga
-                    </Button>
+              {/* Experience Years */}
+              <div className="space-y-2">
+                <Label htmlFor="experienceYears" className="text-sm font-medium">
+                  Tajriba (yil)
+                </Label>
+                <Input
+                  id="experienceYears"
+                  type="number"
+                  min="0"
+                  max="80"
+                  value={formData.experienceYears}
+                  onChange={(e) => setFormData(prev => ({ ...prev, experienceYears: e.target.value }))}
+                  placeholder="Masalan: 5"
+                  disabled={loading}
+                  className="h-12"
+                />
+              </div>
 
-                    <div className="hidden md:block text-base text-slate-700 font-semibold">
-                      {currentTabIndex + 1} / {tabs.length} - {tabs[currentTabIndex].fullLabel}
-                    </div>
+              {/* Workplace */}
+              <div className="space-y-2">
+                <Label htmlFor="workplace" className="text-sm font-medium">
+                  Ish joyi
+                </Label>
+                <Input
+                  id="workplace"
+                  value={formData.workplace}
+                  onChange={(e) => setFormData(prev => ({ ...prev, workplace: e.target.value }))}
+                  placeholder="Klinika yoki shifoxona nomi"
+                  disabled={loading}
+                  className="h-12"
+                />
+              </div>
 
-                    {!isLastTab ? (
-                      <Button
-                        type="button"
-                        onClick={handleNext}
-                        className="flex-1 md:flex-initial text-base font-semibold"
-                      >
-                        Keyingisi
-                        <ChevronRight className="h-5 w-5 ml-2" />
-                      </Button>
-                    ) : (
-                      <Button
-                        type="submit"
-                        disabled={loading}
-                        className="flex-1 md:flex-initial text-base font-semibold disabled:opacity-50"
-                      >
-                        {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
-                        Saqlash va Tugatish
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </Tabs>
-          </form>
+              {/* Biography */}
+              <div className="space-y-2">
+                <Label htmlFor="biography" className="text-sm font-medium">
+                  Qisqacha o'zingiz haqingizda
+                </Label>
+                <Textarea
+                  id="biography"
+                  value={formData.biography}
+                  onChange={(e) => setFormData(prev => ({ ...prev, biography: e.target.value }))}
+                  placeholder="Tajribangiz, yutuqlaringiz..."
+                  disabled={loading}
+                  rows={3}
+                />
+              </div>
+
+              {/* Error */}
+              {error && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
+                  <p className="text-sm font-medium text-red-700">{error}</p>
+                </div>
+              )}
+
+              {/* Submit */}
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full h-12 text-base font-semibold"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                    Saqlanmoqda...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="h-5 w-5 mr-2" />
+                    Saqlash va Davom etish
+                  </>
+                )}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Skip link */}
+        <div className="text-center mt-6">
+          <button
+            type="button"
+            onClick={() => {
+              localStorage.clear();
+              window.location.href = '/login';
+            }}
+            className="text-sm text-slate-500 hover:text-red-600 transition-colors"
+          >
+            Chiqish va qaytadan login
+          </button>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

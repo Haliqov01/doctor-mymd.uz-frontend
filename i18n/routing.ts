@@ -2,22 +2,25 @@ import { defineRouting } from 'next-intl/routing';
 import { createNavigation } from 'next-intl/navigation';
 
 export const routing = defineRouting({
-  // Desteklenen diller
+  // Qo'llab-quvvatlanadigan tillar
   locales: ['uz', 'ru'],
   
-  // Varsayılan dil
+  // Standart til
   defaultLocale: 'uz',
   
-  // Tarayıcı dilini otomatik algıla
+  // Brauzer tilini avtomatik aniqlash
   localeDetection: true,
   
-  // Varsayılan dil için URL'de prefix gösterme
-  // '/' yerine '/uz' göstermez
+  // Standart til uchun URL'da prefix ko'rsatmaslik
+  // '/' o'rniga '/uz' ko'rsatmaydi
   localePrefix: 'as-needed'
 });
 
-// Navigation helpers - i18n uyumlu Link, useRouter, usePathname, redirect
+// Navigation yordamchilari - i18n mos Link, useRouter, usePathname, redirect
 export const { Link, redirect, usePathname, useRouter, getPathname } = createNavigation(routing);
+
+
+
 
 
 
