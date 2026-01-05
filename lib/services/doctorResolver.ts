@@ -28,8 +28,8 @@ export class DoctorResolver {
      * Resolves the DoctorId for the currently logged-in user
      * 
      * Strategy:
-     * 1. Check cache validity (userId match)
-     * 2. If valid, return cached doctorId
+     * 1. Check if cache exists (fast path)
+     * 2. Validate cache with current user if possible
      * 3. If invalid/missing, fetch from API
      * 4. Update cache and return
      * 
@@ -37,20 +37,37 @@ export class DoctorResolver {
      */
     static async resolve(): Promise<number | null> {
         try {
-            // Step 1: Get current user profile
-            const profile = await authService.getProfile();
+            // Step 1: Check cache first (fast path)
+            const cachedData = this.getCachedData();
+            
+            // Step 2: Try to get current user profile
+            let profile;
+            try {
+                profile = await authService.getProfile();
+            } catch (profileError) {
+                doctorLogger.warn("DoctorResolver", "Could not fetch profile:", profileError);
+                // Profile alınamadı ama cache varsa, cache'i kullan
+                if (cachedData && cachedData.doctorId) {
+                    doctorLogger.info("DoctorResolver", "Using cached doctorId despite profile error:", cachedData.doctorId);
+                    return cachedData.doctorId;
+                }
+                return null;
+            }
 
             if (!profile || !profile.id) {
                 doctorLogger.warn("DoctorResolver", "No valid profile found");
+                // Cache varsa kullan
+                if (cachedData && cachedData.doctorId) {
+                    doctorLogger.info("DoctorResolver", "Using cached doctorId despite no profile:", cachedData.doctorId);
+                    return cachedData.doctorId;
+                }
                 return null;
             }
 
             const currentUserId = profile.id;
             doctorLogger.debug("DoctorResolver", "Resolving for userId:", currentUserId);
 
-            // Step 2: Check cache validity
-            const cachedData = this.getCachedData();
-
+            // Step 3: Check cache validity with current user
             if (cachedData && cachedData.userId === currentUserId) {
                 doctorLogger.debug("DoctorResolver", "Cache hit! DoctorId:", cachedData.doctorId);
                 return cachedData.doctorId;
@@ -61,12 +78,12 @@ export class DoctorResolver {
                 this.clear();
             }
 
-            // Step 3: Fetch from API (cache miss or invalid)
+            // Step 4: Fetch from API (cache miss or invalid)
             doctorLogger.debug("DoctorResolver", "Cache miss, fetching from API...");
             const doctorId = await this.fetchDoctorId(profile);
 
             if (doctorId) {
-                // Step 4: Update cache
+                // Step 5: Update cache
                 this.setCachedData({
                     userId: currentUserId,
                     doctorId: doctorId,
@@ -81,6 +98,12 @@ export class DoctorResolver {
 
         } catch (error) {
             doctorLogger.error("DoctorResolver", "Error during resolution:", error);
+            // Son çare olarak cache'i dene
+            const cachedData = this.getCachedData();
+            if (cachedData && cachedData.doctorId) {
+                doctorLogger.info("DoctorResolver", "Returning cached doctorId after error:", cachedData.doctorId);
+                return cachedData.doctorId;
+            }
             return null;
         }
     }
@@ -89,9 +112,10 @@ export class DoctorResolver {
      * Fetches DoctorId from API using the bridge strategy
      * 
      * Strategy:
-     * 1. Search doctors by fullName from profile
-     * 2. For each candidate, get detailed info
-     * 3. Match by userId
+     * 1. Search doctors by fullName from profile (if available)
+     * 2. If no name, search all doctors
+     * 3. For each candidate, get detailed info
+     * 4. Match by userId
      * 
      * @param profile - User profile from GetProfile
      * @returns Promise<number | null>
@@ -108,22 +132,36 @@ export class DoctorResolver {
             // Construct full name for search
             const fullName = `${profile.firstName || ""} ${profile.lastName || ""}`.trim();
 
-            if (!fullName) {
-                doctorLogger.warn("DoctorResolver", "No name in profile, cannot search");
-                return null;
+            let candidates: any[] = [];
+
+            if (fullName) {
+                doctorLogger.debug("DoctorResolver", "Searching doctors with name:", fullName);
+
+                // Search for doctors matching the name
+                const searchResult = await doctorService.getDoctors({
+                    fullName: fullName,
+                    specialization: "", // Empty to match any specialization
+                    pageNumber: 1,
+                    pageSize: 10, // Limit to 10 candidates
+                });
+
+                candidates = searchResult.data || [];
+            }
+            
+            // İsim boş veya isim bazlı aramada sonuç yoksa, tüm doktorları çek
+            if (candidates.length === 0) {
+                doctorLogger.debug("DoctorResolver", "Name search failed, fetching all doctors to find by userId...");
+                
+                const allDoctorsResult = await doctorService.getDoctors({
+                    fullName: "", // Boş bırak - tüm doktorları getir
+                    specialization: "",
+                    pageNumber: 1,
+                    pageSize: 100, // Daha fazla doktor çek
+                });
+                
+                candidates = allDoctorsResult.data || [];
             }
 
-            doctorLogger.debug("DoctorResolver", "Searching doctors with name:", fullName);
-
-            // Search for doctors matching the name
-            const searchResult = await doctorService.getDoctors({
-                fullName: fullName,
-                specialization: "", // Empty to match any specialization
-                pageNumber: 1,
-                pageSize: 10, // Limit to 10 candidates
-            });
-
-            const candidates = searchResult.data || [];
             doctorLogger.debug("DoctorResolver", `Found ${candidates.length} candidates`);
 
             if (candidates.length === 0) {

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Stethoscope, Loader2, Save } from "lucide-react";
@@ -10,20 +11,21 @@ import { useWorkingHours } from "./hooks/useWorkingHours";
 import { DayCard } from "./components/DayCard";
 import { TemplateSelector } from "./components/TemplateSelector";
 
-const dayLabels = {
-  MONDAY: "Dushanba",
-  TUESDAY: "Seshanba",
-  WEDNESDAY: "Chorshanba",
-  THURSDAY: "Payshanba",
-  FRIDAY: "Juma",
-  SATURDAY: "Shanba",
-  SUNDAY: "Yakshanba",
-};
-
 export default function WorkingHoursPage() {
   const router = useRouter();
+  const t = useTranslations();
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   
+  const dayLabels = {
+    MONDAY: t('workingHours.days.monday'),
+    TUESDAY: t('workingHours.days.tuesday'),
+    WEDNESDAY: t('workingHours.days.wednesday'),
+    THURSDAY: t('workingHours.days.thursday'),
+    FRIDAY: t('workingHours.days.friday'),
+    SATURDAY: t('workingHours.days.saturday'),
+    SUNDAY: t('workingHours.days.sunday'),
+  };
+
   const {
     workingHours,
     loading,
@@ -74,16 +76,16 @@ export default function WorkingHoursPage() {
             </div>
             <div className="flex-1">
               <h1 className="text-2xl font-bold text-slate-800">
-                Ish Vaqtlarini Sozlash
+                {t('workingHours.title')}
               </h1>
               <p className="text-sm text-slate-500">
-                Bemorlar randevu olishi uchun ish vaqtlaringizni belgilang
+                {t('workingHours.schedule')}
               </p>
             </div>
             <Link href="/dashboard">
               <Button variant="outline" size="sm" className="hover:border-teal-500 hover:bg-teal-50">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Dashboardga qaytish
+                {t('common.backToDashboard')}
               </Button>
             </Link>
           </div>
@@ -98,7 +100,6 @@ export default function WorkingHoursPage() {
             <Card className={message.type === "success" ? "border-teal-200 bg-teal-50" : "border-red-200 bg-red-50"}>
               <CardContent className="py-4">
                 <p className={message.type === "success" ? "text-teal-700" : "text-red-700"}>
-                  {message.type === "success" ? "" : ""}
                   {message.text}
                 </p>
               </CardContent>
@@ -111,7 +112,7 @@ export default function WorkingHoursPage() {
           {/* Day Cards */}
           <div className="space-y-4">
             <h2 className="text-xl font-semibold text-slate-800">
-              Haftalik Jadval
+              {t('workingHours.schedule')}
             </h2>
             {workingHours.map((wh) => (
               <DayCard
@@ -130,8 +131,8 @@ export default function WorkingHoursPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between gap-4">
                 <div className="text-sm text-slate-500">
-                  <p className="font-semibold mb-1 text-slate-700">Eslatma:</p>
-                  <p>Ish vaqtlaringiz bemorlar uchun ko'rinadi va randevu olishda qo'llaniladi.</p>
+                  <p className="font-semibold mb-1 text-slate-700">{t('common.info')}:</p>
+                  <p>{t('workingHours.schedule')}</p>
                 </div>
                 <Button
                   onClick={handleSave}
@@ -141,12 +142,12 @@ export default function WorkingHoursPage() {
                   {saving ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Saqlanmoqda...
+                      {t('common.loading')}
                     </>
                   ) : (
                     <>
                       <Save className="mr-2 h-4 w-4" />
-                      Saqlash
+                      {t('common.save')}
                     </>
                   )}
                 </Button>
@@ -158,5 +159,3 @@ export default function WorkingHoursPage() {
     </div>
   );
 }
-
-

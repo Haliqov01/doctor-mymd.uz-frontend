@@ -376,7 +376,7 @@ export const ReportPrintTemplate = forwardRef<
       <div className="print-container">
         {/* Header */}
         <div className="report-header">
-          <h1>KO'Z MUOYENASI HISOBOTI</h1>
+          <h1>KO'Z KO'RIGI NATIJALARI</h1>
           <div className="date">Sana: {formatDate(report.reportDate)}</div>
         </div>
 

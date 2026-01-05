@@ -418,7 +418,7 @@ export default function DoctorDashboardPage() {
                         <ClipboardList className="h-5 w-5 text-white" />
                       </div>
                       <div className="text-left">
-                        <div className="font-semibold text-base text-green-800">Ko'z Muoyenasi Hisoboti</div>
+                        <div className="font-semibold text-base text-green-800">Ko'z ko'rigi natijalari</div>
                         <div className="text-sm text-green-700">Yangi hisobot yaratish</div>
                       </div>
                     </Button>

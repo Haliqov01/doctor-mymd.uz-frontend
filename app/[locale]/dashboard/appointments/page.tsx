@@ -1,5 +1,5 @@
 "use client";
-
+import { useTranslations } from "next-intl";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,6 @@ import {
   Clock,
   User,
   Phone,
-  Mail,
   FileText,
   AlertCircle,
   CheckCircle2,
@@ -36,31 +35,9 @@ import { clearStoredToken } from "@/lib/api-client";
 import { Appointment, AppointmentStatus } from "@/types";
 import { dashboardLogger } from "@/lib/utils/logger";
 
-const statusConfig = {
-  [AppointmentStatus.Pending]: {
-    label: "Tasdiqlash kutilmoqda",
-    color: "bg-amber-50 text-amber-700 border-amber-200",
-    icon: AlertCircle,
-  },
-  [AppointmentStatus.Approved]: {
-    label: "Tasdiqlandi",
-    color: "bg-teal-50 text-teal-700 border-teal-200",
-    icon: CheckCircle2,
-  },
-  [AppointmentStatus.Rejected]: {
-    label: "Rad etildi",
-    color: "bg-red-50 text-red-700 border-red-200",
-    icon: XCircle,
-  },
-  [AppointmentStatus.Completed]: {
-    label: "Yakunlandi",
-    color: "bg-blue-50 text-blue-700 border-blue-200",
-    icon: CheckCircle2,
-  },
-};
-
 export default function DoctorAppointmentsPage() {
   const router = useRouter();
+  const t = useTranslations();
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -68,33 +45,60 @@ export default function DoctorAppointmentsPage() {
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
-  const [currentPage, setCurrentPage] = useState(1); // Added for pagination
-  const [pageSize, setPageSize] = useState(100); // Added for pagination
-  const [totalCount, setTotalCount] = useState(0); // Added for pagination
-  const [statusFilter, setStatusFilter] = useState<AppointmentStatus | "All">("All"); // Added for status filter
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(100);
+  const [totalCount, setTotalCount] = useState(0);
+  const [statusFilter, setStatusFilter] = useState<AppointmentStatus | "All">("All");
+
+  const statusConfig = {
+    [AppointmentStatus.Pending]: {
+      label: t('appointments.status.awaitingConfirmation'),
+      color: "bg-amber-50 text-amber-700 border-amber-200",
+      icon: AlertCircle,
+    },
+    [AppointmentStatus.Approved]: {
+      label: t('appointments.status.approved'),
+      color: "bg-teal-50 text-teal-700 border-teal-200",
+      icon: CheckCircle2,
+    },
+    [AppointmentStatus.Rejected]: {
+      label: t('appointments.status.rejected'),
+      color: "bg-red-50 text-red-700 border-red-200",
+      icon: XCircle,
+    },
+    [AppointmentStatus.Completed]: {
+      label: t('appointments.status.completed'),
+      color: "bg-blue-50 text-blue-700 border-blue-200",
+      icon: CheckCircle2,
+    },
+  };
 
   const fetchAppointments = useCallback(async () => {
     try {
       setLoading(true);
 
-      // Use DoctorResolver to get doctor ID
       const { doctorResolver } = await import("@/lib/services/doctorResolver");
-      const doctorId = await doctorResolver.resolve();
+      
+      let doctorId = doctorResolver.getCachedDoctorId();
+      
+      if (!doctorId) {
+        doctorId = await doctorResolver.resolve();
+      }
 
       if (!doctorId) {
-        // 🔴 CRITICAL: Prevent data leak by not fetching without doctorId
-        dashboardLogger.error("Appointments", "No doctor ID found - cannot fetch appointments");
-        throw new Error("Doctor ID not found. Please complete your profile.");
+        dashboardLogger.warn("Appointments", "No doctor ID found - showing empty list");
+        setAppointments([]);
+        setTotalCount(0);
+        return;
       }
 
       dashboardLogger.info("Appointments", "Fetching appointments for doctorId:", doctorId);
 
-      // SECURITY: ALWAYS include doctorId
       const payload = {
         pageNumber: currentPage,
         pageSize: pageSize,
         status: statusFilter !== "All" ? statusFilter : undefined,
-        doctorId: doctorId, // MANDATORY - prevents showing all appointments
+        doctorId: doctorId,
       };
 
       const result = await appointmentService.getAppointments(payload);
@@ -107,6 +111,8 @@ export default function DoctorAppointmentsPage() {
         clearStoredToken();
         router.push("/login");
       }
+      setAppointments([]);
+      setTotalCount(0);
     } finally {
       setLoading(false);
     }
@@ -117,16 +123,16 @@ export default function DoctorAppointmentsPage() {
   }, [fetchAppointments]);
 
   const handleConfirm = async (appointmentId: number) => {
-    if (!confirm("Uchrashuvni tasdiqlashni xohlaysizmi?")) return;
+    if (!confirm(t('appointments.confirmQuestion'))) return;
 
     setActionLoading(true);
     try {
       await appointmentService.confirmAppointment(appointmentId);
-      alert("Uchrashuv tasdiqlandi.");
+      alert(t('appointments.confirmedSuccess'));
       fetchAppointments();
     } catch (error: any) {
       dashboardLogger.error("Appointments", "Error confirming appointment:", error);
-      alert(error.message || "Uchrashuv tasdiqlanayotganda xatolik yuz berdi.");
+      alert(error.message || t('appointments.confirmError'));
     } finally {
       setActionLoading(false);
     }
@@ -141,35 +147,35 @@ export default function DoctorAppointmentsPage() {
   const handleRejectConfirm = async () => {
     if (!selectedAppointment) return;
     if (rejectionReason.length < 10) {
-      alert("Iltimos, rad etish sababini kamida 10 belgidan iborat aniq tarzda yozing.");
+      alert(t('appointments.reject.reasonMinError'));
       return;
     }
 
     setActionLoading(true);
     try {
       await appointmentService.rejectAppointment(selectedAppointment.id, rejectionReason);
-      alert("Uchrashuv muvaffaqiyatli rad etildi.");
+      alert(t('appointments.reject.success'));
       setRejectDialogOpen(false);
       fetchAppointments();
     } catch (error: any) {
       dashboardLogger.error("Appointments", "Error rejecting appointment:", error);
-      alert(error.message || "Uchrashuvni rad etishda xatolik yuz berdi.");
+      alert(error.message || t('appointments.reject.error'));
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleComplete = async (appointmentId: number) => {
-    if (!confirm("Uchrashuvni yakunlashni xohlaysizmi?")) return;
+    if (!confirm(t('appointments.completeQuestion'))) return;
 
     setActionLoading(true);
     try {
       await appointmentService.completeAppointment(appointmentId);
-      alert("Uchrashuv yakunlandi.");
+      alert(t('appointments.completedSuccess'));
       fetchAppointments();
     } catch (error: any) {
       dashboardLogger.error("Appointments", "Error completing appointment:", error);
-      alert(error.message || "Uchrashuvni yakunlashda xatolik yuz berdi.");
+      alert(error.message || t('appointments.completeError'));
     } finally {
       setActionLoading(false);
     }
@@ -236,7 +242,7 @@ export default function DoctorAppointmentsPage() {
             <div className="flex items-center gap-2 text-sm">
               <Clock className="h-4 w-4 text-teal-600" />
               <span className="font-medium text-slate-700">
-                {formatTime(appointment.scheduledDate)} ({appointment.duration} daqiqa)
+                {formatTime(appointment.scheduledDate)} ({appointment.duration} {t('common.minutes')})
               </span>
             </div>
           </div>
@@ -246,7 +252,7 @@ export default function DoctorAppointmentsPage() {
               <div className="flex items-start gap-2">
                 <FileText className="h-4 w-4 text-teal-600 mt-0.5 flex-shrink-0" />
                 <div className="flex-1">
-                  <div className="text-sm font-medium text-teal-800">Shikoyat / Sabab:</div>
+                  <div className="text-sm font-medium text-teal-800">{t('appointments.complaint')}:</div>
                   <div className="text-sm text-teal-700 mt-1">{appointment.message}</div>
                 </div>
               </div>
@@ -254,7 +260,7 @@ export default function DoctorAppointmentsPage() {
           )}
 
           <div className="text-xs text-slate-400">
-            So'rov vaqti: {new Date(appointment.createdDate).toLocaleString("uz-UZ")}
+            {t('appointments.requestTime')}: {new Date(appointment.createdDate).toLocaleString("uz-UZ")}
           </div>
 
           {isPending && (
@@ -267,7 +273,7 @@ export default function DoctorAppointmentsPage() {
                 disabled={actionLoading}
               >
                 <X className="mr-2 h-4 w-4" />
-                Rad etish
+                {t('appointments.reject.button')}
               </Button>
               <Button
                 size="sm"
@@ -276,12 +282,11 @@ export default function DoctorAppointmentsPage() {
                 disabled={actionLoading}
               >
                 <Check className="mr-2 h-4 w-4" />
-                Tasdiqlash
+                {t('common.confirm')}
               </Button>
             </div>
           )}
 
-          {/* Tasdiqlangan randevular uchun hisobot yozish va yakunlash */}
           {appointment.status === AppointmentStatus.Approved && (
             <div className="flex gap-2 pt-2 border-t border-slate-200">
               <Button
@@ -298,7 +303,7 @@ export default function DoctorAppointmentsPage() {
                 }}
               >
                 <FileText className="mr-2 h-4 w-4" />
-                Hisobot yozish
+                {t('appointments.writeReport')}
               </Button>
               <Button
                 size="sm"
@@ -308,7 +313,7 @@ export default function DoctorAppointmentsPage() {
                 disabled={actionLoading}
               >
                 <CheckCircle2 className="mr-2 h-4 w-4" />
-                Yakunlash
+                {t('appointments.complete')}
               </Button>
             </div>
           )}
@@ -332,7 +337,6 @@ export default function DoctorAppointmentsPage() {
 
   return (
     <div className="min-h-screen bg-[#FAFBFC] p-4 md:p-8">
-      {/* Background Pattern */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/[0.02] rounded-full blur-[100px]" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/[0.02] rounded-full blur-[100px]" />
@@ -345,14 +349,14 @@ export default function DoctorAppointmentsPage() {
           className="mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Bosh sahifaga qaytish
+          {t('common.backToDashboard')}
         </Button>
 
         <Card className="mb-6 border-slate-200">
           <CardHeader>
-            <CardTitle className="text-2xl text-slate-800">Uchrashuvlar</CardTitle>
+            <CardTitle className="text-2xl text-slate-800">{t('appointments.title')}</CardTitle>
             <CardDescription>
-              Bemorlarning uchrashuvlarini ko'rish va boshqarish
+              {t('appointments.description')}
             </CardDescription>
           </CardHeader>
         </Card>
@@ -363,7 +367,7 @@ export default function DoctorAppointmentsPage() {
               <div className="flex items-center gap-2 text-amber-700">
                 <AlertCircle className="h-5 w-5" />
                 <span className="font-medium">
-                  {pendingAppointments.length} ta tasdiqlanmagan uchrashuv so'rovi bor
+                  {t('appointments.pendingCount', { count: pendingAppointments.length })}
                 </span>
               </div>
             </CardContent>
@@ -373,16 +377,16 @@ export default function DoctorAppointmentsPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="pending">
-              Kutilmoqda ({pendingAppointments.length})
+              {t('appointments.status.pending')} ({pendingAppointments.length})
             </TabsTrigger>
             <TabsTrigger value="confirmed">
-              Tasdiqlandi ({confirmedAppointments.length})
+              {t('appointments.status.confirmed')} ({confirmedAppointments.length})
             </TabsTrigger>
             <TabsTrigger value="completed">
-              Yakunlandi ({completedAppointments.length})
+              {t('appointments.status.completed')} ({completedAppointments.length})
             </TabsTrigger>
             <TabsTrigger value="all">
-              Barchasi ({allAppointments.length})
+              {t('common.all')} ({allAppointments.length})
             </TabsTrigger>
           </TabsList>
 
@@ -391,7 +395,7 @@ export default function DoctorAppointmentsPage() {
               <Card className="border-slate-200">
                 <CardContent className="py-12 text-center">
                   <CheckCircle2 className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                  <p className="text-slate-500">Kutayotgan uchrashuv so'rovi yo'q</p>
+                  <p className="text-slate-500">{t('appointments.noPending')}</p>
                 </CardContent>
               </Card>
             ) : (
@@ -404,7 +408,7 @@ export default function DoctorAppointmentsPage() {
               <Card className="border-slate-200">
                 <CardContent className="py-12 text-center">
                   <Calendar className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                  <p className="text-slate-500">Tasdiqlangan uchrashuvlar yo'q</p>
+                  <p className="text-slate-500">{t('appointments.noConfirmed')}</p>
                 </CardContent>
               </Card>
             ) : (
@@ -417,7 +421,7 @@ export default function DoctorAppointmentsPage() {
               <Card className="border-slate-200">
                 <CardContent className="py-12 text-center">
                   <CheckCircle2 className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                  <p className="text-slate-500">Yakunlangan uchrashuvlar yo'q</p>
+                  <p className="text-slate-500">{t('appointments.noCompleted')}</p>
                 </CardContent>
               </Card>
             ) : (
@@ -430,7 +434,7 @@ export default function DoctorAppointmentsPage() {
               <Card className="border-slate-200">
                 <CardContent className="py-12 text-center">
                   <Calendar className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                  <p className="text-slate-500">Hozircha uchrashuvingiz yo'q</p>
+                  <p className="text-slate-500">{t('appointments.noAppointments')}</p>
                 </CardContent>
               </Card>
             ) : (
@@ -439,26 +443,25 @@ export default function DoctorAppointmentsPage() {
           </TabsContent>
         </Tabs>
 
-        {/* Reject Dialog */}
         <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Uchrashuvni Rad etish</DialogTitle>
+              <DialogTitle>{t('appointments.reject.title')}</DialogTitle>
               <DialogDescription>
-                Iltimos, uchrashuvni rad etish sababini aniq tarzda yozing. Bu sabab bemorga yetkaziladi.
+                {t('appointments.reject.description')}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="rejectionReason">Rad etish sababi</Label>
+                <Label htmlFor="rejectionReason">{t('appointments.reject.reason')}</Label>
                 <Input
                   id="rejectionReason"
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}
-                  placeholder="Masalan: Bu kunda boshqa uchrashuv mavjud..."
+                  placeholder={t('appointments.reject.reasonPlaceholder')}
                   className="w-full"
                 />
-                <p className="text-xs text-slate-400">Kamida 10 belgidan iborat</p>
+                <p className="text-xs text-slate-400">{t('appointments.reject.minChars')}</p>
               </div>
             </div>
             <DialogFooter>
@@ -467,7 +470,7 @@ export default function DoctorAppointmentsPage() {
                 onClick={() => setRejectDialogOpen(false)}
                 disabled={actionLoading}
               >
-                Bekor qilish
+                {t('common.cancel')}
               </Button>
               <Button
                 variant="destructive"
@@ -475,7 +478,7 @@ export default function DoctorAppointmentsPage() {
                 disabled={actionLoading || rejectionReason.length < 10}
               >
                 {actionLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Rad etish
+                {t('appointments.reject.button')}
               </Button>
             </DialogFooter>
           </DialogContent>

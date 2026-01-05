@@ -4,9 +4,12 @@
     "logout": "Выйти",
     "register": "Регистрация",
     "save": "Сохранить",
+    "saving": "Сохранение...",
+    "saved": "Сохранено!",
     "cancel": "Отмена",
     "loading": "Загрузка...",
     "back": "Назад",
+    "backToDashboard": "Вернуться на главную",
     "next": "Далее",
     "submit": "Отправить",
     "delete": "Удалить",
@@ -26,7 +29,12 @@
     "error": "Ошибка",
     "success": "Успешно",
     "warning": "Предупреждение",
-    "info": "Информация"
+    "info": "Информация",
+    "minutes": "минут",
+    "print": "Печать",
+    "preview": "Предпросмотр",
+    "showForm": "Показать форму",
+    "copied": "Скопировано!"
   },
   "language": {
     "title": "Язык",
@@ -82,7 +90,15 @@
       "backToHome": "Вернуться на главную",
       "errorPhone": "Введите номер телефона",
       "errorPassword": "Введите пароль",
-      "errorInvalid": "Неверный номер телефона или пароль"
+      "errorInvalid": "Неверный номер телефона или пароль",
+      "smsCode": "Получить SMS код",
+      "enterCode": "Введите код, отправленный на ваш телефон",
+      "verificationCode": "Код подтверждения",
+      "verifying": "Проверка...",
+      "resendCode": "Отправить код повторно",
+      "resendWait": "Подождите {seconds} секунд для повторной отправки",
+      "changeNumber": "Изменить номер",
+      "testCode": "Тестовый код"
     },
     "register": {
       "title": "Регистрация",
@@ -121,13 +137,17 @@
   },
   "appointments": {
     "title": "Записи",
+    "description": "Просмотр и управление записями пациентов",
     "newAppointment": "Новая запись",
-    "noAppointments": "Записей нет",
+    "noAppointments": "У вас пока нет записей",
     "status": {
       "pending": "Ожидание",
+      "awaitingConfirmation": "Ожидает подтверждения",
       "confirmed": "Подтверждено",
+      "approved": "Подтверждено",
       "completed": "Завершено",
-      "cancelled": "Отменено"
+      "cancelled": "Отменено",
+      "rejected": "Отклонено"
     },
     "filter": {
       "all": "Все",
@@ -141,6 +161,31 @@
       "time": "Время",
       "status": "Статус",
       "notes": "Заметки"
+    },
+    "pendingCount": "{count} неподтвержденных записей",
+    "noPending": "Нет ожидающих записей",
+    "noConfirmed": "Нет подтвержденных записей",
+    "noCompleted": "Нет завершенных записей",
+    "complaint": "Жалоба / Причина",
+    "requestTime": "Время запроса",
+    "writeReport": "Написать отчет",
+    "complete": "Завершить",
+    "confirmQuestion": "Вы хотите подтвердить запись?",
+    "confirmedSuccess": "Запись подтверждена.",
+    "confirmError": "Ошибка при подтверждении записи.",
+    "completeQuestion": "Вы хотите завершить запись?",
+    "completedSuccess": "Запись завершена.",
+    "completeError": "Ошибка при завершении записи.",
+    "reject": {
+      "title": "Отклонить запись",
+      "description": "Пожалуйста, укажите причину отклонения. Эта информация будет отправлена пациенту.",
+      "reason": "Причина отклонения",
+      "reasonPlaceholder": "Например: В этот день у меня другая запись...",
+      "minChars": "Минимум 10 символов",
+      "button": "Отклонить",
+      "success": "Запись успешно отклонена.",
+      "error": "Ошибка при отклонении записи.",
+      "reasonMinError": "Пожалуйста, укажите причину отклонения (минимум 10 символов)."
     }
   },
   "patients": {
@@ -165,14 +210,57 @@
     "title": "Отчеты",
     "newReport": "Новый отчет",
     "noReports": "Отчетов нет",
+    "eyeExam": "Офтальмологический отчет",
+    "createNew": "Создать новый отчет",
     "create": {
       "title": "Создание отчета",
       "patientInfo": "Данные пациента",
+      "patientInfoDesc": "Введите личные данные пациента",
       "complaints": "Жалобы",
+      "complaintsAnamnesis": "Жалобы и Анамнез",
+      "complaintsDesc": "Запишите жалобы пациента и историю болезни",
+      "anamnesis": "Анамнез (История болезни)",
+      "anamnesisPlaceholder": "История болезни, предыдущие обследования, лечение...",
       "examination": "Осмотр",
+      "objectiveExam": "Объективный осмотр",
+      "objectiveExamDesc": "Проверьте части глаза",
+      "measurements": "Измерения",
+      "measurementsDesc": "Острота зрения и другие измерения",
       "diagnosis": "Диагноз",
+      "diagnosisDesc": "Запишите окончательный диагноз",
       "treatment": "Лечение",
-      "recommendations": "Рекомендации"
+      "recommendations": "Рекомендации",
+      "recommendationsTitle": "Рекомендации и план лечения",
+      "recommendationsDesc": "Запишите рекомендации для пациента",
+      "recommendationsPlaceholder": "План лечения, рекомендации, следующий контрольный осмотр..."
+    },
+    "eye": {
+      "right": "Правый глаз",
+      "left": "Левый глаз",
+      "both": "Оба глаза",
+      "rightDiagnosis": "Диагноз правого глаза",
+      "leftDiagnosis": "Диагноз левого глаза",
+      "bothDiagnosis": "Общий диагноз для обоих глаз",
+      "copyRightToLeft": "Правый → Левый копировать",
+      "visualAcuity": "Острота зрения",
+      "uncorrected": "Без коррекции",
+      "corrected": "С коррекцией",
+      "refraction": "Рефракция",
+      "additionalMeasures": "Дополнительные измерения",
+      "iopMethod": "Метод измерения ВГД"
+    },
+    "sections": {
+      "patient": "Пациент",
+      "complaint": "Жалоба",
+      "examination": "Осмотр",
+      "measurement": "Измерение",
+      "diagnosis": "Диагноз"
+    },
+    "errors": {
+      "patientIdNotFound": "ID пациента не найден. Пожалуйста, войдите через запись.",
+      "patientNameRequired": "Необходимо указать имя пациента",
+      "doctorNotFound": "Профиль врача не найден. Заполните свой профиль.",
+      "saveFailed": "Не удалось сохранить отчет. Попробуйте снова."
     }
   },
   "profile": {
@@ -222,9 +310,3 @@
     "serverError": "Ошибка сервера"
   }
 }
-
-
-
-
-
-

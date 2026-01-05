@@ -79,7 +79,7 @@ export default function LoginPage() {
           });
         }, 1000);
       } else {
-        throw new Error("Sessiya yaratilmadi");
+        throw new Error(t('errors.general'));
       }
     } catch (err: any) {
       console.error("SMS Error:", err);
@@ -94,12 +94,12 @@ export default function LoginPage() {
   const onVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!otpCode || otpCode.length < 5) {
-      setError("Tasdiqlash kodini kiriting");
+      setError(t('auth.login.verificationCode'));
       return;
     }
 
     if (!sessionId) {
-      setError("Sessiya xatosi. Bosh sahifaga qaytib qaytadan urinib ko'ring.");
+      setError(t('errors.general'));
       return;
     }
 
@@ -157,32 +157,36 @@ export default function LoginPage() {
               }
             }
 
-            if (!hasDoctor) {
+            if (!hasDoctor && doctors.data && doctors.data.length === 0) {
+              // Sadece hiç doktor bulunamadıysa profile/complete'e yönlendir
               console.log("No doctor profile found, redirecting to profile complete...");
               router.push("/dashboard/profile/complete");
               return;
             }
           } catch (docErr) {
-            console.warn("Doctor check failed, redirecting to profile complete:", docErr);
-            router.push("/dashboard/profile/complete");
+            // API hatası durumunda dashboard'a yönlendir, orada tekrar denenecek
+            console.warn("Doctor check failed, redirecting to dashboard:", docErr);
+            router.push("/dashboard");
             return;
           }
 
-          console.log("Doctor profile found, redirecting to dashboard...");
+          // Doktor bulundu VEYA API hatası/belirsizlik varsa dashboard'a git
+          console.log("Redirecting to dashboard...");
           router.push("/dashboard");
 
         } catch (profileErr) {
           console.error("Profile fetch error after login:", profileErr);
-          router.push("/dashboard/profile/complete");
+          // Profil alınamadıysa bile dashboard'a yönlendir
+          router.push("/dashboard");
         }
       } else {
-        throw new Error("Token olinmadi");
+        throw new Error(t('errors.general'));
       }
 
     } catch (err: any) {
       console.error("Verify Error:", err);
       // Detailed error message from backend if available
-      setError(err.message || "Kod noto'g'ri yoki muddati tugagan");
+      setError(err.message || t('auth.login.errorInvalid'));
     } finally {
       setLoading(false);
     }
@@ -230,7 +234,7 @@ export default function LoginPage() {
               {t('auth.login.title')}
             </CardTitle>
             <CardDescription className="text-base text-slate-500">
-              {step === 1 ? t('auth.login.description') : "Telefoningizga yuborilgan kodni kiriting"}
+              {step === 1 ? t('auth.login.description') : t('auth.login.enterCode')}
             </CardDescription>
           </CardHeader>
 
@@ -284,7 +288,7 @@ export default function LoginPage() {
                     </>
                   ) : (
                     <>
-                      SMS kod olish
+                      {t('auth.login.smsCode')}
                       <ArrowRight className="h-5 w-5 ml-2" />
                     </>
                   )}
@@ -295,21 +299,20 @@ export default function LoginPage() {
               <form onSubmit={onVerifyOtp} className="space-y-6">
                 <div className="text-center mb-6 p-4 bg-teal-50 border border-teal-200 rounded-xl">
                   <p className="text-base text-slate-700">
-                    <strong className="text-teal-700">{phoneNumber}</strong> raqamiga yuborilgan kodni kiriting
+                    <strong className="text-teal-700">{phoneNumber}</strong> {t('auth.login.enterCode')}
                   </p>
                   <p className="text-xs text-slate-400 mt-2">
-                    Test uchun kod: <code className="bg-slate-200 px-2 py-0.5 rounded font-mono">0123123</code>
+                    {t('auth.login.testCode')}: <code className="bg-slate-200 px-2 py-0.5 rounded font-mono">0123123</code>
                   </p>
                 </div>
 
                 <div className="space-y-3">
-                  <Label htmlFor="otp" className="text-sm font-medium text-slate-700">Tasdiqlash kodi</Label>
+                  <Label htmlFor="otp" className="text-sm font-medium text-slate-700">{t('auth.login.verificationCode')}</Label>
                   <Input
                     id="otp"
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value)}
                     type="text"
-                    // maxLength={6} // Removing rigid constraint to allow 7 if needed
                     placeholder="123456"
                     disabled={loading}
                     className="h-16 text-center text-3xl tracking-widest font-mono"
@@ -331,11 +334,11 @@ export default function LoginPage() {
                   {loading ? (
                     <>
                       <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                      Tekshirilmoqda...
+                      {t('auth.login.verifying')}
                     </>
                   ) : (
                     <>
-                      Kirish
+                      {t('common.login')}
                       <CheckCircle2 className="h-5 w-5 ml-2" />
                     </>
                   )}
@@ -344,7 +347,7 @@ export default function LoginPage() {
                 <div className="text-center pt-2">
                   {countdown > 0 ? (
                     <p className="text-base text-slate-500">
-                      Yangi kod yuborish uchun <strong className="text-teal-600">{countdown}</strong> soniya kuting
+                      {t('auth.login.resendWait', { seconds: countdown })}
                     </p>
                   ) : (
                     <Button
@@ -354,7 +357,7 @@ export default function LoginPage() {
                       disabled={loading}
                       className="text-base text-teal-600 hover:text-teal-700 font-semibold"
                     >
-                      Kodni qayta yuborish
+                      {t('auth.login.resendCode')}
                     </Button>
                   )}
                 </div>
@@ -366,7 +369,7 @@ export default function LoginPage() {
                   onClick={() => setStep(1)}
                   disabled={loading}
                 >
-                  ← Raqamni o'zgartirish
+                  ← {t('auth.login.changeNumber')}
                 </Button>
               </form>
             )}

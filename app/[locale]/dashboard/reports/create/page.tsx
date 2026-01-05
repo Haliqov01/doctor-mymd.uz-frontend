@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -45,6 +46,7 @@ export default function CreateReportPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const printRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations();
 
   const [showPreview, setShowPreview] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -119,7 +121,7 @@ export default function CreateReportPage() {
   const [recommendations, setRecommendations] = useState("");
 
   const [doctorInfo, setDoctorInfo] = useState({
-    fullName: "Yuklanmoqda...",
+    fullName: t('common.loading'),
     specialization: "Ko'z shifokori",
     licenseNumber: "",
   });
@@ -145,6 +147,14 @@ export default function CreateReportPage() {
     recommendations,
     doctorInfo,
   };
+
+  const sections = [
+    { id: "patient", label: t('reports.sections.patient'), icon: User },
+    { id: "complaints", label: t('reports.sections.complaint'), icon: ClipboardList },
+    { id: "examination", label: t('reports.sections.examination'), icon: Stethoscope },
+    { id: "measurements", label: t('reports.sections.measurement'), icon: Activity },
+    { id: "diagnosis", label: t('reports.sections.diagnosis'), icon: FileText },
+  ];
 
   // URL parametrelerini oku
   useEffect(() => {
@@ -175,7 +185,7 @@ export default function CreateReportPage() {
           }
         }
       } catch (error) {
-        console.error("Shifokor ma'lumotlarini yuklashda xato:", error);
+        console.error("Error loading doctor info:", error);
         setDoctorInfo({
           fullName: "Shifokor",
           specialization: "Ko'z shifokori",
@@ -186,73 +196,15 @@ export default function CreateReportPage() {
     loadDoctorInfo();
   }, []);
 
-  // Rapor metnini oluştur
-  const generateReportText = () => {
-    return `
-BEMOR: ${patientInfo.fullName}
-TUG'ILGAN SANA: ${patientInfo.dateOfBirth}
-JINSI: ${patientInfo.gender}
-MANZIL: ${patientInfo.address}
-
-SHIKOYATLARI: ${complaints}
-
-ANAMNEZ: ${anamnesis}
-
-HAMROH KASALLIKLAR: ${comorbidities}
-
-=== O'NG KO'Z (OD) ===
-Ko'rish o'tkirligi: k/siz ${rightEye.visualAcuity.uncorrected} / k/li ${rightEye.visualAcuity.corrected}
-Refraksiya: Sph ${rightEye.refraction.sphere} Cyl ${rightEye.refraction.cylinder} Ax ${rightEye.refraction.axis}
-KIB (${iopMethod}): ${rightEye.iop} mmHg
-Ko'z olmasi: ${rightEye.globe}
-Ko'z mushaklari: ${rightEye.muscles}
-Qovoqlar: ${rightEye.lidsAndLacrimal}
-Konyunktiva: ${rightEye.conjunctiva}
-Sklera: ${rightEye.sclera}
-Shox parda: ${rightEye.cornea}
-Old kamera: ${rightEye.anteriorChamber}
-Rangdor parda va qorachiq: ${rightEye.irisAndPupil}
-Gavhar: ${rightEye.lens}
-Shishasimon tana: ${rightEye.vitreous}
-Ko'z tubi: ${rightEye.fundus}
-
-=== CHAP KO'Z (OS) ===
-Ko'rish o'tkirligi: k/siz ${leftEye.visualAcuity.uncorrected} / k/li ${leftEye.visualAcuity.corrected}
-Refraksiya: Sph ${leftEye.refraction.sphere} Cyl ${leftEye.refraction.cylinder} Ax ${leftEye.refraction.axis}
-KIB (${iopMethod}): ${leftEye.iop} mmHg
-Ko'z olmasi: ${leftEye.globe}
-Ko'z mushaklari: ${leftEye.muscles}
-Qovoqlar: ${leftEye.lidsAndLacrimal}
-Konyunktiva: ${leftEye.conjunctiva}
-Sklera: ${leftEye.sclera}
-Shox parda: ${leftEye.cornea}
-Old kamera: ${leftEye.anteriorChamber}
-Rangdor parda va qorachiq: ${leftEye.irisAndPupil}
-Gavhar: ${leftEye.lens}
-Shishasimon tana: ${leftEye.vitreous}
-Ko'z tubi: ${leftEye.fundus}
-
-=== TASHXIS ===
-OU (Ikkala ko'z): ${diagnosis.bothEyes}
-OD (O'ng ko'z): ${diagnosis.rightEye}
-OS (Chap ko'z): ${diagnosis.leftEye}
-
-=== TAVSIYALAR ===
-${recommendations}
-
-Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
-    `.trim();
-  };
-
   // Backend'e kaydet
   const handleSaveReport = async () => {
     if (!patientId) {
-      alert("Bemor ID topilmadi. Iltimos randevu orqali kiring.");
+      alert(t('reports.errors.patientIdNotFound'));
       return;
     }
 
     if (!patientInfo.fullName.trim()) {
-      alert("Bemor ismi kiritilishi shart");
+      alert(t('reports.errors.patientNameRequired'));
       return;
     }
 
@@ -262,7 +214,7 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
       const doctorId = await doctorResolver.resolve();
 
       if (!doctorId) {
-        throw new Error("Doktor profili topilmadi. Profilingizni to'ldiring.");
+        throw new Error(t('reports.errors.doctorNotFound'));
       }
 
       console.log("Saving report...", { patientId, doctorId, appointmentId });
@@ -277,13 +229,13 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
 
       console.log("Report saved:", result);
       
-      // Randevuni tamamlangan holatiga o'tkazish
+      // Randevunu tamamlangan holatına geçirme
       if (appointmentId) {
         try {
           await appointmentService.completeAppointment(appointmentId);
           console.log("Appointment completed:", appointmentId);
         } catch (completeError) {
-          console.warn("Randevuni tamamlashda xato (hisobot saqlandi):", completeError);
+          console.warn("Error completing appointment (report saved):", completeError);
         }
       }
       
@@ -295,7 +247,7 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
       }, 2000);
     } catch (error: any) {
       console.error("Save error:", error);
-      alert(error.message || "Hisobot saqlanmadi. Qaytadan urinib ko'ring.");
+      alert(error.message || t('reports.errors.saveFailed'));
     } finally {
       setSaving(false);
     }
@@ -678,14 +630,6 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const sections = [
-    { id: "patient", label: "Bemor", icon: User },
-    { id: "complaints", label: "Shikoyat", icon: ClipboardList },
-    { id: "examination", label: "Muoyena", icon: Stethoscope },
-    { id: "measurements", label: "O'lchov", icon: Activity },
-    { id: "diagnosis", label: "Tashhis", icon: FileText },
-  ];
-
   return (
     <div className="min-h-screen bg-[#FAFBFC]">
       {/* Background Pattern */}
@@ -704,10 +648,10 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-slate-800">
-                  Ko'z Muoyenasi Hisoboti
+                  {t('reports.eyeExam')}
                 </h1>
                 <p className="text-sm text-slate-500">
-                  Yangi hisobot yaratish
+                  {t('reports.createNew')}
                 </p>
               </div>
             </div>
@@ -717,7 +661,7 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                 onClick={() => router.push("/dashboard/appointments")}
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Orqaga
+                {t('common.back')}
               </Button>
               <Button
                 variant="outline"
@@ -725,11 +669,11 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                 className={showPreview ? "border-teal-500 bg-teal-50 text-teal-700" : ""}
               >
                 <Eye className="h-4 w-4 mr-2" />
-                {showPreview ? "Formani ko'rish" : "Oldindan ko'rish"}
+                {showPreview ? t('common.showForm') : t('common.preview')}
               </Button>
               <Button variant="outline" onClick={handlePrint}>
                 <Printer className="h-4 w-4 mr-2" />
-                Chop etish
+                {t('common.print')}
               </Button>
               {patientId && (
                 <Button 
@@ -740,17 +684,17 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                   {saving ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Saqlanmoqda...
+                      {t('common.saving')}
                     </>
                   ) : saveSuccess ? (
                     <>
                       <CheckCircle2 className="h-4 w-4 mr-2" />
-                      Saqlandi!
+                      {t('common.saved')}
                     </>
                   ) : (
                     <>
                       <Save className="h-4 w-4 mr-2" />
-                      Saqlash
+                      {t('common.save')}
                     </>
                   )}
                 </Button>
@@ -805,8 +749,8 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                       <User className="h-5 w-5 text-blue-600" />
                     </div>
                     <div>
-                      <CardTitle className="text-lg text-slate-800">Bemor ma'lumotlari</CardTitle>
-                      <CardDescription>Bemorning shaxsiy ma'lumotlarini kiriting</CardDescription>
+                      <CardTitle className="text-lg text-slate-800">{t('reports.create.patientInfo')}</CardTitle>
+                      <CardDescription>{t('reports.create.patientInfoDesc')}</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -817,7 +761,7 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                   />
                   <div className="flex justify-end mt-6">
                     <Button onClick={() => setActiveSection("complaints")}>
-                      Keyingisi
+                      {t('common.next')}
                       <ChevronRight className="h-4 w-4 ml-2" />
                     </Button>
                   </div>
@@ -834,8 +778,8 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                       <ClipboardList className="h-5 w-5 text-orange-600" />
                     </div>
                     <div>
-                      <CardTitle className="text-lg text-slate-800">Shikoyatlari va Anamnez</CardTitle>
-                      <CardDescription>Bemorning shikoyati va kasallik tarixini yozing</CardDescription>
+                      <CardTitle className="text-lg text-slate-800">{t('reports.create.complaintsAnamnesis')}</CardTitle>
+                      <CardDescription>{t('reports.create.complaintsDesc')}</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -846,11 +790,11 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                   />
                   
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-slate-700">Anamnez (Kasallik tarixi)</Label>
+                    <Label className="text-sm font-medium text-slate-700">{t('reports.create.anamnesis')}</Label>
                     <Textarea
                       value={anamnesis}
                       onChange={(e) => setAnamnesis(e.target.value)}
-                      placeholder="Kasallik tarixi, o'tgan muoyenalar, davolash..."
+                      placeholder={t('reports.create.anamnesisPlaceholder')}
                       rows={3}
                       className="resize-none"
                     />
@@ -864,10 +808,10 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                   <div className="flex justify-between mt-6">
                     <Button variant="outline" onClick={() => setActiveSection("patient")}>
                       <ArrowLeft className="h-4 w-4 mr-2" />
-                      Orqaga
+                      {t('common.back')}
                     </Button>
                     <Button onClick={() => setActiveSection("examination")}>
-                      Keyingisi
+                      {t('common.next')}
                       <ChevronRight className="h-4 w-4 ml-2" />
                     </Button>
                   </div>
@@ -885,8 +829,8 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                         <Stethoscope className="h-5 w-5 text-violet-600" />
                       </div>
                       <div>
-                        <CardTitle className="text-lg text-slate-800">Obyektiv Muoyena</CardTitle>
-                        <CardDescription>Ko'z qismlarini tekshiring</CardDescription>
+                        <CardTitle className="text-lg text-slate-800">{t('reports.create.objectiveExam')}</CardTitle>
+                        <CardDescription>{t('reports.create.objectiveExamDesc')}</CardDescription>
                       </div>
                     </div>
                     <Button
@@ -899,12 +843,12 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                       {copied ? (
                         <>
                           <CheckCircle2 className="h-4 w-4 mr-2" />
-                          Nusxalandi!
+                          {t('common.copied')}
                         </>
                       ) : (
                         <>
                           <Copy className="h-4 w-4 mr-2" />
-                          O'ng → Chap nusxalash
+                          {t('reports.eye.copyRightToLeft')}
                         </>
                       )}
                     </Button>
@@ -915,11 +859,11 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                     <TabsList className="grid w-full grid-cols-2 mb-6">
                       <TabsTrigger value="right" className="gap-2">
                         <span className="w-6 h-6 rounded-full bg-teal-100 text-teal-700 text-xs flex items-center justify-center font-bold">OD</span>
-                        O'ng ko'z
+                        {t('reports.eye.right')}
                       </TabsTrigger>
                       <TabsTrigger value="left" className="gap-2">
                         <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 text-xs flex items-center justify-center font-bold">OS</span>
-                        Chap ko'z
+                        {t('reports.eye.left')}
                       </TabsTrigger>
                     </TabsList>
 
@@ -959,10 +903,10 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                   <div className="flex justify-between mt-6">
                     <Button variant="outline" onClick={() => setActiveSection("complaints")}>
                       <ArrowLeft className="h-4 w-4 mr-2" />
-                      Orqaga
+                      {t('common.back')}
                     </Button>
                     <Button onClick={() => setActiveSection("measurements")}>
-                      Keyingisi
+                      {t('common.next')}
                       <ChevronRight className="h-4 w-4 ml-2" />
                     </Button>
                   </div>
@@ -979,8 +923,8 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                       <Activity className="h-5 w-5 text-teal-600" />
                     </div>
                     <div>
-                      <CardTitle className="text-lg text-slate-800">O'lchovlar</CardTitle>
-                      <CardDescription>Ko'rish o'tkirligi va boshqa o'lchovlar</CardDescription>
+                      <CardTitle className="text-lg text-slate-800">{t('reports.create.measurements')}</CardTitle>
+                      <CardDescription>{t('reports.create.measurementsDesc')}</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -990,18 +934,18 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                     <div className="space-y-6">
                       <div className="flex items-center gap-2 mb-4">
                         <span className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-teal-600 text-white text-sm flex items-center justify-center font-bold shadow-lg shadow-teal-500/20">OD</span>
-                        <h3 className="text-lg font-semibold text-slate-800">O'ng ko'z</h3>
+                        <h3 className="text-lg font-semibold text-slate-800">{t('reports.eye.right')}</h3>
                       </div>
                       
                       {/* Visual Acuity */}
                       <div className="p-4 bg-blue-50/50 rounded-xl border border-blue-100 space-y-4">
                         <h4 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                           <Eye className="h-4 w-4 text-blue-600" />
-                          Ko'rish o'tkirligi
+                          {t('reports.eye.visualAcuity')}
                         </h4>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label className="text-xs text-slate-600">Tuzatishsiz (k/siz)</Label>
+                            <Label className="text-xs text-slate-600">{t('reports.eye.uncorrected')}</Label>
                             <Input
                               value={rightEye.visualAcuity.uncorrected}
                               onChange={(e) => updateRightEye("visualAcuity", { ...rightEye.visualAcuity, uncorrected: e.target.value })}
@@ -1010,7 +954,7 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label className="text-xs text-slate-600">Tuzatish bilan (k/li)</Label>
+                            <Label className="text-xs text-slate-600">{t('reports.eye.corrected')}</Label>
                             <Input
                               value={rightEye.visualAcuity.corrected}
                               onChange={(e) => updateRightEye("visualAcuity", { ...rightEye.visualAcuity, corrected: e.target.value })}
@@ -1023,7 +967,7 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                       
                       {/* Refraction */}
                       <div className="p-4 bg-violet-50/50 rounded-xl border border-violet-100 space-y-4">
-                        <h4 className="text-sm font-semibold text-slate-700">Refraksiya</h4>
+                        <h4 className="text-sm font-semibold text-slate-700">{t('reports.eye.refraction')}</h4>
                         <div className="grid grid-cols-3 gap-3">
                           <div className="space-y-2">
                             <Label className="text-xs text-slate-600">Sph</Label>
@@ -1042,7 +986,7 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                       
                       {/* IOP and other measurements */}
                       <div className="p-4 bg-amber-50/50 rounded-xl border border-amber-100 space-y-4">
-                        <h4 className="text-sm font-semibold text-slate-700">Qo'shimcha o'lchovlar</h4>
+                        <h4 className="text-sm font-semibold text-slate-700">{t('reports.eye.additionalMeasures')}</h4>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <Label className="text-xs text-slate-600">KIB (mmHg)</Label>
@@ -1064,18 +1008,18 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                     <div className="space-y-6">
                       <div className="flex items-center gap-2 mb-4">
                         <span className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white text-sm flex items-center justify-center font-bold shadow-lg shadow-blue-500/20">OS</span>
-                        <h3 className="text-lg font-semibold text-slate-800">Chap ko'z</h3>
+                        <h3 className="text-lg font-semibold text-slate-800">{t('reports.eye.left')}</h3>
                       </div>
                       
                       {/* Visual Acuity */}
                       <div className="p-4 bg-blue-50/50 rounded-xl border border-blue-100 space-y-4">
                         <h4 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                           <Eye className="h-4 w-4 text-blue-600" />
-                          Ko'rish o'tkirligi
+                          {t('reports.eye.visualAcuity')}
                         </h4>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label className="text-xs text-slate-600">Tuzatishsiz (k/siz)</Label>
+                            <Label className="text-xs text-slate-600">{t('reports.eye.uncorrected')}</Label>
                             <Input
                               value={leftEye.visualAcuity.uncorrected}
                               onChange={(e) => updateLeftEye("visualAcuity", { ...leftEye.visualAcuity, uncorrected: e.target.value })}
@@ -1084,7 +1028,7 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label className="text-xs text-slate-600">Tuzatish bilan (k/li)</Label>
+                            <Label className="text-xs text-slate-600">{t('reports.eye.corrected')}</Label>
                             <Input
                               value={leftEye.visualAcuity.corrected}
                               onChange={(e) => updateLeftEye("visualAcuity", { ...leftEye.visualAcuity, corrected: e.target.value })}
@@ -1097,7 +1041,7 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                       
                       {/* Refraction */}
                       <div className="p-4 bg-violet-50/50 rounded-xl border border-violet-100 space-y-4">
-                        <h4 className="text-sm font-semibold text-slate-700">Refraksiya</h4>
+                        <h4 className="text-sm font-semibold text-slate-700">{t('reports.eye.refraction')}</h4>
                         <div className="grid grid-cols-3 gap-3">
                           <div className="space-y-2">
                             <Label className="text-xs text-slate-600">Sph</Label>
@@ -1116,7 +1060,7 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                       
                       {/* IOP and other measurements */}
                       <div className="p-4 bg-amber-50/50 rounded-xl border border-amber-100 space-y-4">
-                        <h4 className="text-sm font-semibold text-slate-700">Qo'shimcha o'lchovlar</h4>
+                        <h4 className="text-sm font-semibold text-slate-700">{t('reports.eye.additionalMeasures')}</h4>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <Label className="text-xs text-slate-600">KIB (mmHg)</Label>
@@ -1138,7 +1082,7 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                   {/* IOP Method Selection */}
                   <div className="mt-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
                     <div className="flex items-center gap-4">
-                      <Label className="text-sm font-medium text-slate-700 whitespace-nowrap">KIB o'lchash usuli:</Label>
+                      <Label className="text-sm font-medium text-slate-700 whitespace-nowrap">{t('reports.eye.iopMethod')}:</Label>
                       <Select value={iopMethod} onValueChange={setIopMethod}>
                         <SelectTrigger className="w-48 bg-white">
                           <SelectValue />
@@ -1155,10 +1099,10 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                   <div className="flex justify-between mt-6">
                     <Button variant="outline" onClick={() => setActiveSection("examination")}>
                       <ArrowLeft className="h-4 w-4 mr-2" />
-                      Orqaga
+                      {t('common.back')}
                     </Button>
                     <Button onClick={() => setActiveSection("diagnosis")}>
-                      Keyingisi
+                      {t('common.next')}
                       <ChevronRight className="h-4 w-4 ml-2" />
                     </Button>
                   </div>
@@ -1176,18 +1120,18 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                         <FileText className="h-5 w-5 text-rose-600" />
                       </div>
                       <div>
-                        <CardTitle className="text-lg text-slate-800">Tashhis</CardTitle>
-                        <CardDescription>Yakuniy tashxisni yozing</CardDescription>
+                        <CardTitle className="text-lg text-slate-800">{t('reports.create.diagnosis')}</CardTitle>
+                        <CardDescription>{t('reports.create.diagnosisDesc')}</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-5 pt-6">
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium text-slate-700">OU (Ikkala ko'z)</Label>
+                      <Label className="text-sm font-medium text-slate-700">OU ({t('reports.eye.both')})</Label>
                       <Textarea
                         value={diagnosis.bothEyes}
                         onChange={(e) => setDiagnosis({ ...diagnosis, bothEyes: e.target.value })}
-                        placeholder="Har ikkala ko'z uchun umumiy tashxis..."
+                        placeholder={t('reports.eye.bothDiagnosis')}
                         rows={2}
                       />
                     </div>
@@ -1195,24 +1139,24 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
                           <span className="w-6 h-6 rounded-full bg-teal-100 text-teal-700 text-xs flex items-center justify-center font-bold">OD</span>
-                          <Label className="text-sm font-medium text-slate-700">O'ng ko'z tashxisi</Label>
+                          <Label className="text-sm font-medium text-slate-700">{t('reports.eye.rightDiagnosis')}</Label>
                         </div>
                         <Textarea
                           value={diagnosis.rightEye}
                           onChange={(e) => setDiagnosis({ ...diagnosis, rightEye: e.target.value })}
-                          placeholder="O'ng ko'z tashxisi..."
+                          placeholder={t('reports.eye.rightDiagnosis')}
                           rows={3}
                         />
                       </div>
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
                           <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 text-xs flex items-center justify-center font-bold">OS</span>
-                          <Label className="text-sm font-medium text-slate-700">Chap ko'z tashxisi</Label>
+                          <Label className="text-sm font-medium text-slate-700">{t('reports.eye.leftDiagnosis')}</Label>
                         </div>
                         <Textarea
                           value={diagnosis.leftEye}
                           onChange={(e) => setDiagnosis({ ...diagnosis, leftEye: e.target.value })}
-                          placeholder="Chap ko'z tashxisi..."
+                          placeholder={t('reports.eye.leftDiagnosis')}
                           rows={3}
                         />
                       </div>
@@ -1227,8 +1171,8 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                         <ClipboardList className="h-5 w-5 text-teal-600" />
                       </div>
                       <div>
-                        <CardTitle className="text-lg text-slate-800">Tavsiya va Davolash Rejasi</CardTitle>
-                        <CardDescription>Bemorga tavsiyalaringizni yozing</CardDescription>
+                        <CardTitle className="text-lg text-slate-800">{t('reports.create.recommendationsTitle')}</CardTitle>
+                        <CardDescription>{t('reports.create.recommendationsDesc')}</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
@@ -1236,7 +1180,7 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                     <Textarea
                       value={recommendations}
                       onChange={(e) => setRecommendations(e.target.value)}
-                      placeholder="Davolash rejasi, tavsiyalar, keyingi nazorat muoyenasi..."
+                      placeholder={t('reports.create.recommendationsPlaceholder')}
                       rows={5}
                       className="resize-none"
                     />
@@ -1246,16 +1190,16 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                 <div className="flex justify-between">
                   <Button variant="outline" onClick={() => setActiveSection("measurements")}>
                     <ArrowLeft className="h-4 w-4 mr-2" />
-                    Orqaga
+                    {t('common.back')}
                   </Button>
                   <div className="flex gap-3">
                     <Button variant="outline" onClick={() => setShowPreview(true)}>
                       <Eye className="h-4 w-4 mr-2" />
-                      Oldindan ko'rish
+                      {t('common.preview')}
                     </Button>
                     <Button variant="outline" onClick={handlePrint}>
                       <Printer className="h-4 w-4 mr-2" />
-                      Chop etish
+                      {t('common.print')}
                     </Button>
                     {patientId && (
                       <Button 
@@ -1266,17 +1210,17 @@ Muoyena sanasi: ${new Date().toLocaleDateString('uz-UZ')}
                         {saving ? (
                           <>
                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            Saqlanmoqda...
+                            {t('common.saving')}
                           </>
                         ) : saveSuccess ? (
                           <>
                             <CheckCircle2 className="h-4 w-4 mr-2" />
-                            Saqlandi!
+                            {t('common.saved')}
                           </>
                         ) : (
                           <>
                             <Save className="h-4 w-4 mr-2" />
-                            Saqlash
+                            {t('common.save')}
                           </>
                         )}
                       </Button>

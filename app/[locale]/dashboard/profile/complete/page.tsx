@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -45,6 +46,7 @@ const SPECIALIZATIONS = [
 
 export default function SimpleProfileCompletePage() {
   const router = useRouter();
+  const t = useTranslations();
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState("");
@@ -99,14 +101,14 @@ export default function SimpleProfileCompletePage() {
         }
       } catch (e) {
         console.error("Profile load error:", e);
-        setError("Profil yuklanmadi. Qaytadan login qiling.");
+        setError(t('errors.general'));
       } finally {
         setInitialLoading(false);
       }
     };
 
     loadProfile();
-  }, []);
+  }, [t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,15 +116,15 @@ export default function SimpleProfileCompletePage() {
 
     // Validation
     if (!formData.fullName.trim()) {
-      setError("Ism familiya kiritilishi shart");
+      setError(t('validation.required'));
       return;
     }
     if (!formData.specialization) {
-      setError("Mutaxassislik tanlanishi shart");
+      setError(t('validation.required'));
       return;
     }
     if (!userId) {
-      setError("Foydalanuvchi topilmadi. Qaytadan login qiling.");
+      setError(t('errors.unauthorized'));
       return;
     }
 
@@ -166,10 +168,10 @@ export default function SimpleProfileCompletePage() {
       console.error("Save error:", err);
       
       if (err.code === "DoctorAlreadyExist") {
-        setError("Profil allaqachon mavjud. Sahifa yangilanmoqda...");
+        setError(t('errors.general'));
         setTimeout(() => window.location.reload(), 1500);
       } else {
-        setError(err.message || "Xatolik yuz berdi");
+        setError(err.message || t('errors.general'));
       }
     } finally {
       setLoading(false);
@@ -181,7 +183,7 @@ export default function SimpleProfileCompletePage() {
       <div className="min-h-screen bg-[#FAFBFC] flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-teal-600 mx-auto mb-4" />
-          <p className="text-slate-600">Yuklanmoqda...</p>
+          <p className="text-slate-600">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -192,8 +194,8 @@ export default function SimpleProfileCompletePage() {
       <div className="min-h-screen bg-[#FAFBFC] flex items-center justify-center">
         <div className="text-center">
           <CheckCircle2 className="h-16 w-16 text-teal-600 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-slate-800 mb-2">Profil saqlandi!</h2>
-          <p className="text-slate-600">Dashboard'ga yo'naltirilmoqda...</p>
+          <h2 className="text-2xl font-bold text-slate-800 mb-2">{t('common.success')}!</h2>
+          <p className="text-slate-600">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -223,10 +225,10 @@ export default function SimpleProfileCompletePage() {
         <Card className="shadow-xl border-slate-200">
           <CardHeader className="text-center pb-2">
             <CardTitle className="text-2xl font-bold text-slate-800">
-              Profilni to'ldiring
+              {t('profile.complete.title')}
             </CardTitle>
             <CardDescription className="text-base">
-              Platformada faol bo'lish uchun ma'lumotlaringizni kiriting
+              {t('profile.personalInfo')}
             </CardDescription>
           </CardHeader>
 
@@ -235,13 +237,13 @@ export default function SimpleProfileCompletePage() {
               {/* Full Name */}
               <div className="space-y-2">
                 <Label htmlFor="fullName" className="text-sm font-medium">
-                  Ism Familiya <span className="text-red-500">*</span>
+                  {t('patients.details.name')} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="fullName"
                   value={formData.fullName}
                   onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
-                  placeholder="To'liq ismingiz"
+                  placeholder={t('auth.register.namePlaceholder')}
                   disabled={loading}
                   className="h-12"
                 />
@@ -250,7 +252,7 @@ export default function SimpleProfileCompletePage() {
               {/* Specialization */}
               <div className="space-y-2">
                 <Label htmlFor="specialization" className="text-sm font-medium">
-                  Mutaxassislik <span className="text-red-500">*</span>
+                  {t('profile.specialization')} <span className="text-red-500">*</span>
                 </Label>
                 <Select
                   value={formData.specialization}
@@ -258,7 +260,7 @@ export default function SimpleProfileCompletePage() {
                   disabled={loading}
                 >
                   <SelectTrigger className="h-12">
-                    <SelectValue placeholder="Mutaxassislikni tanlang" />
+                    <SelectValue placeholder={t('profile.specialization')} />
                   </SelectTrigger>
                   <SelectContent>
                     {SPECIALIZATIONS.map((spec) => (
@@ -273,7 +275,7 @@ export default function SimpleProfileCompletePage() {
               {/* Experience Years */}
               <div className="space-y-2">
                 <Label htmlFor="experienceYears" className="text-sm font-medium">
-                  Tajriba (yil)
+                  {t('profile.experience')}
                 </Label>
                 <Input
                   id="experienceYears"
@@ -282,7 +284,7 @@ export default function SimpleProfileCompletePage() {
                   max="80"
                   value={formData.experienceYears}
                   onChange={(e) => setFormData(prev => ({ ...prev, experienceYears: e.target.value }))}
-                  placeholder="Masalan: 5"
+                  placeholder="5"
                   disabled={loading}
                   className="h-12"
                 />
@@ -291,13 +293,13 @@ export default function SimpleProfileCompletePage() {
               {/* Workplace */}
               <div className="space-y-2">
                 <Label htmlFor="workplace" className="text-sm font-medium">
-                  Ish joyi
+                  {t('common.info')}
                 </Label>
                 <Input
                   id="workplace"
                   value={formData.workplace}
                   onChange={(e) => setFormData(prev => ({ ...prev, workplace: e.target.value }))}
-                  placeholder="Klinika yoki shifoxona nomi"
+                  placeholder={t('common.info')}
                   disabled={loading}
                   className="h-12"
                 />
@@ -306,13 +308,13 @@ export default function SimpleProfileCompletePage() {
               {/* Biography */}
               <div className="space-y-2">
                 <Label htmlFor="biography" className="text-sm font-medium">
-                  Qisqacha o'zingiz haqingizda
+                  {t('common.info')}
                 </Label>
                 <Textarea
                   id="biography"
                   value={formData.biography}
                   onChange={(e) => setFormData(prev => ({ ...prev, biography: e.target.value }))}
-                  placeholder="Tajribangiz, yutuqlaringiz..."
+                  placeholder={t('common.info')}
                   disabled={loading}
                   rows={3}
                 />
@@ -334,12 +336,12 @@ export default function SimpleProfileCompletePage() {
                 {loading ? (
                   <>
                     <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                    Saqlanmoqda...
+                    {t('common.loading')}
                   </>
                 ) : (
                   <>
                     <CheckCircle2 className="h-5 w-5 mr-2" />
-                    Saqlash va Davom etish
+                    {t('common.save')}
                   </>
                 )}
               </Button>
@@ -357,7 +359,7 @@ export default function SimpleProfileCompletePage() {
             }}
             className="text-sm text-slate-500 hover:text-red-600 transition-colors"
           >
-            Chiqish va qaytadan login
+            {t('common.logout')}
           </button>
         </div>
       </div>

@@ -107,54 +107,53 @@ export default function DoctorDashboardPage() {
             dashboardLogger.warn("Init", "Could not load doctor profile:", docError);
           }
         } else {
-          dashboardLogger.error("Init", "Could not resolve doctor ID - cannot load appointments");
-          // 🔴 CRITICAL: Don't proceed without doctorId to prevent data leakage
-          throw new Error("Doctor ID not found. Please complete your profile.");
+          dashboardLogger.warn("Init", "Could not resolve doctor ID - appointments will not load");
+          // Doktor profili bulunamadı ama sayfada kalıyoruz
+          // Kullanıcı "Profil Tamamla" linkine tıklayabilir
         }
       } catch (e) {
         dashboardLogger.error("Init", "Error resolving doctor ID:", e);
-
-        // If doctorId resolution fails, redirect to profile completion
-        // This is safer than showing an error - user needs to complete profile
-        dashboardLogger.info("Init", "Redirecting to profile completion due to missing doctorId");
-        router.push("/dashboard/profile/complete");
-        return;
+        // Hata durumunda da sayfada kal, otomatik yönlendirme yapma
       }
 
       // Randevu istatistiklerini al (only if doctorId is available)
-      try {
-        // SECURITY: Always filter by doctorId
-        // Tüm randevuları al (hasta sayısı hesaplamak için de kullanılacak)
-        const allAppointmentsPayload = {
-          pageNumber: 1,
-          pageSize: 1000, // Tüm randevuları al
-          doctorId: doctorId, // MANDATORY - prevents data leak
-        };
+      if (doctorId) {
+        try {
+          // SECURITY: Always filter by doctorId
+          // Tüm randevuları al (hasta sayısı hesaplamak için de kullanılacak)
+          const allAppointmentsPayload = {
+            pageNumber: 1,
+            pageSize: 1000, // Tüm randevuları al
+            doctorId: doctorId, // MANDATORY - prevents data leak
+          };
 
-        dashboardLogger.debug("Appointments", "Fetching all appointments for doctorId:", doctorId);
+          dashboardLogger.debug("Appointments", "Fetching all appointments for doctorId:", doctorId);
 
-        const allAppointments = await appointmentService.getAppointments(allAppointmentsPayload);
-        const appointmentsData = allAppointments.data || [];
+          const allAppointments = await appointmentService.getAppointments(allAppointmentsPayload);
+          const appointmentsData = allAppointments.data || [];
 
-        // Pending randevu sayısı
-        const pendingCount = appointmentsData.filter(
-          apt => apt.status === AppointmentStatus.Pending
-        ).length;
+          // Pending randevu sayısı
+          const pendingCount = appointmentsData.filter(
+            apt => apt.status === AppointmentStatus.Pending
+          ).length;
 
-        // Unique hasta sayısı (randevulardan)
-        const uniquePatientIds = new Set(
-          appointmentsData.map(apt => apt.patientId)
-        );
+          // Unique hasta sayısı (randevulardan)
+          const uniquePatientIds = new Set(
+            appointmentsData.map(apt => apt.patientId)
+          );
 
-        dashboardLogger.info("Stats", `Pending: ${pendingCount}, Unique Patients: ${uniquePatientIds.size}`);
+          dashboardLogger.info("Stats", `Pending: ${pendingCount}, Unique Patients: ${uniquePatientIds.size}`);
 
-        setStats(prev => ({
-          ...prev,
-          pendingAppointments: pendingCount,
-          totalPatients: uniquePatientIds.size,
-        }));
-      } catch (e) {
-        dashboardLogger.warn("Appointments", "Failed to fetch appointments:", e);
+          setStats(prev => ({
+            ...prev,
+            pendingAppointments: pendingCount,
+            totalPatients: uniquePatientIds.size,
+          }));
+        } catch (e) {
+          dashboardLogger.warn("Appointments", "Failed to fetch appointments:", e);
+        }
+      } else {
+        dashboardLogger.info("Appointments", "Skipping appointments fetch - no doctorId");
       }
 
       // Çalışma saatlerini al (şimdilik mock - backend'de henüz yok)
