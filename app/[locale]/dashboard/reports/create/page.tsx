@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, Suspense } from "react";
+import { useState, useRef, useEffect, Suspense, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -33,6 +33,7 @@ import { ReportPrintTemplate } from "./components/ReportPrintTemplate";
 import { ComplaintsSection } from "./components/ComplaintsSection";
 import { ComorbiditiesSection } from "./components/ComorbiditiesSection";
 import { EXAMINATION_OPTIONS, NORMAL_VALUES } from "@/lib/examination-options";
+import { getLocalizedExaminationOptions, getLocalizedNormalValues } from "@/lib/localized-examination-options";
 import { EyeReport, EyeExamination, PatientInfo } from "@/types/report";
 import {
   Select,
@@ -47,6 +48,10 @@ function CreateReportPageContent() {
   const searchParams = useSearchParams();
   const printRef = useRef<HTMLDivElement>(null);
   const t = useTranslations();
+  
+  // Lokalize edilmiş muayene seçenekleri ve normal değerler
+  const localizedOptions = useMemo(() => getLocalizedExaminationOptions(t), [t]);
+  const localizedNormalValues = useMemo(() => getLocalizedNormalValues(t), [t]);
 
   const [showPreview, setShowPreview] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -869,34 +874,34 @@ function CreateReportPageContent() {
 
                     <TabsContent value="right" className="space-y-3">
                       <div className="grid md:grid-cols-2 gap-3">
-                        <ExaminationField label="Ko'z olmasi" value={rightEye.globe} onChange={(v) => updateRightEye("globe", v)} options={EXAMINATION_OPTIONS.globe} />
-                        <ExaminationField label="Ko'z mushaklari" value={rightEye.muscles} onChange={(v) => updateRightEye("muscles", v)} options={EXAMINATION_OPTIONS.muscles} />
-                        <ExaminationField label="Qovoqlar va ko'z yosh yo'llari" value={rightEye.lidsAndLacrimal} onChange={(v) => updateRightEye("lidsAndLacrimal", v)} options={EXAMINATION_OPTIONS.lidsAndLacrimal} />
-                        <ExaminationField label="Konyunktiva" value={rightEye.conjunctiva} onChange={(v) => updateRightEye("conjunctiva", v)} options={EXAMINATION_OPTIONS.conjunctiva} />
-                        <ExaminationField label="Sklera" value={rightEye.sclera} onChange={(v) => updateRightEye("sclera", v)} options={EXAMINATION_OPTIONS.sclera} />
-                        <ExaminationField label="Shox parda" value={rightEye.cornea} onChange={(v) => updateRightEye("cornea", v)} options={EXAMINATION_OPTIONS.cornea} />
-                        <ExaminationField label="Old kamera" value={rightEye.anteriorChamber} onChange={(v) => updateRightEye("anteriorChamber", v)} options={EXAMINATION_OPTIONS.anteriorChamber} />
-                        <ExaminationField label="Rangdor parda va qorachiq" value={rightEye.irisAndPupil} onChange={(v) => updateRightEye("irisAndPupil", v)} options={EXAMINATION_OPTIONS.irisAndPupil} />
-                        <ExaminationField label="Gavhar" value={rightEye.lens} onChange={(v) => updateRightEye("lens", v)} options={EXAMINATION_OPTIONS.lens} />
-                        <ExaminationField label="Shishasimon tana" value={rightEye.vitreous} onChange={(v) => updateRightEye("vitreous", v)} options={EXAMINATION_OPTIONS.vitreous} />
+                        <ExaminationField label={t('reports.eye.globe')} value={rightEye.globe} onChange={(v) => updateRightEye("globe", v)} options={localizedOptions.globe} />
+                        <ExaminationField label={t('reports.eye.muscles')} value={rightEye.muscles} onChange={(v) => updateRightEye("muscles", v)} options={localizedOptions.muscles} />
+                        <ExaminationField label={t('reports.eye.lidsAndLacrimal')} value={rightEye.lidsAndLacrimal} onChange={(v) => updateRightEye("lidsAndLacrimal", v)} options={localizedOptions.lidsAndLacrimal} />
+                        <ExaminationField label={t('reports.eye.conjunctiva')} value={rightEye.conjunctiva} onChange={(v) => updateRightEye("conjunctiva", v)} options={localizedOptions.conjunctiva} />
+                        <ExaminationField label={t('reports.eye.sclera')} value={rightEye.sclera} onChange={(v) => updateRightEye("sclera", v)} options={localizedOptions.sclera} />
+                        <ExaminationField label={t('reports.eye.cornea')} value={rightEye.cornea} onChange={(v) => updateRightEye("cornea", v)} options={localizedOptions.cornea} />
+                        <ExaminationField label={t('reports.eye.anteriorChamber')} value={rightEye.anteriorChamber} onChange={(v) => updateRightEye("anteriorChamber", v)} options={localizedOptions.anteriorChamber} />
+                        <ExaminationField label={t('reports.eye.irisAndPupil')} value={rightEye.irisAndPupil} onChange={(v) => updateRightEye("irisAndPupil", v)} options={localizedOptions.irisAndPupil} />
+                        <ExaminationField label={t('reports.eye.lens')} value={rightEye.lens} onChange={(v) => updateRightEye("lens", v)} options={localizedOptions.lens} />
+                        <ExaminationField label={t('reports.eye.vitreous')} value={rightEye.vitreous} onChange={(v) => updateRightEye("vitreous", v)} options={localizedOptions.vitreous} />
                       </div>
-                      <ExaminationField label="Ko'z tubi" value={rightEye.fundus} onChange={(v) => updateRightEye("fundus", v)} options={EXAMINATION_OPTIONS.fundus} />
+                      <ExaminationField label={t('reports.eye.fundus')} value={rightEye.fundus} onChange={(v) => updateRightEye("fundus", v)} options={localizedOptions.fundus} />
                     </TabsContent>
 
                     <TabsContent value="left" className="space-y-3">
                       <div className="grid md:grid-cols-2 gap-3">
-                        <ExaminationField label="Ko'z olmasi" value={leftEye.globe} onChange={(v) => updateLeftEye("globe", v)} options={EXAMINATION_OPTIONS.globe} />
-                        <ExaminationField label="Ko'z mushaklari" value={leftEye.muscles} onChange={(v) => updateLeftEye("muscles", v)} options={EXAMINATION_OPTIONS.muscles} />
-                        <ExaminationField label="Qovoqlar va ko'z yosh yo'llari" value={leftEye.lidsAndLacrimal} onChange={(v) => updateLeftEye("lidsAndLacrimal", v)} options={EXAMINATION_OPTIONS.lidsAndLacrimal} />
-                        <ExaminationField label="Konyunktiva" value={leftEye.conjunctiva} onChange={(v) => updateLeftEye("conjunctiva", v)} options={EXAMINATION_OPTIONS.conjunctiva} />
-                        <ExaminationField label="Sklera" value={leftEye.sclera} onChange={(v) => updateLeftEye("sclera", v)} options={EXAMINATION_OPTIONS.sclera} />
-                        <ExaminationField label="Shox parda" value={leftEye.cornea} onChange={(v) => updateLeftEye("cornea", v)} options={EXAMINATION_OPTIONS.cornea} />
-                        <ExaminationField label="Old kamera" value={leftEye.anteriorChamber} onChange={(v) => updateLeftEye("anteriorChamber", v)} options={EXAMINATION_OPTIONS.anteriorChamber} />
-                        <ExaminationField label="Rangdor parda va qorachiq" value={leftEye.irisAndPupil} onChange={(v) => updateLeftEye("irisAndPupil", v)} options={EXAMINATION_OPTIONS.irisAndPupil} />
-                        <ExaminationField label="Gavhar" value={leftEye.lens} onChange={(v) => updateLeftEye("lens", v)} options={EXAMINATION_OPTIONS.lens} />
-                        <ExaminationField label="Shishasimon tana" value={leftEye.vitreous} onChange={(v) => updateLeftEye("vitreous", v)} options={EXAMINATION_OPTIONS.vitreous} />
+                        <ExaminationField label={t('reports.eye.globe')} value={leftEye.globe} onChange={(v) => updateLeftEye("globe", v)} options={localizedOptions.globe} />
+                        <ExaminationField label={t('reports.eye.muscles')} value={leftEye.muscles} onChange={(v) => updateLeftEye("muscles", v)} options={localizedOptions.muscles} />
+                        <ExaminationField label={t('reports.eye.lidsAndLacrimal')} value={leftEye.lidsAndLacrimal} onChange={(v) => updateLeftEye("lidsAndLacrimal", v)} options={localizedOptions.lidsAndLacrimal} />
+                        <ExaminationField label={t('reports.eye.conjunctiva')} value={leftEye.conjunctiva} onChange={(v) => updateLeftEye("conjunctiva", v)} options={localizedOptions.conjunctiva} />
+                        <ExaminationField label={t('reports.eye.sclera')} value={leftEye.sclera} onChange={(v) => updateLeftEye("sclera", v)} options={localizedOptions.sclera} />
+                        <ExaminationField label={t('reports.eye.cornea')} value={leftEye.cornea} onChange={(v) => updateLeftEye("cornea", v)} options={localizedOptions.cornea} />
+                        <ExaminationField label={t('reports.eye.anteriorChamber')} value={leftEye.anteriorChamber} onChange={(v) => updateLeftEye("anteriorChamber", v)} options={localizedOptions.anteriorChamber} />
+                        <ExaminationField label={t('reports.eye.irisAndPupil')} value={leftEye.irisAndPupil} onChange={(v) => updateLeftEye("irisAndPupil", v)} options={localizedOptions.irisAndPupil} />
+                        <ExaminationField label={t('reports.eye.lens')} value={leftEye.lens} onChange={(v) => updateLeftEye("lens", v)} options={localizedOptions.lens} />
+                        <ExaminationField label={t('reports.eye.vitreous')} value={leftEye.vitreous} onChange={(v) => updateLeftEye("vitreous", v)} options={localizedOptions.vitreous} />
                       </div>
-                      <ExaminationField label="Ko'z tubi" value={leftEye.fundus} onChange={(v) => updateLeftEye("fundus", v)} options={EXAMINATION_OPTIONS.fundus} />
+                      <ExaminationField label={t('reports.eye.fundus')} value={leftEye.fundus} onChange={(v) => updateLeftEye("fundus", v)} options={localizedOptions.fundus} />
                     </TabsContent>
                   </Tabs>
                   
@@ -989,15 +994,15 @@ function CreateReportPageContent() {
                         <h4 className="text-sm font-semibold text-slate-700">{t('reports.eye.additionalMeasures')}</h4>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label className="text-xs text-slate-600">KIB (mmHg)</Label>
+                            <Label className="text-xs text-slate-600">{t('reports.eye.iop')}</Label>
                             <Input value={rightEye.iop} onChange={(e) => updateRightEye("iop", e.target.value)} placeholder="15" className="bg-white" />
                           </div>
                           <div className="space-y-2">
-                            <Label className="text-xs text-slate-600">Ko'z o'lchami (mm)</Label>
+                            <Label className="text-xs text-slate-600">{t('reports.eye.axialLength')}</Label>
                             <Input value={rightEye.axialLength} onChange={(e) => updateRightEye("axialLength", e.target.value)} placeholder="23.5" className="bg-white" />
                           </div>
                           <div className="space-y-2">
-                            <Label className="text-xs text-slate-600">Paximetriya (μm)</Label>
+                            <Label className="text-xs text-slate-600">{t('reports.eye.pachymetry')}</Label>
                             <Input value={rightEye.pachymetry} onChange={(e) => updateRightEye("pachymetry", e.target.value)} placeholder="550" className="bg-white" />
                           </div>
                         </div>
@@ -1063,15 +1068,15 @@ function CreateReportPageContent() {
                         <h4 className="text-sm font-semibold text-slate-700">{t('reports.eye.additionalMeasures')}</h4>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label className="text-xs text-slate-600">KIB (mmHg)</Label>
+                            <Label className="text-xs text-slate-600">{t('reports.eye.iop')}</Label>
                             <Input value={leftEye.iop} onChange={(e) => updateLeftEye("iop", e.target.value)} placeholder="15" className="bg-white" />
                           </div>
                           <div className="space-y-2">
-                            <Label className="text-xs text-slate-600">Ko'z o'lchami (mm)</Label>
+                            <Label className="text-xs text-slate-600">{t('reports.eye.axialLength')}</Label>
                             <Input value={leftEye.axialLength} onChange={(e) => updateLeftEye("axialLength", e.target.value)} placeholder="23.5" className="bg-white" />
                           </div>
                           <div className="space-y-2">
-                            <Label className="text-xs text-slate-600">Paximetriya (μm)</Label>
+                            <Label className="text-xs text-slate-600">{t('reports.eye.pachymetry')}</Label>
                             <Input value={leftEye.pachymetry} onChange={(e) => updateLeftEye("pachymetry", e.target.value)} placeholder="550" className="bg-white" />
                           </div>
                         </div>
@@ -1088,7 +1093,7 @@ function CreateReportPageContent() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {EXAMINATION_OPTIONS.iopMethods.map((method) => (
+                          {localizedOptions.iopMethods.map((method) => (
                             <SelectItem key={method} value={method}>{method}</SelectItem>
                           ))}
                         </SelectContent>

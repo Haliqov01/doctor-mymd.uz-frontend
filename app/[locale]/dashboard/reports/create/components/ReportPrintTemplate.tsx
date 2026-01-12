@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef } from "react";
+import { useTranslations } from "next-intl";
 import { EyeReport } from "@/types/report";
 
 interface ReportPrintTemplateProps {
@@ -11,6 +12,7 @@ export const ReportPrintTemplate = forwardRef<
   HTMLDivElement,
   ReportPrintTemplateProps
 >(({ report }, ref) => {
+  const t = useTranslations();
   
   const formatDate = (date: Date | string) => {
     if (!date) return "---";
@@ -376,28 +378,28 @@ export const ReportPrintTemplate = forwardRef<
       <div className="print-container">
         {/* Header */}
         <div className="report-header">
-          <h1>KO'Z KO'RIGI NATIJALARI</h1>
-          <div className="date">Sana: {formatDate(report.reportDate)}</div>
+          <h1>{t('reports.print.title')}</h1>
+          <div className="date">{t('reports.print.date')}: {formatDate(report.reportDate)}</div>
         </div>
 
         {/* Patient Info Section */}
         <div className="section">
-          <div className="section-title">BEMOR MA'LUMOTLARI</div>
+          <div className="section-title">{t('reports.print.patientInfo')}</div>
           <div className="info-grid">
             <div className="info-item full-width">
-              <span className="info-label">F.I.Sh.:</span>
+              <span className="info-label">{t('reports.print.fullName')}:</span>
               <span className="info-value highlight">{val(report.patientInfo.fullName)}</span>
             </div>
             <div className="info-item">
-              <span className="info-label">Tug'ilgan sana:</span>
+              <span className="info-label">{t('reports.print.birthDate')}:</span>
               <span className="info-value">{val(report.patientInfo.dateOfBirth)}</span>
             </div>
             <div className="info-item">
-              <span className="info-label">Jinsi:</span>
+              <span className="info-label">{t('reports.print.gender')}:</span>
               <span className="info-value">{val(report.patientInfo.gender)}</span>
             </div>
             <div className="info-item full-width">
-              <span className="info-label">Manzil:</span>
+              <span className="info-label">{t('reports.print.address')}:</span>
               <span className="info-value">{val(report.patientInfo.address)}</span>
             </div>
           </div>
@@ -405,19 +407,19 @@ export const ReportPrintTemplate = forwardRef<
 
         {/* Complaints Section */}
         <div className="section">
-          <div className="section-title">SHIKOYATLARI VA ANAMNEZ</div>
+          <div className="section-title">{t('reports.print.complaintsAnamnesis')}</div>
           <div className="info-grid">
             <div className="info-item full-width">
-              <span className="info-label">Shikoyat:</span>
+              <span className="info-label">{t('reports.print.complaint')}:</span>
               <span className="info-value">{val(report.complaints)}</span>
             </div>
             <div className="info-item full-width">
-              <span className="info-label">Anamnez:</span>
+              <span className="info-label">{t('reports.print.anamnesis')}:</span>
               <span className="info-value">{val(report.anamnesis)}</span>
             </div>
             {report.comorbidities && (
               <div className="info-item full-width">
-                <span className="info-label">Yondosh kasalliklar:</span>
+                <span className="info-label">{t('reports.print.comorbidities')}:</span>
                 <span className="info-value">{report.comorbidities}</span>
               </div>
             )}
@@ -426,28 +428,28 @@ export const ReportPrintTemplate = forwardRef<
 
         {/* Examination Table */}
         <div className="section">
-          <div className="section-title">OBYEKTIV HOLATI</div>
+          <div className="section-title">{t('reports.print.objectiveStatus')}</div>
           <table className="exam-table">
             <thead>
               <tr>
-                <th>Ko'z qismi</th>
-                <th>O'ng ko'z (OD)</th>
-                <th>Chap ko'z (OS)</th>
+                <th>{t('reports.print.eyePart')}</th>
+                <th>{t('reports.print.rightEyeOD')}</th>
+                <th>{t('reports.print.leftEyeOS')}</th>
               </tr>
             </thead>
             <tbody>
               {[
-                { label: "Ko'z olmasi", r: report.rightEye.globe, l: report.leftEye.globe },
-                { label: "Ko'z mushaklari", r: report.rightEye.muscles, l: report.leftEye.muscles },
-                { label: "Qovoqlar", r: report.rightEye.lidsAndLacrimal, l: report.leftEye.lidsAndLacrimal },
-                { label: "Konyunktiva", r: report.rightEye.conjunctiva, l: report.leftEye.conjunctiva },
-                { label: "Sklera", r: report.rightEye.sclera, l: report.leftEye.sclera },
-                { label: "Shox parda", r: report.rightEye.cornea, l: report.leftEye.cornea },
-                { label: "Old kamera", r: report.rightEye.anteriorChamber, l: report.leftEye.anteriorChamber },
-                { label: "Rangdor parda", r: report.rightEye.irisAndPupil, l: report.leftEye.irisAndPupil },
-                { label: "Gavhar", r: report.rightEye.lens, l: report.leftEye.lens },
-                { label: "Shishasimon tana", r: report.rightEye.vitreous, l: report.leftEye.vitreous },
-                { label: "Ko'z tubi", r: report.rightEye.fundus, l: report.leftEye.fundus },
+                { label: t('reports.print.globe'), r: report.rightEye.globe, l: report.leftEye.globe },
+                { label: t('reports.print.muscles'), r: report.rightEye.muscles, l: report.leftEye.muscles },
+                { label: t('reports.print.lids'), r: report.rightEye.lidsAndLacrimal, l: report.leftEye.lidsAndLacrimal },
+                { label: t('reports.print.conjunctiva'), r: report.rightEye.conjunctiva, l: report.leftEye.conjunctiva },
+                { label: t('reports.print.sclera'), r: report.rightEye.sclera, l: report.leftEye.sclera },
+                { label: t('reports.print.cornea'), r: report.rightEye.cornea, l: report.leftEye.cornea },
+                { label: t('reports.print.anteriorChamber'), r: report.rightEye.anteriorChamber, l: report.leftEye.anteriorChamber },
+                { label: t('reports.print.iris'), r: report.rightEye.irisAndPupil, l: report.leftEye.irisAndPupil },
+                { label: t('reports.print.lens'), r: report.rightEye.lens, l: report.leftEye.lens },
+                { label: t('reports.print.vitreous'), r: report.rightEye.vitreous, l: report.leftEye.vitreous },
+                { label: t('reports.print.fundus'), r: report.rightEye.fundus, l: report.leftEye.fundus },
               ].map((row, idx) => (
                 <tr key={idx}>
                   <td className="label-cell">{row.label}</td>
@@ -461,36 +463,36 @@ export const ReportPrintTemplate = forwardRef<
 
         {/* Measurements Section */}
         <div className="section">
-          <div className="section-title">O'LCHOVLAR</div>
+          <div className="section-title">{t('reports.print.measurements')}</div>
           <div className="measurements-grid">
             {/* Right Eye Card */}
             <div className="eye-card right">
               <div className="eye-card-header">
                 <span className="eye-badge">OD</span>
-                O'ng ko'z
+                {t('reports.print.rightEye')}
               </div>
               <div className="eye-card-content">
                 <div className="measurement-row">
-                  <span className="measurement-label">Ko'rish (k/siz):</span>
+                  <span className="measurement-label">{t('reports.print.visionUncorrected')}:</span>
                   <span className="measurement-value">{val(report.rightEye.visualAcuity.uncorrected)}</span>
                 </div>
                 <div className="measurement-row">
-                  <span className="measurement-label">Ko'rish (k/li):</span>
+                  <span className="measurement-label">{t('reports.print.visionCorrected')}:</span>
                   <span className="measurement-value">{val(report.rightEye.visualAcuity.corrected)}</span>
                 </div>
                 <div className="measurement-row">
-                  <span className="measurement-label">KIB ({report.iopMethod}):</span>
+                  <span className="measurement-label">{t('reports.print.iop')} ({report.iopMethod}):</span>
                   <span className="measurement-value">{val(report.rightEye.iop)} mmHg</span>
                 </div>
                 {report.rightEye.axialLength && (
                   <div className="measurement-row">
-                    <span className="measurement-label">Ko'z o'lchami:</span>
+                    <span className="measurement-label">{t('reports.print.axialLength')}:</span>
                     <span className="measurement-value">{report.rightEye.axialLength} mm</span>
                   </div>
                 )}
                 {report.rightEye.pachymetry && (
                   <div className="measurement-row">
-                    <span className="measurement-label">Paximetriya:</span>
+                    <span className="measurement-label">{t('reports.print.pachymetry')}:</span>
                     <span className="measurement-value">{report.rightEye.pachymetry} μm</span>
                   </div>
                 )}
@@ -515,30 +517,30 @@ export const ReportPrintTemplate = forwardRef<
             <div className="eye-card left">
               <div className="eye-card-header">
                 <span className="eye-badge">OS</span>
-                Chap ko'z
+                {t('reports.print.leftEye')}
               </div>
               <div className="eye-card-content">
                 <div className="measurement-row">
-                  <span className="measurement-label">Ko'rish (k/siz):</span>
+                  <span className="measurement-label">{t('reports.print.visionUncorrected')}:</span>
                   <span className="measurement-value">{val(report.leftEye.visualAcuity.uncorrected)}</span>
                 </div>
                 <div className="measurement-row">
-                  <span className="measurement-label">Ko'rish (k/li):</span>
+                  <span className="measurement-label">{t('reports.print.visionCorrected')}:</span>
                   <span className="measurement-value">{val(report.leftEye.visualAcuity.corrected)}</span>
                 </div>
                 <div className="measurement-row">
-                  <span className="measurement-label">KIB ({report.iopMethod}):</span>
+                  <span className="measurement-label">{t('reports.print.iop')} ({report.iopMethod}):</span>
                   <span className="measurement-value">{val(report.leftEye.iop)} mmHg</span>
                 </div>
                 {report.leftEye.axialLength && (
                   <div className="measurement-row">
-                    <span className="measurement-label">Ko'z o'lchami:</span>
+                    <span className="measurement-label">{t('reports.print.axialLength')}:</span>
                     <span className="measurement-value">{report.leftEye.axialLength} mm</span>
                   </div>
                 )}
                 {report.leftEye.pachymetry && (
                   <div className="measurement-row">
-                    <span className="measurement-label">Paximetriya:</span>
+                    <span className="measurement-label">{t('reports.print.pachymetry')}:</span>
                     <span className="measurement-value">{report.leftEye.pachymetry} μm</span>
                   </div>
                 )}
@@ -564,7 +566,7 @@ export const ReportPrintTemplate = forwardRef<
         {/* Diagnosis */}
         <div className="section">
           <div className="diagnosis-box">
-            <h3>TASHHIS</h3>
+            <h3>{t('reports.print.diagnosis')}</h3>
             <div className="diagnosis-content">
               {report.diagnosis.bothEyes && <div><strong>OU:</strong> {report.diagnosis.bothEyes}</div>}
               {report.diagnosis.rightEye && <div><strong>OD:</strong> {report.diagnosis.rightEye}</div>}
@@ -577,7 +579,7 @@ export const ReportPrintTemplate = forwardRef<
         {report.recommendations && (
           <div className="section">
             <div className="recommendations-box">
-              <h3>TAVSIYA VA DAVOLASH REJASI</h3>
+              <h3>{t('reports.print.recommendations')}</h3>
               <div className="recommendations-content">
                 {report.recommendations}
               </div>
@@ -588,13 +590,13 @@ export const ReportPrintTemplate = forwardRef<
         {/* Signature */}
         <div className="signature-section">
           <div className="doctor-info">
-            <div className="title">Shifokor:</div>
+            <div className="title">{t('reports.print.doctor')}:</div>
             <div className="name">{val(report.doctorInfo.fullName)}</div>
             <div className="title">{report.doctorInfo.specialization}</div>
           </div>
           <div className="signature-box">
             <div className="signature-line"></div>
-            <div className="signature-label">Imzo</div>
+            <div className="signature-label">{t('reports.print.signature')}</div>
           </div>
         </div>
       </div>

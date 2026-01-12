@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { EXAMINATION_OPTIONS } from "@/lib/examination-options";
-import { useState, useEffect } from "react";
+import { getLocalizedExaminationOptions } from "@/lib/localized-examination-options";
+import { useState, useEffect, useMemo } from "react";
 import { X, Edit2 } from "lucide-react";
 
 interface ComplaintsSectionProps {
@@ -23,6 +24,9 @@ export function ComplaintsSection({
   complaints,
   onChange,
 }: ComplaintsSectionProps) {
+  const t = useTranslations();
+  const localizedOptions = useMemo(() => getLocalizedExaminationOptions(t), [t]);
+  
   const [selectedComplaints, setSelectedComplaints] = useState<string[]>([]);
   const [customComplaint, setCustomComplaint] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
@@ -45,20 +49,20 @@ export function ComplaintsSection({
     setSelectedComplaints(selectedComplaints.filter((c) => c !== complaint));
   };
 
-  const availableOptions = EXAMINATION_OPTIONS.complaints.filter(
+  const availableOptions = localizedOptions.complaints.filter(
     (opt) => !selectedComplaints.includes(opt)
   );
 
   return (
     <div className="space-y-3">
-      <Label className="text-sm font-medium text-slate-700">Shikoyatlar</Label>
+      <Label className="text-sm font-medium text-slate-700">{t('reports.create.complaintsLabel')}</Label>
       
       {/* Dropdown + Custom Button Row */}
       <div className="flex gap-2">
         <div className="flex-1">
           <Select onValueChange={handleSelectComplaint} value="">
             <SelectTrigger className="w-full bg-slate-50">
-              <SelectValue placeholder="Shikoyat tanlang..." />
+              <SelectValue placeholder={t('reports.create.selectComplaint')} />
             </SelectTrigger>
             <SelectContent className="max-h-[250px]">
               {availableOptions.length > 0 ? (
@@ -73,7 +77,7 @@ export function ComplaintsSection({
                 ))
               ) : (
                 <div className="px-2 py-3 text-sm text-slate-500 text-center">
-                  Barcha shikoyatlar tanlangan
+                  {t('reports.create.allComplaintsSelected')}
                 </div>
               )}
             </SelectContent>
@@ -88,7 +92,7 @@ export function ComplaintsSection({
           className={`px-3 ${showCustomInput ? 'bg-teal-50 border-teal-300 text-teal-700' : 'hover:border-teal-300'}`}
         >
           <Edit2 className="h-4 w-4 mr-1" />
-          Yozish
+          {t('reports.create.write')}
         </Button>
       </div>
 
@@ -116,11 +120,11 @@ export function ComplaintsSection({
       {/* Custom Input */}
       {showCustomInput && (
         <div className="space-y-2 p-3 bg-blue-50/50 rounded-xl border border-blue-100">
-          <Label className="text-xs text-slate-600">Boshqa shikoyatlar (qo'shimcha)</Label>
+          <Label className="text-xs text-slate-600">{t('reports.create.otherComplaints')}</Label>
           <Textarea
             value={customComplaint}
             onChange={(e) => setCustomComplaint(e.target.value)}
-            placeholder="Qo'shimcha shikoyatlarni yozing..."
+            placeholder={t('reports.create.writeOtherComplaints')}
             rows={2}
             className="resize-none bg-white"
           />
@@ -130,7 +134,7 @@ export function ComplaintsSection({
       {/* Preview */}
       {(selectedComplaints.length > 0 || customComplaint) && (
         <div className="text-xs text-slate-500 italic">
-          <span className="font-medium">Natija:</span> {complaints || "—"}
+          <span className="font-medium">{t('reports.create.result')}:</span> {complaints || "—"}
         </div>
       )}
     </div>

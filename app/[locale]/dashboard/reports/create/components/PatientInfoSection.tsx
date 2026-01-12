@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -22,8 +23,16 @@ export function PatientInfoSection({
   patientInfo,
   onChange,
 }: PatientInfoSectionProps) {
+  const t = useTranslations();
+
   const handleChange = (field: keyof PatientInfo, value: string) => {
     onChange({ ...patientInfo, [field]: value });
+  };
+
+  // Gender çevirileri için mapping
+  const genderLabels: Record<string, string> = {
+    "Erkak": t('reports.create.male'),
+    "Ayol": t('reports.create.female'),
   };
 
   return (
@@ -33,13 +42,13 @@ export function PatientInfoSection({
         <div className="space-y-2">
           <Label htmlFor="fullName" className="flex items-center gap-2">
             <User className="h-4 w-4 text-slate-400" />
-            F.I.Sh. (bemorning)
+            {t('reports.create.fullName')}
           </Label>
           <Input
             id="fullName"
             value={patientInfo.fullName}
             onChange={(e) => handleChange("fullName", e.target.value)}
-            placeholder="To'liq ism-familiya"
+            placeholder={t('reports.create.fullNamePlaceholder')}
             className="bg-slate-50"
           />
         </div>
@@ -48,7 +57,7 @@ export function PatientInfoSection({
         <div className="space-y-2">
           <Label htmlFor="dateOfBirth" className="flex items-center gap-2">
             <Calendar className="h-4 w-4 text-slate-400" />
-            Tug'ilgan sanasi
+            {t('reports.create.dateOfBirth')}
           </Label>
           <Input
             id="dateOfBirth"
@@ -63,14 +72,14 @@ export function PatientInfoSection({
         <div className="space-y-2">
           <Label htmlFor="address" className="flex items-center gap-2">
             <MapPin className="h-4 w-4 text-slate-400" />
-            Manzil
+            {t('reports.create.address')}
           </Label>
           <Select
             value={patientInfo.address}
             onValueChange={(value) => handleChange("address", value)}
           >
             <SelectTrigger className="bg-slate-50">
-              <SelectValue placeholder="Shahar tanlang" />
+              <SelectValue placeholder={t('reports.create.selectCity')} />
             </SelectTrigger>
             <SelectContent className="max-h-[300px]">
               {EXAMINATION_OPTIONS.cities.map((city) => (
@@ -86,7 +95,7 @@ export function PatientInfoSection({
         <div className="space-y-2">
           <Label htmlFor="gender" className="flex items-center gap-2">
             <Users className="h-4 w-4 text-slate-400" />
-            Jinsi
+            {t('reports.create.gender')}
           </Label>
           <Select
             value={patientInfo.gender}
@@ -95,14 +104,11 @@ export function PatientInfoSection({
             }
           >
             <SelectTrigger className="bg-slate-50">
-              <SelectValue placeholder="Tanlang" />
+              <SelectValue placeholder={t('reports.create.selectGender')} />
             </SelectTrigger>
             <SelectContent>
-              {EXAMINATION_OPTIONS.gender.map((g) => (
-                <SelectItem key={g} value={g.charAt(0).toUpperCase() + g.slice(1)}>
-                  {g.charAt(0).toUpperCase() + g.slice(1)}
-                </SelectItem>
-              ))}
+              <SelectItem value="Erkak">{t('reports.create.male')}</SelectItem>
+              <SelectItem value="Ayol">{t('reports.create.female')}</SelectItem>
             </SelectContent>
           </Select>
         </div>

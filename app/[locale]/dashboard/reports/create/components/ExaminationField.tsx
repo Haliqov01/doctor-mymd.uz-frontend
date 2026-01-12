@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -25,9 +26,10 @@ export function ExaminationField({
   value,
   onChange,
   options,
-  placeholder = "Tanlang...",
+  placeholder,
 }: ExaminationFieldProps) {
   const [mode, setMode] = useState<"select" | "custom">("select");
+  const t = useTranslations();
 
   return (
     <div className="space-y-2 p-4 rounded-xl border border-slate-100 bg-white hover:border-slate-200 hover:shadow-sm transition-all">
@@ -44,7 +46,7 @@ export function ExaminationField({
             }`}
           >
             <List className="h-3 w-3 inline mr-1" />
-            Tanlash
+            {t('reports.create.select')}
           </button>
           <button
             type="button"
@@ -56,7 +58,7 @@ export function ExaminationField({
             }`}
           >
             <Edit2 className="h-3 w-3 inline mr-1" />
-            Yozish
+            {t('reports.create.write')}
           </button>
         </div>
       </div>
@@ -64,7 +66,7 @@ export function ExaminationField({
       {mode === "select" ? (
         <Select value={value} onValueChange={onChange}>
           <SelectTrigger className="w-full bg-slate-50">
-            <SelectValue placeholder={placeholder} />
+            <SelectValue placeholder={placeholder || t('reports.create.selectPlaceholder')} />
           </SelectTrigger>
           <SelectContent className="max-h-[300px]">
             {options.map((option, idx) => (
@@ -78,7 +80,7 @@ export function ExaminationField({
         <Textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="O'z ta'rifingizni kiriting..."
+          placeholder={t('reports.create.customPlaceholder')}
           rows={2}
           className="w-full resize-none bg-slate-50"
         />

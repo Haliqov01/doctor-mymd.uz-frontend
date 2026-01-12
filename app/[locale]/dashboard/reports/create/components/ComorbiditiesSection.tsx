@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { EXAMINATION_OPTIONS } from "@/lib/examination-options";
-import { useState, useEffect } from "react";
+import { getLocalizedExaminationOptions } from "@/lib/localized-examination-options";
+import { useState, useEffect, useMemo } from "react";
 import { X, Edit2 } from "lucide-react";
 
 interface ComorbiditiesSectionProps {
@@ -23,6 +24,9 @@ export function ComorbiditiesSection({
   comorbidities,
   onChange,
 }: ComorbiditiesSectionProps) {
+  const t = useTranslations();
+  const localizedOptions = useMemo(() => getLocalizedExaminationOptions(t), [t]);
+  
   const [selected, setSelected] = useState<string[]>([]);
   const [custom, setCustom] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
@@ -45,20 +49,20 @@ export function ComorbiditiesSection({
     setSelected(selected.filter((c) => c !== item));
   };
 
-  const availableOptions = EXAMINATION_OPTIONS.comorbidities.filter(
+  const availableOptions = localizedOptions.comorbidities.filter(
     (opt) => !selected.includes(opt)
   );
 
   return (
     <div className="space-y-3">
-      <Label className="text-sm font-medium text-slate-700">Yondosh kasalliklar</Label>
+      <Label className="text-sm font-medium text-slate-700">{t('reports.create.comorbiditiesLabel')}</Label>
       
       {/* Dropdown + Custom Button Row */}
       <div className="flex gap-2">
         <div className="flex-1">
           <Select onValueChange={handleSelect} value="">
             <SelectTrigger className="w-full bg-slate-50">
-              <SelectValue placeholder="Kasallik tanlang..." />
+              <SelectValue placeholder={t('reports.create.selectComorbidity')} />
             </SelectTrigger>
             <SelectContent className="max-h-[250px]">
               {availableOptions.length > 0 ? (
@@ -73,7 +77,7 @@ export function ComorbiditiesSection({
                 ))
               ) : (
                 <div className="px-2 py-3 text-sm text-slate-500 text-center">
-                  Barcha kasalliklar tanlangan
+                  {t('reports.create.allComorbiditiesSelected')}
                 </div>
               )}
             </SelectContent>
@@ -88,7 +92,7 @@ export function ComorbiditiesSection({
           className={`px-3 ${showCustomInput ? 'bg-amber-50 border-amber-300 text-amber-700' : 'hover:border-amber-300'}`}
         >
           <Edit2 className="h-4 w-4 mr-1" />
-          Yozish
+          {t('reports.create.write')}
         </Button>
       </div>
 
@@ -116,11 +120,11 @@ export function ComorbiditiesSection({
       {/* Custom Input */}
       {showCustomInput && (
         <div className="space-y-2 p-3 bg-orange-50/50 rounded-xl border border-orange-100">
-          <Label className="text-xs text-slate-600">Boshqa kasalliklar (qo'shimcha)</Label>
+          <Label className="text-xs text-slate-600">{t('reports.create.otherComorbidities')}</Label>
           <Textarea
             value={custom}
             onChange={(e) => setCustom(e.target.value)}
-            placeholder="Qo'shimcha kasalliklarni yozing..."
+            placeholder={t('reports.create.writeOtherComorbidities')}
             rows={2}
             className="resize-none bg-white"
           />
@@ -130,7 +134,7 @@ export function ComorbiditiesSection({
       {/* Preview */}
       {(selected.length > 0 || custom) && (
         <div className="text-xs text-slate-500 italic">
-          <span className="font-medium">Natija:</span> {comorbidities || "—"}
+          <span className="font-medium">{t('reports.create.result')}:</span> {comorbidities || "—"}
         </div>
       )}
     </div>
