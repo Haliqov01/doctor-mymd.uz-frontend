@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export default function CreateReportPage() {
+function CreateReportPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const printRef = useRef<HTMLDivElement>(null);
@@ -1238,5 +1238,19 @@ export default function CreateReportPage() {
         <ReportPrintTemplate ref={printRef} report={report} />
       </div>
     </div>
+  );
+}
+
+// Suspense wrapper - useSearchParams() için gerekli
+export default function CreateReportPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin h-8 w-8 text-primary" />
+        <span className="ml-2 text-muted-foreground">Yuklanmoqda...</span>
+      </div>
+    }>
+      <CreateReportPageContent />
+    </Suspense>
   );
 }
